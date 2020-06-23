@@ -1,6 +1,6 @@
 package sm.hardcoded.tile;
 
-public class Tile {
+public class TileObject {
 	public TileHeader header;
 	public TileData data;
 }

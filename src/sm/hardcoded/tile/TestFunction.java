@@ -7,29 +7,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TestFunction {
+// TODO - This class is only a temporary solution before we can figure out how to read the tiles without assembly
+class TestFunction {
 	public TestFunction() {
 		initSymbols();
 	}
 	
 	public int decompress(byte[] bytes, byte[] input, int uncompressed_size) {
 		// Clear pointers
-		STACK.set(0).WriteBytes(new byte[1000000]);
-		INPUT.set(0).WriteBytes(new byte[1000000]);
-		PARAM_2.set(0).WriteBytes(new byte[1000000]);
+		//STACK.set(0).WriteBytes(new byte[1000000]);
+		//INPUT.set(0).WriteBytes(new byte[1000000]);
+		//PARAM_2.set(0).WriteBytes(new byte[1000000]);
 		
 		// Add data
-		INPUT.WriteBytes(bytes);
+		//INPUT.WriteBytes(bytes);
 		
 		
-		long result = Decompress(new Address("007039c0"), uncompressed_size);
+		//long result = Decompress(new Address("007039c0"), uncompressed_size);
 		
-		PARAM_2.set(0);
-		PARAM_2.Bytes(input, 0, uncompressed_size, true);
+		//PARAM_2.set(0);
+		//PARAM_2.Bytes(input, 0, uncompressed_size, true);
 		
 		// System.out.printf("Result: '%08x'\n", result);
 		
-		return (int)result;
+		__input = new Pointer(1000000).WriteBytes(bytes);
+		__param_2 = new Pointer(1000000);
+		int __result = DecompressJava2(__input, __param_2, uncompressed_size);
+		
+		__param_2.Bytes(input, 0, uncompressed_size, true);
+		System.out.println("Jva: '" + __result + "'");
+		
+		//System.out.println("Asm: '" + result + "'");
+		//return (int)result;
+		return __result;
 	}
 	
 	private static final int[] INT_00e6cab8 = { 0x0, 0x1, 0x2, 0x1, 0x0, 0x4, 0x4, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x2, 0x0, 0x3, 0x1, 0x3, 0x1, 0x4, 0x2, 0x7, 0x0, 0x2, 0x3, 0x6, 0x1, 0x5, 0x3, 0x5, 0x1, 0x3, 0x4, 0x4, 0x2, 0x5, 0x6, 0x7, 0x7, 0x0, 0x1, 0x2, 0x3, 0x3, 0x4, 0x6, 0x2, 0x6, 0x5, 0x5, 0x3, 0x4, 0x5, 0x6, 0x7, 0x1, 0x2, 0x4, 0x6, 0x4, 0x4, 0x5, 0x7, 0x2, 0x6, 0x5, 0x7, 0x6, 0x7, 0x7, 0x1000b, 0x10 };
@@ -341,9 +351,17 @@ public class TestFunction {
 		
 		MEMORY = new MemoryRegion();
 		MEMORY.addRegion("temp"   , TEMP   , 0x00e6cab8, 592);
-		MEMORY.addRegion("stack"  , STACK  , 0x70000000, 1000000);
-		MEMORY.addRegion("input"  , INPUT  , 0x70000000 + 1000000, 1000000);
-		MEMORY.addRegion("param_2", PARAM_2, 0x70000000 + 2000000, 1000000);
+		MEMORY.addRegion("stack"  , STACK  , 70000000, 1000000);
+		MEMORY.addRegion("input"  , INPUT  , 70000000 + 1000000, 1000000);
+		MEMORY.addRegion("param_2", PARAM_2, 70000000 + 2000000, 1000000);
+	}
+	
+	private void clearSymbols() {
+		STACK.set(0).WriteBytes(new byte[1000000]);
+		INPUT.set(0).WriteBytes(new byte[1000000]);
+		PARAM_2.set(0).WriteBytes(new byte[1000000]);
+		for(RLong r : regs.values()) r.set(0);
+		
 	}
 	
 	public static String getHexString(byte[] bytes, int start, int maxLength, int lineLength) {
@@ -361,6 +379,558 @@ public class TestFunction {
 		return getHexString(p.data(), start, maxLength, lineLength);
 	}
 	
+	private Pointer __input;
+	private Pointer __param_2;
+	private Pointer _EBP;
+	private boolean once = false;
+	private Instruction testing = null;
+	private void Log(String str) {
+		/*System.out.println(str);
+		System.out.printf("EAX=%08x, EBP=%08x, EBX=%08x, ECX=%08x, EDI=%08x, EDX=%08x, ESI=%08x, ESP=%08x\n", EAX, EBP, EBX, ECX, EDI, EDX, ESI, ESP);
+		
+		Instruction old = testing;
+		testing = executeInstruction(testing);
+		
+		StringBuilder sb = new StringBuilder();
+		for(RLong r : regs.values()) if(r.name.charAt(0) == 'E' && r.name.length() == 3) sb.append(r.name).append("=").append(r.toString()).append(", ");
+		sb.append("\n\n");
+		System.out.println(sb.toString());
+		System.out.println();
+		
+		
+		boolean debug = false;
+		for(RLong r : regs.values()) {
+			if(r.name.equals("EAX")) { debug = debug | ((r.value() & 15) != (EAX & 15)); }
+			if(r.name.equals("ECX")) { debug = debug | ((r.value() & 15) != (ECX & 15)); }
+			if(r.name.equals("EDX")) { debug = debug | ((r.value() & 15) != (EDX & 15)); }
+			if(r.name.equals("EBX")) { debug = debug | ((r.value() & 15) != (EBX & 15)); }
+			if(r.name.equals("EBP")) { debug = debug | ((r.value() & 15) != (EBP & 15)); }
+			if(r.name.equals("ESP")) { debug = debug | ((r.value() & 15) != (ESP & 15)); }
+			if(r.name.equals("ESI")) { debug = debug | ((r.value() & 15) != (ESI & 15)); }
+			if(r.name.equals("EDI")) { debug = debug | ((r.value() & 15) != (EDI & 15)); }
+		}
+		
+		boolean sameStack = true;
+		boolean sameData = true;
+		{
+			byte[] prm_0 = PARAM_2.data();
+			byte[] prm_1 = __param_2.data();
+			for(int i = 0; i < ESI + 10000; i++) {
+				if(prm_0[i] != prm_1[i]) {
+					sameData = false;
+					break;
+				}
+			}
+			
+			byte[] stc_0 = STACK.data();
+			byte[] stc_1 = _EBP.data();
+			for(int i = 0; i < 0x1c; i++) {
+				if(stc_0[(stc_0.length / 2) + i] != stc_1[(stc_1.length / 2) + i]) {
+					sameStack = false;
+					break;
+				}
+			}
+		}
+		
+		if(!old.toString().replace(" ", "").equals(str.replace("LAB_", "0x").replace("INT_00", "0x").replace(" ", "")) || debug || !sameData || !sameStack) {
+			System.out.println("Diff!: '" + str + "', '" + old + "'" + (debug ? " [Registers are different!]":"") + (sameData ? "":" [Data is different!]") + (sameStack ? "":" [Stack is different!]"));
+			StackTraceElement[] elm = Thread.currentThread().getStackTrace();
+			System.out.println(elm[2]);
+			
+			if(!sameStack) {
+				System.out.println(": " + getHexString(STACK, STACK.data().length / 2, 0x1c, 10000));
+				System.out.println(": " + getHexString(_EBP, _EBP.data().length / 2, 0x1c, 10000));
+			}
+			int i = 0;			i++;
+			once = i > 0;
+		}*/
+	}
+	
+	private static int EAX;
+	private static int ECX;
+	private static int EDX;
+	private static int EBX;
+	private static int ESP;
+	private static int EBP;
+	private static int ESI;
+	private static int EDI;
+	private int DecompressJava2(Pointer input, Pointer param_2, int SIZE) {
+		if(true) {
+			clearSymbols();
+
+			// System.out.println(regs.values());
+			// if(true) throw new NonImpl();
+			
+			// Add data
+			INPUT.WriteBytes(input.data());
+			
+			setValue("ESP", 70000000 +  500000); // Stack Address
+			setValue("ECX", 70000000 + 1000000);
+			setValue("EDX", 70000000 + 2000000);
+			
+			setExpression("dword ptr [ESP + 0x8]", SIZE);
+			
+			call.clear();
+			call.push(null);
+			
+			testing = getInst(new Address("007039c0"));
+			once = true;
+		}
+		
+		_EBP = new Pointer(0x38).set(0x1c).WriteInt(SIZE, 0x8);
+		
+		//int __fastcall CalculateCompressedSize_007039c0(byte *input, int *param_2, int size)
+		//CalculateCompressedSize_007039c0:
+					// __fastcall
+					// EAX:4			int		<RETURN>
+					// ECX:4			byte*	input
+					// EDX:4			int*	param_2
+					// Stack[0x4]:4		int		size
+
+		
+		Log("PUSH EBP");
+		EBP = ESP; Log("MOV EBP,ESP");
+		ESP-=0x1c; Log("SUB ESP,0x1c");
+		
+		Log("PUSH ESI");
+		ESI = EDX; Log("MOV ESI,EDX");
+		EDX = ECX; Log("MOV EDX,ECX");
+		_EBP.WriteInt(EDX, -0x14); Log("MOV dword ptr [EBP + -0x14],EDX");
+
+		Log("TEST EDX,EDX");
+		Log("JNZ LAB_007039da");
+		if(EDX == 0) {
+//			OR EAX,0xffffffff
+//			POP ESI
+//			MOV ESP,EBP
+//			POP EBP
+//			RET
+			// NOTE - input will never be null
+			// return -1;
+		}
+		
+//	LAB_007039da:
+		EAX = _EBP.Int(0x8); Log("MOV EAX,dword ptr [EBP + 0x8]");
+		
+		Log("PUSH EBX");
+		EBX = EDX; Log("MOV EBX,EDX");
+		Log("PUSH EDI");
+		
+		ECX = ESI + EAX*0x1;			Log("LEA ECX,[ESI + EAX*0x1]");
+		_EBP.WriteInt(ECX, -0xc);		Log("MOV dword ptr [EBP + -0xc],ECX");
+		
+		EDI = ECX - 0x1a;				Log("LEA EDI,[ECX + -0x1a]");
+		_EBP.WriteInt(EDI, -0x10);		Log("MOV dword ptr [EBP + -0x10],EDI");
+		
+		Log("TEST EAX,EAX ");                           // 007039ed
+		Log("JNZ LAB_00703a07");                        // 007039ef
+		if(EAX == 0) {
+//			CMP byte ptr [EDX],AL                   // 007039f1
+//			POP EDI                                 // 007039f3
+//			SETZ AL                                 // 007039f4
+//			POP EBX                                 // 007039f7
+//			POP ESI                                 // 007039f8
+//			LEA EAX,[EAX*0x2 + 0xffffffff]          // 007039f9
+//			MOV ESP,EBP                             // 00703a00
+//			POP EBP                                 // 00703a02
+//			RET                                     // 00703a03
+			return (input.Byte() == 0) ? -1:1;
+		}
+		
+		LAB_00703a07: for(;;){
+			ECX = input.UnsignedByte(EBX);	Log("MOVZX ECX,byte ptr [EBX]");
+			EBX++;							Log("INC EBX");
+			EDX = ECX;						Log("MOV EDX,ECX");
+			_EBP.WriteInt(ECX, -0x8);		Log("MOV dword ptr [EBP + -0x8],ECX");
+			EDX >>>= 0x4;					Log("SHR EDX,0x4");
+			_EBP.WriteInt(EDX, -0x4);		Log("MOV dword ptr [EBP + -0x4],EDX");
+			
+			boolean jump_3ade = false;
+			// JA - Jump short if above (CF=0 and ZF=0)
+			Log("CMP EDX,0x8");				/**			[[[ CMP EDX,0x8                             // 00703a16*/
+			Log("JA LAB_00703a81");			/**			[[[ JA LAB_00703a81                         // 00703a19*/
+			if(EDX > 0x8) {	// LAB_00703a81: (Siplified)
+				// JNZ - Jump short if not zero (ZF=0)
+				Log("CMP EDX,0xf");								// 00703a81
+				Log("JNZ LAB_00703a9b");						// 00703a84
+				if(EDX == 0xf) {
+					ECX = 0;						Log("XOR ECX,ECX");
+					for(;;) { // LAB_00703a88:
+						EAX = input.UnsignedByte(EBX);		Log("MOVZX EAX,byte ptr [EBX]");
+						EBX++;								Log("INC EBX");
+						ECX+= EAX;							Log("ADD ECX,EAX");
+						
+						// JZ - Jump short if zero (ZF = 1)
+						Log("CMP EAX,0xff");						// 00703a8e
+						Log("JZ LAB_00703a88");						// 00703a93
+						if(EAX != 0xff) break;
+					}
+					
+					EDX = ECX + 0xf;				Log("LEA EDX,[ECX + 0xf]");
+					_EBP.WriteInt(EDX, -0x4);		Log("MOV dword ptr [EBP + -0x4],EDX");
+				}
+			} else { // NOTE - ESI is param_2
+				// JA - Jump short if above (CF=0 and ZF=0)
+				Log("CMP ESI,EDI");				/**			[[[ CMP ESI,EDI                             // 00703a1b*/
+				Log("JA LAB_00703a9b");			/**			[[[ JA LAB_00703a9b                         // 00703a1d*/
+				// if(ESI > EDI) continue LAB_00703a9b;
+				// dst > src    ZF = 0    CF = 0
+				
+				if(ESI <= EDI) {
+				EAX = input.Int(EBX);					Log("MOV EAX,dword ptr [EBX]");
+					ECX&= 0xf;								Log("AND ECX,0xf");
+					param_2.WriteInt(EAX, ESI);				Log("MOV dword ptr [ESI],EAX");
+					EAX = input.Int(EBX + 0x4);				Log("MOV EAX,dword ptr [EBX + 0x4]");
+					EBX+= EDX;								Log("ADD EBX,EDX");
+					
+					_EBP.WriteInt(ECX, -0x8);				Log("MOV dword ptr [EBP + -0x8],ECX");
+					ECX = EBX;								Log("MOV ECX,EBX");
+					param_2.WriteInt(EAX, ESI + 0x4);		Log("MOV dword ptr [ESI + 0x4],EAX");
+					ESI+= EDX;								Log("ADD ESI,EDX");
+					
+					_EBP.WriteInt(EBX, -0x18);				Log("MOV dword ptr [EBP + -0x18],EBX");
+					EAX = (EAX & 0xffff0000) | (input.Short(ECX) & 0xffff); Log("MOV AX,word ptr [ECX]");
+					ECX =_EBP.Int(-0x8);					Log("MOV ECX,dword ptr [EBP + -0x8]");
+					EDI = ESI;								Log("MOV EDI,ESI");
+					EAX = EAX & 0xffff;						Log("MOVZX EAX,AX");
+					EBX+= 0x2;								Log("ADD EBX,0x2");
+					EDI-= EAX;								Log("SUB EDI,EAX");
+					_EBP.WriteInt(EAX, -0x4);				Log("MOV dword ptr [EBP + -0x4],EAX");
+					
+					// JZ - Jump short if zero (ZF = 1)
+					Log("CMP ECX,0xf");						// 00703a4d
+					Log("JZ LAB_00703a7c");					// 00703a50
+					if(ECX == 0xf) { // LAB_00703a7c:
+						EAX =_EBP.Int(-0x18);					Log("MOV EAX,dword ptr [EBP + -0x18]");
+						
+						// The jump here is just follow though
+						Log("JMP LAB_00703ade");				// 00703a7f
+						jump_3ade = true;
+					} else {
+						// JC - Jump short if carry (CF = 1)
+						Log("CMP EAX,0x8");						// 00703a52
+						Log("JC LAB_00703a7c");					// 00703a55
+						if(EAX < 0x8) { // LAB_00703a7c:
+							EAX =_EBP.Int(-0x18);					Log("MOV EAX,dword ptr [EBP + -0x18]");
+							
+							// The jump here is just follow though
+							Log("JMP LAB_00703ade");				// 00703a7f
+							jump_3ade = true;
+						} else {
+							if(EDI < 0) { // input
+								EDI += 1000000;
+								EAX = input.Int(EDI);					Log("MOV EAX,dword ptr [EDI]");
+								param_2.WriteInt(EAX, ESI);				Log("MOV dword ptr [ESI],EAX");
+								Log("MOV EAX,dword ptr [EDI + 0x4]");
+								EAX = input.Int(EDI + 0x4);				
+								param_2.WriteInt(EAX, ESI + 0x4);		Log("MOV dword ptr [ESI + 0x4],EAX");
+								
+								EAX = input.Int(EDI + 0x8);				Log("MOV EAX,dword ptr [EDI + 0x8]");
+								param_2.WriteInt(EAX, ESI + 0x8);		Log("MOV dword ptr [ESI + 0x8],EAX");
+								
+								EAX = input.Int(EDI + 0xc);				Log("MOV EAX,dword ptr [EDI + 0xc]");
+								param_2.WriteInt(EAX, ESI + 0xc);		Log("MOV dword ptr [ESI + 0xc],EAX");
+								
+								EAX = (EAX & 0xffff0000) | (input.Short(EDI + 0x10) & 0xffff); Log("MOV AX,word ptr [EDI + 0x10]");
+								param_2.WriteShort(EAX & 0xffff, ESI + 0x10); Log("MOV word ptr [ESI + 0x10],AX");
+								EDI -= 1000000;
+							} else { // param_2
+								System.out.printf("%08x\n", input.Int(EDI));
+								EAX = param_2.Int(EDI);					Log("MOV EAX,dword ptr [EDI]");
+								param_2.WriteInt(EAX, ESI);				Log("MOV dword ptr [ESI],EAX");
+								
+								EAX = param_2.Int(EDI + 0x4);			Log("MOV EAX,dword ptr [EDI + 0x4]");
+								param_2.WriteInt(EAX, ESI + 0x4);		Log("MOV dword ptr [ESI + 0x4],EAX");
+								
+								EAX = param_2.Int(EDI + 0x8);			Log("MOV EAX,dword ptr [EDI + 0x8]");
+								param_2.WriteInt(EAX, ESI + 0x8);		Log("MOV dword ptr [ESI + 0x8],EAX");
+								
+								EAX = param_2.Int(EDI + 0xc);			Log("MOV EAX,dword ptr [EDI + 0xc]");
+								param_2.WriteInt(EAX, ESI + 0xc);		Log("MOV dword ptr [ESI + 0xc],EAX");
+								
+								EAX = (EAX & 0xffff0000) | (param_2.Short(EDI + 0x10) & 0xffff); Log("MOV AX,word ptr [EDI + 0x10]");
+								param_2.WriteShort(EAX & 0xffff, ESI + 0x10); Log("MOV word ptr [ESI + 0x10],AX");
+							}
+							
+							ESI+= 0x4;								Log("ADD ESI,0x4");
+							ESI+= ECX;								Log("ADD ESI,ECX");
+							
+							Log("JMP LAB_00703a04");
+							
+							// Simplification of JMP LAB_00703a04
+							EDI =_EBP.Int(-0x10);					Log("MOV EDI,dword ptr [EBP + -0x10]");
+							continue LAB_00703a07;
+						}
+					}
+				}
+			}
+			if(!jump_3ade) { // LAB_00703a9b:
+				ECX =_EBP.Int(-0xc);					Log("MOV ECX,dword ptr [EBP + -0xc]");
+				EDI = EDX + ESI;						Log("LEA EDI,[EDX + ESI*0x1]");
+				EAX = ECX - 0x8;						Log("LEA EAX,[ECX + -0x8]");
+				
+				// JA - Jump short if above (CF=0 and ZF=0)
+				Log("CMP EDI,EAX");						// 00703aa4
+				Log("JA LAB_00703bfb");					// 00703aa6
+				if(EDI > EAX) { // LAB_00703bfb:
+					// JNZ - Jump short if not zero (ZF=0)
+					Log("CMP EDI,ECX");						// 00703bfb
+					Log("JNZ LAB_00703c19");				// 00703bfd
+					if(EDI != ECX) break; // Jump to end of function
+					
+					Log("PUSH EDX");						// 00703bff
+					Log("PUSH EBX");						// 00703c00
+					Log("PUSH ESI");						// 00703c01
+					
+					Log("CALL 0x00d20240");					// 00703c02  (C++) memmove
+					param_2.WriteBytes(input.Bytes(EDX, EBX), EDX, ESI);
+					
+					EAX =_EBP.Int(-0x4);					Log("MOV EAX,dword ptr [EBP + -0x4]");
+					ESP+= 0xc;								Log("ADD ESP,0xc");
+					EAX-=_EBP.Int(-0x14);					Log("SUB EAX,dword ptr [EBP + -0x14]");
+					EAX+= EBX;								Log("ADD EAX,EBX");
+					Log("POP EDI");							// 00703c12
+					Log("POP EBX");							// 00703c13
+					Log("POP ESI");							// 00703c14
+					ESP = EBP;								Log("MOV ESP,EBP");
+					Log("POP EBP");							// 00703c17
+					Log("RET");								// 00703c18
+					return EAX; // TODO ---
+				}
+				
+				ECX = EBX;								Log("MOV ECX,EBX");
+				ECX-= ESI;								Log("SUB ECX,ESI");
+				
+				for(;;) { // LAB_00703ab0:
+					EAX = input.Int(ECX + ESI);				Log("MOV EAX,dword ptr [ECX + ESI*0x1]");
+					param_2.WriteInt(EAX, ESI);				Log("MOV dword ptr [ESI],EAX");
+					EAX = input.Int(ECX + ESI + 0x4);		Log("MOV EAX,dword ptr [ECX + ESI*0x1 + 0x4]");
+					param_2.WriteInt(EAX, ESI + 0x4);		Log("MOV dword ptr [ESI + 0x4],EAX");
+					ESI+= 0x8;								Log("ADD ESI,0x8");
+					
+					// JC - Jump short if carry (CF = 1)
+					Log("CMP ESI,EDI");						// 00703abf
+					Log("JC LAB_00703ab0");					// 00703ac1
+					if(ESI > EDI) break; // TODO
+				}
+				
+				EBX+= EDX;									Log("ADD EBX,EDX");
+				ESI = EDI;									Log("MOV ESI,EDI");
+				ECX = EBX;									Log("MOV ECX,EBX");
+				EAX = (EAX & 0xffff0000) | (input.Short(ECX) & 0xffff); Log("MOV AX,word ptr [ECX]");
+				
+				ECX =_EBP.Int(-0x8);						Log("MOV ECX,dword ptr [EBP + -0x8]");
+				EAX = (EAX & 0xffff);						Log("MOVZX EAX,AX");
+				EDI-= EAX;									Log("SUB EDI,EAX");
+				_EBP.WriteInt(EAX, -0x4);					Log("MOV dword ptr [EBP + -0x4],EAX");
+				ECX&= 0xf;									Log("AND ECX,0xf");
+				EAX = EBX;									Log("MOV EAX,EBX");
+			}
+			
+/**			[[[ Follow though ]]]						   */
+			// LAB_00703ade:
+			EBX = EAX + 0x2;							Log("LEA EBX,[EAX + 0x2]");
+			_EBP.WriteInt(EBX, -0x8);					Log("MOV dword ptr [EBP + -0x8],EBX");
+			
+			// JNZ - Jump short if not zero (ZF=0)
+			Log("CMP ECX,0xf");							// 00703ae4
+			Log("JNZ LAB_00703b03");					// 00703ae7
+			if(ECX == 0xf) {
+				ECX = 0;								Log("XOR ECX,ECX");
+				Log("NOP dword ptr [EAX + EAX*0x1]");	// 00703aeb
+				
+				for(;;) { // LAB_00703af0:
+					EAX = input.UnsignedByte(EBX);			Log("MOVZX EAX,byte ptr [EBX]");
+					EBX++;									Log("INC EBX");
+					ECX+= EAX;								Log("ADD ECX,EAX");
+					
+					Log("CMP EAX,0xff");					// 00703af6
+					Log("JZ LAB_00703af0");					// 00703afb
+					if(EAX != 0xff) break;
+				}
+				
+				_EBP.WriteInt(EBX, -0x8);				Log("MOV dword ptr [EBP + -0x8],EBX");
+				ECX+= 0xf;								Log("ADD ECX,0xf");
+			}
+			
+/**			[[[ Follow though ]]]						   */
+			// LAB_00703b03:
+			ECX+= 0x4;									Log("ADD ECX,0x4");
+			Log("CMP dword ptr [EBP + -0x4],0x8");		// 00703b06
+			EDX = ECX + ESI;							Log("LEA EDX,[ECX + ESI*0x1]");
+			_EBP.WriteInt(EDX, -0x1c);					Log("MOV dword ptr [EBP + -0x1c],EDX");
+			
+			// JNC - Jump short if not carry (CF=0)
+			Log("JNC LAB_00703b4d");					// 00703b10
+			if(_EBP.Int(-0x4) < 0x8) { // TODO - Is this correct
+				param_2.WriteInt(0, ESI);					Log("MOV dword ptr [ESI],0x0");
+				EAX = param_2.UnsignedByte(EDI);			Log("MOVZX EAX,byte ptr [EDI]");
+				param_2.WriteByte(EAX & 0xff, ESI);			Log("MOV byte ptr [ESI],AL");
+				
+				EAX = param_2.UnsignedByte(EDI + 0x1);		Log("MOVZX EAX,byte ptr [EDI + 0x1]");
+				param_2.WriteByte(EAX & 0xff, ESI + 0x1); 	Log("MOV byte ptr [ESI + 0x1],AL");
+				
+				EAX = param_2.UnsignedByte(EDI + 0x2);		Log("MOVZX EAX,byte ptr [EDI + 0x2]");
+				param_2.WriteByte(EAX & 0xff, ESI + 0x2);	Log("MOV byte ptr [ESI + 0x2],AL");
+				
+				EAX = param_2.UnsignedByte(EDI + 0x3);		Log("MOVZX EAX,byte ptr [EDI + 0x3]");
+				param_2.WriteByte(EAX & 0xff, ESI + 0x3);	Log("MOV byte ptr [ESI + 0x3],AL");
+				
+				EAX =_EBP.Int(-0x4);						Log("MOV EAX,dword ptr [EBP + -0x4]");
+				
+				EDI+= INT_00e6cab8[EAX];					Log("ADD EDI,dword ptr [EAX*0x4 + INT_00e6cab8]");
+				EAX = param_2.Int(EDI);						Log("MOV EAX,dword ptr [EDI]");
+				param_2.WriteInt(EAX, ESI + 0x4);			Log("MOV dword ptr [ESI + 0x4],EAX");
+				EAX =_EBP.Int(-0x4);						Log("MOV EAX,dword ptr [EBP + -0x4]");
+				EDI-= INT_00e6cbe0[EAX];					Log("SUB EDI,dword ptr [EAX*0x4 + INT_00e6cbe0]");
+				
+				// The jump here is just follow though
+				Log("JMP LAB_00703b5a");
+			} else { // LAB_00703b4d:
+				EAX = param_2.Int(EDI);						Log("MOV EAX,dword ptr [EDI]");
+				param_2.WriteInt(EAX, ESI);					Log("MOV dword ptr [ESI],EAX");
+				EAX = param_2.Int(EDI + 0x4);				Log("MOV EAX,dword ptr [EDI + 0x4]");
+				EDI+= 0x8;									Log("ADD EDI,0x8");
+				param_2.WriteInt(EAX, ESI + 0x4);			Log("MOV dword ptr [ESI + 0x4],EAX");
+			}
+			
+			// LAB_00703b5a:
+			EAX =_EBP.Int(-0xc);						Log("MOV EAX,dword ptr [EBP + -0xc]");
+			ESI+= 0x8;									Log("ADD ESI,0x8");
+			EAX+= -0xc;									Log("ADD EAX,-0xc");
+			
+			
+			// NOTE - Jumps
+			// dst <= src   ZF = 1    CF = 1
+			// dst = src    ZF = 1    CF = 0
+			// dst < src    ZF = 0    CF = 1
+			// dst > src    ZF = 0    CF = 0
+			
+			// JBE - Jump short if below or equal (CF=1 or ZF=1)
+			Log("CMP EDX,EAX");							// 00703b63
+			Log("JBE LAB_00703bc8");					// 00703b65
+			if(!(EDX <= EAX)) {
+				EAX =_EBP.Int(-0xc);						Log("MOV EAX,dword ptr [EBP + -0xc]");
+				ECX = EAX - 0x7;							Log("LEA ECX,[EAX + -0x7]");
+				EAX+= -0x5;									Log("ADD EAX,-0x5");
+				_EBP.WriteInt(ECX, -0x18);					Log("MOV dword ptr [EBP + -0x18],ECX");
+				
+				// JA - Jump short if above (CF=0 and ZF=0)
+				Log("CMP EDX,EAX");							// 00703b73
+				Log("JA LAB_00703c19");						// 00703b75
+				if(EDX != EAX && EDX < EAX + 1) break;
+				
+				// JNC - Jump short if not carry (CF=0)
+				Log("CMP ESI,ECX");							// 00703b7b
+				Log("JNC LAB_00703bb1");					// 00703b7d
+				if(ESI < ECX) { // '>=' jump
+					EBX =_EBP.Int(-0x18);						Log("MOV EBX,dword ptr [EBP + -0x18]");
+					EDX = EDI;									Log("MOV EDX,EDI");
+					ECX = ESI;									Log("MOV ECX,ESI");
+					EDX-= ESI;									Log("SUB EDX,ESI");
+					
+					Log("NOP dword ptr [EAX + EAX*0x1]");		// 00703b88
+					for(;;) { // LAB_00703b90:
+						EAX = input.Int(EDX + ECX*0x1);				Log("MOV EAX,dword ptr [EDX + ECX*0x1]");
+						param_2.WriteInt(EAX, ECX);					Log("MOV dword ptr [ECX],EAX");
+						EAX = input.Int(EDX + ECX*0x1 + 0x4);		Log("MOV EAX,dword ptr [EDX + ECX*0x1 + 0x4]");
+						param_2.WriteInt(EAX, ECX + 0x4);			Log("MOV dword ptr [ECX + 0x4],EAX");
+						
+						ECX+= 0x8;									Log("ADD ECX,0x8");
+						
+						// JC - Jump short if carry (CF = 1)
+						Log("CMP ECX,EBX");							// 00703b9f
+						Log("JC LAB_00703b90");						// 00703ba1
+						if(ECX > EBX) break; // TODO - Check if this is correct
+					}
+					
+					EDX =_EBP.Int(-0x1c);						Log("MOV EDX,dword ptr [EBP + -0x1c]");
+					EAX = EBX;									Log("MOV EAX,EBX");
+					EAX-= ESI;									Log("SUB EAX,ESI");
+					ESI = EBX;									Log("MOV ESI,EBX");
+					EBX =_EBP.Int(-0x8);						Log("MOV EBX,dword ptr [EBP + -0x8]");
+					EDI+= EAX;									Log("ADD EDI,EAX");
+				}
+				// LAB_00703bb1:
+				
+				// JNC - Jump short if not carry (CF=0)
+				Log("CMP ESI,EDX");							// 00703bb1
+				Log("JNC LAB_00703bf4");					// 00703bb3
+				if(ESI > EDX) { // LAB_00703bf4: (SIMPLIFIED)
+					ESI = EDX;									Log("MOV ESI,EDX");
+					EDI =_EBP.Int(-0x10);						Log("MOV EDI,dword ptr [EBP + -0x10]");
+					Log("JMP LAB_00703a07");
+					continue;
+				}
+				
+				for(;;) { // LAB_00703bb5:
+					EAX = (EAX & 0xffffff00) | (param_2.UnsignedByte(EDI) & 0xff); Log("MOV AL,byte ptr [EDI]");
+					EDI = EDI + 0x1;								Log("LEA EDI,[EDI + 0x1]");
+					param_2.WriteByte(EAX & 0xff, ESI);				Log("MOV byte ptr [ESI],AL");
+					ESI++;											Log("INC ESI");
+					
+					// JC - Jump short if carry (CF = 1)
+					Log("CMP ESI,EDX");								// 00703bbd
+					Log("JC LAB_00703bb5");							// 00703bbf
+					if(ESI >= EDX) break;
+				}
+				
+				ESI = EDX;										Log("MOV ESI,EDX");
+				Log("JMP LAB_00703a04");
+				EDI =_EBP.Int(-0x10);							Log("MOV EDI,dword ptr [EBP + -0x10]");
+				continue;
+			}
+			
+			// LAB_00703bc8:
+			EAX = param_2.Int(EDI);								Log("MOV EAX,dword ptr [EDI]");
+			param_2.WriteInt(EAX, ESI);							Log("MOV dword ptr [ESI],EAX");
+			EAX = param_2.Int(EDI + 0x4);						Log("MOV EAX,dword ptr [EDI + 0x4]");
+			param_2.WriteInt(EAX, ESI + 0x4);					Log("MOV dword ptr [ESI + 0x4],EAX");
+			
+			
+			// JBE - Jump short if below or equal (CF=1 or ZF=1)
+			Log("CMP ECX,0x10");					// 00703bd2
+			Log("JBE LAB_00703bf4");				// 00703bd5
+			if(ECX != 0x10 && ECX > 0x10) {
+				ESI+= 0x8;								Log("ADD ESI,0x8");
+				EDI-= ESI;								Log("SUB EDI,ESI");
+				Log("NOP dword ptr [EAX]");				// 00703bdc
+				
+				for(;;) { // LAB_00703be0:
+					EAX = param_2.Int(EDI + ESI*0x1 + 0x8);		Log("MOV EAX,dword ptr [EDI + ESI*0x1 + 0x8]");
+					param_2.WriteInt(EAX, ESI);					Log("MOV dword ptr [ESI],EAX");
+					EAX = param_2.Int(EDI + ESI*0x1 + 0xc);		Log("MOV EAX,dword ptr [EDI + ESI*0x1 + 0xc]");
+					param_2.WriteInt(EAX, ESI + 0x4);			Log("MOV dword ptr [ESI + 0x4],EAX");
+					
+					ESI+= 0x8;									Log("ADD ESI,0x8");
+					
+					// JC - Jump short if carry (CF = 1)
+					Log("CMP ESI,EDX");							// 00703bf0
+					Log("JC LAB_00703be0");						// 00703bf2
+					if(ESI >= EDX) break;
+				}
+			}
+			
+			// LAB_00703bf4:
+			ESI = EDX;									Log("MOV ESI,EDX");
+			Log("JMP LAB_00703a04");
+			EDI =_EBP.Int(-0x10);						Log("MOV EDI,dword ptr [EBP + -0x10]");
+			continue;
+		}
+		
+		// LAB_00703c19:
+		EAX =_EBP.Int(-0x14);		Log("MOV EAX,dword ptr [EBP + -0x14]");
+		Log("POP EDI");
+		EAX-= EBX;					Log("SUB EAX,EBX");
+		Log("POP EBX");
+		EAX--;						Log("DEC EAX");
+		Log("POP ESI");
+		ESP = EBP;					Log("MOV ESP,EBP");
+		Log("POP EBP");
+		Log("RET");
+		return EAX;
+	}
+	
 	private long Decompress(Address entry, int size) {
 		// __fastcall
 		// EAX:4			int		<RETURN>
@@ -368,9 +938,9 @@ public class TestFunction {
 		// EDX:4			int*	param_2
 		// Stack[0x4]:4		int		size
 		
-		setValue("ESP", 0x70000000 +  500000); // Stack Address
-		setValue("ECX", 0x70000000 + 1000000);
-		setValue("EDX", 0x70000000 + 2000000);
+		setValue("ESP", 70000000 +  500000); // Stack Address
+		setValue("ECX", 70000000 + 1000000);
+		setValue("EDX", 70000000 + 2000000);
 		
 		setExpression("dword ptr [ESP + 0x8]", size);
 		
@@ -387,8 +957,10 @@ public class TestFunction {
 	}
 	
 	private Instruction executeInstruction(Instruction inst) {
-		if(logStuff) {
+		if(once) {
 			System.out.println(inst.getAddress() + ", " + inst.toString());
+		}
+		if(logStuff) {
 			System.out.println("\n------------------------------------------------");
 		}
 		
@@ -664,7 +1236,9 @@ public class TestFunction {
 			if(r == null) throw new NonImpl();
 			
 			int index = (int)(exp.index - r.start);
-			if(logStuff) System.out.println("ptr -> " + exp + ", index = " + String.format("%08x  new = %08x", exp.index, index));
+			//if(logStuff)
+			// NOTE - Testing
+			// if(once)System.out.println("ptr -> " + exp + ", index = " + String.format("%08x  new = %08x", exp.index, index) + ", " + r);
 			
 			long var = 0;
 			Pointer p = r.memory();

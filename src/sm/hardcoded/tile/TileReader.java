@@ -8,16 +8,16 @@ import sm.hardcoded.tile.TileHeader.Header;
 
 public final class TileReader {
 	private static final TestFunction func = new TestFunction();
+	
 	private TileReader() {
 		
 	}
 	
-	public static Tile read(String path) throws IOException {
-		
-		return null;
+	public static TileObject read(String path) throws IOException {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 	
-	public static void save(Tile tile, String path) throws IOException {
+	public static void save(TileObject tile, String path) throws IOException {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 	
@@ -39,8 +39,8 @@ public final class TileReader {
 			e.printStackTrace();
 		}
 		
-		System.out.println("\nCustomMemory:");
-		System.out.println(StringUtils.getHexString(customMemory.data(), 1024, 32));
+		// System.out.println("\nCustomMemory:");
+		// System.out.println(StringUtils.getHexString(customMemory.data(), 1024, 32));
 	}
 	
 	
@@ -66,9 +66,9 @@ public final class TileReader {
 		return null;
 	}
 	
-	private static Pointer customMemory;
+	private static final Pointer customMemory = null;
 	
-	public static Tile loadTile(String path) throws Exception {
+	public static TileObject loadTile(String path) throws Exception {
 		TileHeader header = new TileHeader(FileUtils.readFileBytes(path));
 		
 		System.out.printf("TileFileVersion: %d\n", header.version);
@@ -96,13 +96,12 @@ public final class TileReader {
 		System.out.println("Reading header data:");
 		
 		Pointer reader = new Pointer(header.data());
-		customMemory = new Pointer(1000000);
+		Pointer customMemory = new Pointer(1000000);
 		
 		
 		int tileXSize = header.width;
 		int tileYSize = header.height;
 		
-		// NOTE - Mip - https://en.wikipedia.org/wiki/Mipmap
 		if(tileYSize > 0) {
 			int iVar12 = tileXSize;
 			int iVar13 = tileYSize;
@@ -143,6 +142,9 @@ public final class TileReader {
 			
 		}
 		
+		System.out.println("\nCustomMemory:");
+		System.out.println(StringUtils.getHexString(customMemory.data(), 1024, 32));
+		
 		return null;
 	}
 	
@@ -174,7 +176,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateAssetList
-	private static boolean CalculateAssetList(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculateAssetList(Header h, Pointer reader) {
 		for(int i = 0; i < 4; i++) {
 			int assetListCompressedSize = h.assetListCompressedSize[i];
 			int assetListSize = h.assetListSize[i];
@@ -199,7 +201,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateNode
-	private static boolean CalculateNode(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculateNode(Header h, Pointer reader) {
 		if((h.bytes_a4 == 0) || (h.bytes_a8 == 0)) return false;
 		reader.set(h.bytes_a8);
 		
@@ -214,7 +216,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculatePrefab
-	private static boolean CalculatePrefab(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculatePrefab(Header h, Pointer reader) {
 		if((h.bytes_c4 == 0) || (h.bytes_c8 == 0)) return false;
 		reader.set(h.bytes_c8);
 		
@@ -229,7 +231,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateBlueprintList
-	private static boolean CalculateBlueprintList(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculateBlueprintList(Header h, Pointer reader) {
 		if((h.bytes_94 == 0) || (h.bytes_98 == 0)) return false;
 		reader.set(h.bytes_98);
 		
@@ -244,7 +246,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateDecal
-	private static boolean CalculateDecal(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculateDecal(Header h, Pointer reader) {
 		if((h.bytes_d4 == 0) || (h.bytes_d8 == 0)) return false;
 		reader.set(h.bytes_d8);
 		
@@ -259,7 +261,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateHarvestableList
-	private static boolean CalculateHarvestableList(Header h, Pointer reader, Pointer memory) {
+	private static boolean CalculateHarvestableList(Header h, Pointer reader) {
 		for(int i = 0; i < 4; i++) {
 			int harvestableListCompressedSize = h.harvestableListCompressedSize[i];
 			int harvestableListSize = h.harvestableListSize[i];

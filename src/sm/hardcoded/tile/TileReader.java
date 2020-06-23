@@ -7,7 +7,7 @@ import sm.hardcoded.test.FileUtils;
 import sm.hardcoded.tile.TileHeader.Header;
 
 public final class TileReader {
-	private static final TestFunction func = new TestFunction();
+	private static final TestFunction2 func = new TestFunction2();
 	
 	private TileReader() {
 		
@@ -30,8 +30,8 @@ public final class TileReader {
 		// path = getTile("TESTING_TILE_FLAT_MEDIUM_COLORFLAT_2");
 		// path = getTile("TESTING_TILE_FLAT_MEDIUM_COLORFLAT");
 		
-		path = getGameTile("MEADOW128_09");
-		path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
+		//path = getGameTile("MEADOW128_09");
+		//path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
 		
 		try {
 			loadTile(path);
@@ -121,7 +121,7 @@ public final class TileReader {
 						
 						// FUN_00b7f560(*(void **)((int)DAT_0146b85c + 0x9c), _pbVar9, _x, _y, tileVersion);
 						
-						// CalculateClutter(h, reader, memory);
+						CalculateClutter(h, reader);
 						// TerrainGrass(*(void **)((int)DAT_0146b85c + 0xa0), _pbVar9, _x, _y, tileVersion);
 					}
 					

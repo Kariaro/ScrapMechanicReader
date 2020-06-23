@@ -30,8 +30,8 @@ public final class TileReader {
 		// path = getTile("TESTING_TILE_FLAT_MEDIUM_COLORFLAT_2");
 		// path = getTile("TESTING_TILE_FLAT_MEDIUM_COLORFLAT");
 		
-		// path = getGameTile("MEADOW128_09");
-		// path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
+		path = getGameTile("MEADOW128_09");
+		path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
 		
 		try {
 			loadTile(path);

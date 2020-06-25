@@ -1,10 +1,12 @@
 package sm.hardcoded.tile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import sm.hardcoded.test.FileUtils;
 import sm.hardcoded.tile.TileHeader.Header;
 
 public final class TileReader {
@@ -22,8 +24,22 @@ public final class TileReader {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 	
+	private static byte[] readBytesGrr(String path) throws IOException {
+		File file = new File(path);
+		DataInputStream stream = new DataInputStream(new FileInputStream(file));
+		
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		
+		byte[] buffer = new byte[4096];
+		int readBytes = 0;
+		while((readBytes = stream.read(buffer)) != -1) {
+			bs.write(buffer, 0, readBytes);
+		}
+		
+		return bs.toByteArray();
+	}
 	public static Tile loadTile(String path) throws Exception {
-		TileHeader header = new TileHeader(FileUtils.readFileBytes(path));
+		TileHeader header = new TileHeader(readBytesGrr(path));
 		
 		System.out.printf("TileFileVersion: %d\n", header.version);
 		System.out.printf("TileUuid: {%s}\n", header.uuid);

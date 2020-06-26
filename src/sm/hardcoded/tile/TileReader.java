@@ -36,6 +36,8 @@ public final class TileReader {
 			bs.write(buffer, 0, readBytes);
 		}
 		
+		stream.close();
+		
 		return bs.toByteArray();
 	}
 	public static Tile loadTile(String path) throws Exception {
@@ -188,7 +190,7 @@ public final class TileReader {
 				}
 				UUID uuid = memory.Uuid(offset, true);
 				
-				System.out.printf("%s    %08x\n", uuid, uVar7);
+				System.out.printf("Clutter: %s    %08x\n", uuid, uVar7);
 				//System.out.printf("%08x\n", uVar7);
 				
 				int iVar8 = 0;
@@ -201,7 +203,7 @@ public final class TileReader {
 				offset += 0x11;
 			}
 			
-			memory.move(offset - 2);
+			memory.set(offset);
 		}
 		
 		byte[] next = new byte[128 * 128];
@@ -370,6 +372,8 @@ public final class TileReader {
 	
 	private static int CalculateCompressedSize(byte[] compressed, byte[] bytes, int size) {
 		int result = func.decompress(compressed, bytes, size);
+		//TestFunction FUNC = new TestFunction();
+		//int result = (int)FUNC.decompress(compressed, bytes, size);
 		return (int)result;
 	}
 	

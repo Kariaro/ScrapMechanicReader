@@ -1,4 +1,4 @@
-package sm.hardcoded.tile;
+ package sm.hardcoded.tile;
 
 public class TestFunction2 {
 	
@@ -8,7 +8,7 @@ public class TestFunction2 {
 	public int decompress(byte[] bytes, byte[] input, int uncompressed_size) {
 		Pointer __input = new Pointer(1000000).WriteBytes(bytes);
 		Pointer __param_2 = new Pointer(1000000);
-		int __result = DecompressJava3(__input, __param_2, uncompressed_size);
+		int __result = DecompressJava5(__input, __param_2, uncompressed_size);
 		
 		__param_2.Bytes(input, 0, uncompressed_size, true);
 		// System.out.println("Jva: '" + __result + "'");
@@ -31,6 +31,271 @@ public class TestFunction2 {
 		for(int i = len - 1; i >= 0; i--) {
 			d[i + dstPos] = s[i + srcPos];
 		}
+	}
+	
+	// TODO: Use only byte arrays
+	private int DecompressJava5(Pointer input, Pointer param_2, int size) {
+		int EAX = 0;
+		int index = 0;
+		int ESI = 0;
+		int EDI = 0;
+		
+		int EBP_0x1c = 0;
+		
+		if(size == 0) {
+			return (input.Byte() == 0) ? -1:1;
+		}
+		
+		do {
+			int readByte = input.UnsignedByte(index++);
+			int highByte = readByte >> 0x4;
+			int lowByte = readByte & 0xf;
+			
+			if((highByte < 0x9) && (ESI <= size - 26)) {
+				memcpy(param_2, ESI, input, index, 8);
+				
+				ESI += highByte;
+				index += highByte;
+				
+				highByte = input.UnsignedShort(index);
+				
+				if((lowByte == 0xf) || (highByte < 0x8)) {
+					EAX = index;
+					index += 0x2;
+					
+					EDI = ESI - highByte;
+				} else {
+					memcpy(param_2, ESI, param_2, ESI - highByte, 0x12);
+					
+					ESI += lowByte + 0x4;
+					index += 0x2;
+					continue;
+				}
+			} else {
+				if(highByte == 0xf) {
+					int value = 0;
+					int read = 0;
+					
+					do {
+						read = input.UnsignedByte(index++);
+						value += read;
+					} while(read == 0xff);
+					
+					highByte = value + 0xf;
+					System.out.println("highByte = " + highByte);
+				}
+				
+				int someOffset = highByte + ESI;
+				if(someOffset > size - 8) {
+					if(someOffset != size) break;
+					memmove(param_2, ESI, input, index, highByte);
+					System.out.println(ESI + ", " + index + ", " + highByte + ", " + size);
+					//memcpy(param_2, ESI, input, index, highByte + 1000);
+					return highByte + index;
+				}
+				
+				memcpy(param_2, ESI, input, index, 8 * ((highByte + 7) / 8));
+				
+				index += highByte;
+				highByte = input.UnsignedShort(index);
+				
+				ESI = someOffset;
+				EDI = someOffset - highByte;
+				
+				// NOTE - EAX and EBX can probably be combined
+				EAX = index;
+			}
+			
+			// EDI = x - highByte
+			index = EAX + 0x2;
+			
+			if(lowByte == 0xf) {
+				int value = 0;
+				int read = 0;
+				
+				do {
+					read = input.UnsignedByte(index++);
+					value += read;
+				} while(read == 0xff);
+				
+				lowByte = value + 0xf;
+				System.out.println("lowByte = " + lowByte);
+			}
+			
+			if(highByte < 8) {
+				param_2.WriteInt(0, ESI);
+				memcpy(param_2, ESI + 0x0, param_2, EDI, 4);
+				EDI += INT_00e6cab8[highByte];
+				
+				memcpy(param_2, ESI + 0x4, param_2, EDI, 4);
+				EDI -= INT_00e6cbe0[highByte];
+			} else {
+				memcpy(param_2, ESI, param_2, EDI, 8);
+				EDI += 0x8;
+			}
+			
+			EBP_0x1c = lowByte + ESI + 0x4;
+			ESI += 0x8;
+			
+			if(EBP_0x1c > size - 12) {
+				if(EBP_0x1c > size - 5) break;
+				
+				if(ESI < size - 0x7) {
+					memcpy(param_2, ESI, param_2, EDI, 8 * ((size - ESI) / 8));
+					
+					EAX = size - 7 - ESI;
+					ESI = size - 7;
+					EDI += EAX;
+				}
+				
+				if(ESI < EBP_0x1c) {
+					memcpy(param_2, ESI, param_2, EDI, EBP_0x1c - ESI);
+				}
+				
+				ESI = EBP_0x1c;
+				continue;
+			}
+			
+			memcpy(param_2, ESI, param_2, EDI, 8);
+			
+			if(lowByte > 12) {
+				memcpy(param_2, ESI + 8, param_2, EDI + 8, 8 * ((lowByte + 7) / 8));
+			}
+			
+			ESI = EBP_0x1c;
+		} while(true);
+		
+		return - (index + 1);
+	}
+	
+	private int DecompressJava4(Pointer input, Pointer param_2, int size) {
+		int EAX = 0;
+		int index = 0;
+		int ESI = 0;
+		int EDI = 0;
+		
+		int EBP_0x1c = 0;
+		
+		if(size == 0) {
+			return (input.Byte() == 0) ? -1:1;
+		}
+		
+		do {
+			int readByte = input.UnsignedByte(index++);
+			int highByte = readByte >> 0x4;
+			int lowByte = readByte & 0xf;
+			
+			if((highByte < 0x9) && (ESI <= size - 26)) {
+				memcpy(param_2, ESI, input, index, 8);
+				
+				ESI += highByte;
+				index += highByte;
+				
+				highByte = input.UnsignedShort(index);
+				
+				if((lowByte == 0xf) || (highByte < 0x8)) {
+					EAX = index;
+					index += 0x2;
+					
+					EDI = ESI - highByte;
+				} else {
+					memcpy(param_2, ESI, param_2, ESI - highByte, 0x12);
+					
+					ESI += lowByte + 0x4;
+					index += 0x2;
+					continue;
+				}
+			} else {
+				if(highByte == 0xf) {
+					int value = 0;
+					int read = 0;
+					
+					do {
+						read = input.UnsignedByte(index++);
+						value += read;
+					} while(read == 0xff);
+					
+					highByte = value + 0xf;
+				}
+				
+				int someOffset = highByte + ESI;
+				if(someOffset > size - 8) {
+					if(someOffset != size) break;
+					memmove(param_2, ESI, input, index, highByte);
+					return highByte + index;
+				}
+				
+				memcpy(param_2, ESI, input, index, 8 * ((highByte + 7) / 8));
+				
+				index += highByte;
+				highByte = input.UnsignedShort(index);
+				
+				ESI = someOffset;
+				EDI = someOffset - highByte;
+				
+				// NOTE - EAX and EBX can probably be combined
+				EAX = index;
+			}
+			
+			// EDI = x - highByte
+			index = EAX + 0x2;
+			
+			if(lowByte == 0xf) {
+				int value = 0;
+				int read = 0;
+				
+				do {
+					read = input.UnsignedByte(index++);
+					value += read;
+				} while(read == 0xff);
+				
+				lowByte = value + 0xf;
+			}
+			
+			if(highByte < 0x8) {
+				param_2.WriteInt(0, ESI);
+				memcpy(param_2, ESI + 0x0, param_2, EDI, 4);
+				EDI += INT_00e6cab8[highByte];
+				
+				memcpy(param_2, ESI + 0x4, param_2, EDI, 4);
+				EDI -= INT_00e6cbe0[highByte];
+			} else {
+				memcpy(param_2, ESI, param_2, EDI, 8);
+				EDI += 0x8;
+			}
+			
+			EBP_0x1c = lowByte + ESI + 0x4;
+			ESI += 0x8;
+			
+			if(EBP_0x1c > size - 12) {
+				if(EBP_0x1c > size - 5) break;
+				
+				if(ESI < size - 0x7) {
+					memcpy(param_2, ESI, input, EDI, 8 * ((size - ESI) / 8));
+					
+					EAX = size - 7 - ESI;
+					ESI = size - 7;
+					EDI += EAX;
+				}
+				
+				if(ESI < EBP_0x1c) {
+					memcpy(param_2, ESI, param_2, EDI, EBP_0x1c - ESI);
+				}
+				
+				ESI = EBP_0x1c;
+				continue;
+			}
+			
+			memcpy(param_2, ESI, param_2, EDI, 8);
+			
+			if(lowByte > 12) {
+				memcpy(param_2, ESI + 8, param_2, EDI + 8, 8 * ((lowByte + 7) / 8));
+			}
+			
+			ESI = EBP_0x1c;
+		} while(true);
+		
+		return - (index + 1);
 	}
 	
 	private int DecompressJava3(Pointer input, Pointer param_2, int size) {
@@ -256,7 +521,10 @@ public class TestFunction2 {
 			return (input.Byte() == 0) ? -1:1;
 		}
 		
+		int idx = 0;
 		do { // LAB_00703a07:
+			EDI = size - 0x1a;
+			
 			int readByte = input.UnsignedByte(EBX++);
 			int highByte = readByte >> 0x4;
 			int lowByte = readByte & 0xf;
@@ -364,7 +632,7 @@ public class TestFunction2 {
 				
 				lowByte = value + 0xf;
 			}
-			
+
 			// EBX = nextOffsetMaybe;
 			
 			// LAB_00703b03:
@@ -382,12 +650,14 @@ public class TestFunction2 {
 			
 			// LAB_00703b5a:
 			EBP_0x1c = lowByte + ESI + 0x4;
+			lowByte += 0x4;
+			ESI += 0x8;
 			
 			if(EBP_0x1c > size - 12) {
 				if(EBP_0x1c > size - 5) break;
-				ESI += 0x8;
+				//ESI += 0x8;
 				
-				if(ESI < size - 0x7) { // JC branch
+				if(ESI < size - 7) { // JC branch
 					int offset1 = ESI;
 					int offset2 = EDI - ESI;
 					
@@ -410,16 +680,18 @@ public class TestFunction2 {
 				} else { // LAB_00703bf4:
 					
 				}
-				
+
 				ESI = EBP_0x1c;
 				continue;
 			}
-			
-			memcpy(param_2, ESI + 8, param_2, EDI, 8);
+
+			if(idx++ < 100 && idx > 90) System.out.println(lowByte);
+			memcpy(param_2, ESI, param_2, EDI, 8);
 			
 			if(lowByte > 0x10) {
-				int offset1 = ESI + 16;
+				int offset1 = ESI + 0x8;
 				int offset2 = EDI - offset1;
+				// EDI -= ESI;
 				
 				// TODO - Replace this with memcpy
 				do { // LAB_00703be0:
@@ -471,6 +743,7 @@ public class TestFunction2 {
 		
 		EAX = size;
 		
+		int idx = 0;
 		for(;;) { // LAB_00703a07:
 			// NOTE - EDI is always 'SIZE - 0x1a' here
 			EDI = size - 0x1a;
@@ -517,7 +790,6 @@ public class TestFunction2 {
 				EBP_0x4 = input.UnsignedShort(EBX);
 				EBP_0x8 = readByte & 0xf;
 				
-				
 				// JZ - Jump short if zero (ZF = 1)
 				// Log("CMP ECX,0xf");					// 00703a4d
 				// Log("JZ LAB_00703a7c");				// 00703a50
@@ -543,7 +815,7 @@ public class TestFunction2 {
 					continue;
 				}
 			}
-			
+
 			if(jump_00703a9b) { // LAB_00703a9b:
 				// JA - Jump short if above (CF=0 and ZF=0)
 				// Log("CMP EDI,EAX");					// 00703aa4
@@ -554,7 +826,7 @@ public class TestFunction2 {
 					// Log("JNZ LAB_00703c19");				// 00703bfd
 					if(EDX + ESI != size) break; // Jump to end of function
 					
-					// param_2.WriteBytes(input.Bytes(EDX, EBX), EDX, ESI);
+					//param_2.WriteBytes(input.Bytes(EDX, EBX), EDX, ESI);
 					memmove(param_2, ESI, input, EBX, EDX);
 					
 					// return EBP_0x4 - EBP_0x14 + EBX;
@@ -677,7 +949,9 @@ public class TestFunction2 {
 				ESI = EBP_0x1c;
 				continue;
 			}
-			
+
+
+			if(idx++ < 100 && idx > 90) System.out.println(ECX);
 			// LAB_00703bc8:
 			memcpy(param_2, ESI, param_2, EDI, 8);
 			

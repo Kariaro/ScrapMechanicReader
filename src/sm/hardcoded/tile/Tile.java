@@ -106,4 +106,16 @@ public final class Tile {
 	public float getGroundMaterialOpacity(int x, int y, int id) {
 		return ((ground[x + y * (width * 64 + 1)] >> id * 8) & 0xff) / 255.0f;
 	}
+	
+	public long getGroundMaterial(int x, int y) {
+		return ground[x + y * (width * 64 + 1)];
+	}
+	
+	public float[] getVertexHeightData() {
+		return vertexHeight;
+	}
+	
+	public int[] getVertexColorData() {
+		return vertexColor;
+	}
 }

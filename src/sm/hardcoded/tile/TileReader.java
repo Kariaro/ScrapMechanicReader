@@ -61,7 +61,7 @@ public final class TileReader {
 			
 			byte[] bytes = header.getHeader(x, y).data();
 			System.out.printf("	BLOB(%d, %d):\n", x, y);
-			System.out.printf("		%s\n\n", StringUtils.getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n		"));
+			System.out.printf("		%s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n		"));
 		}
 		
 		System.out.println();
@@ -377,7 +377,18 @@ public final class TileReader {
 		return (int)result;
 	}
 	
-	public static void Assert(boolean value, String message, int lineIndex) {
+	private static String getHexString(byte[] bytes, int maxLength, int lineLength) {
+		StringBuilder sb = new StringBuilder();
+		int a = 1;
+		for(int i = 0; i < Math.min(bytes.length, maxLength); i++) {
+			sb.append(String.format("%02x", bytes[i]));
+			if((a ++) % lineLength == 0) sb.append('\n');
+		}
+		
+		return sb.toString();
+	}
+	
+	static void Assert(boolean value, String message, int lineIndex) {
 		if(value) return;
 		
 		String msg = String.format("ERROR: ASSERT: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\Tile.cpp:%d\n", message, lineIndex);
@@ -385,7 +396,7 @@ public final class TileReader {
 		throw new AssertionError(msg, null);
 	}
 	
-	public static void Assert(boolean value, String name, String message, int lineIndex) {
+	static void Assert(boolean value, String name, String message, int lineIndex) {
 		if(value) return;
 		
 		String msg = String.format("ERROR: ASSERT: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\%s.cpp:%d\n", message, name, lineIndex);
@@ -393,7 +404,7 @@ public final class TileReader {
 		throw new AssertionError(msg, null);
 	}
 	
-	public static void Log(String name, String message, int lineIndex) {
+	static void Log(String name, String message, int lineIndex) {
 		String msg = String.format("INFO: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\%s.cpp:%d\n", message, name, lineIndex);
 		System.err.println(msg);
 	}

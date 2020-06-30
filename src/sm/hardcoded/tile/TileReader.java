@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.util.UUID;
 
 import sm.hardcoded.tile.TileHeader.Header;
+import sm.hardcoded.util.Memory;
 
 public final class TileReader {
-	private static final TestFunction2 func = new TestFunction2();
+	private static final DecompressTestingVersion3 func = new DecompressTestingVersion3();
 	
 	private TileReader() {
 		
@@ -67,7 +68,7 @@ public final class TileReader {
 		System.out.println();
 		System.out.println("Reading header data:");
 		
-		Pointer reader = new Pointer(header.data());
+		Memory reader = new Memory(header.data());
 		
 		int tileXSize = header.width;
 		int tileYSize = header.height;
@@ -131,7 +132,7 @@ public final class TileReader {
 	
 	private static void createMip(byte[] bytes, Tile tile, int x, int y) {
 		int w = 0x21, h = 0x21;
-		Pointer memory = new Pointer(bytes);
+		Memory memory = new Memory(bytes);
 		System.out.println("Max   : " + (w * h * 8 + 4));
 		System.out.println("Length: " + bytes.length);
 		
@@ -168,7 +169,7 @@ public final class TileReader {
 	}
 	
 	private static void createClutter(byte[] bytes, Tile tile, int x, int y) {
-		Pointer memory = new Pointer(bytes);
+		Memory memory = new Memory(bytes);
 		
 		if(memory.Byte() != 0) {
 			int length = memory.UnsignedByte();
@@ -223,7 +224,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateMip
-	private static byte[] getMip(Header h, Pointer reader) {
+	private static byte[] getMip(Header h, Memory reader) {
 		System.out.printf("  Mip              : %d, %d\n", h.mipCompressedSize, h.mipSize);
 		
 		byte[] compressed = reader.set(h.mipIndex).Bytes(h.mipCompressedSize);
@@ -236,7 +237,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateClutter
-	private static byte[] getClutter(Header h, Pointer reader) {
+	private static byte[] getClutter(Header h, Memory reader) {
 		System.out.printf("  Clutter          : %d\n", h.clutterCompressedSize);
 		
 		byte[] compressed = reader.set(h.clutterIndex).Bytes(h.clutterCompressedSize);
@@ -249,7 +250,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateAssetList
-	private static byte[][] CalculateAssetList(Header h, Pointer reader) {
+	private static byte[][] CalculateAssetList(Header h, Memory reader) {
 		byte[][] bytes = new byte[4][];
 		for(int i = 0; i < 4; i++) {
 			int assetListCompressedSize = h.assetListCompressedSize[i];
@@ -278,7 +279,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateNode
-	private static byte[] CalculateNode(Header h, Pointer reader) {
+	private static byte[] CalculateNode(Header h, Memory reader) {
 		if((h.bytes_a4 == 0) || (h.bytes_a8 == 0)) return null;
 		reader.set(h.bytes_a8);
 		
@@ -295,7 +296,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculatePrefab
-	private static byte[] CalculatePrefab(Header h, Pointer reader) {
+	private static byte[] CalculatePrefab(Header h, Memory reader) {
 		if((h.bytes_c4 == 0) || (h.bytes_c8 == 0)) return null;
 		reader.set(h.bytes_c8);
 		
@@ -312,7 +313,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateBlueprintList
-	private static byte[] CalculateBlueprintList(Header h, Pointer reader) {
+	private static byte[] CalculateBlueprintList(Header h, Memory reader) {
 		if((h.bytes_94 == 0) || (h.bytes_98 == 0)) return null;
 		reader.set(h.bytes_98);
 		
@@ -329,7 +330,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateDecal
-	private static byte[] getDecal(Header h, Pointer reader) {
+	private static byte[] getDecal(Header h, Memory reader) {
 		if((h.bytes_d4 == 0) || (h.bytes_d8 == 0)) return null;
 		reader.set(h.bytes_d8);
 		
@@ -346,7 +347,7 @@ public final class TileReader {
 	}
 	
 	// NOTE - CalculateHarvestableList
-	private static byte[][] CalculateHarvestableList(Header h, Pointer reader) {
+	private static byte[][] CalculateHarvestableList(Header h, Memory reader) {
 		byte[][] bytes = new byte[4][];
 		
 		for(int i = 0; i < 4; i++) {

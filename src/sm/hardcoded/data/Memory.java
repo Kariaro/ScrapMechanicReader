@@ -1,9 +1,9 @@
-package sm.hardcoded.util;
+package sm.hardcoded.data;
 
 import java.util.UUID;
 
 /**
- * A class created to read data from a byte buffer.
+ * This class contains a set of functions that make's it easy to read byte streams as serialized data.
  * 
  * @author HardCoded
  */

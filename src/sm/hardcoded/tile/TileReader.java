@@ -7,8 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import sm.hardcoded.data.Memory;
 import sm.hardcoded.tile.TileHeader.Header;
-import sm.hardcoded.util.Memory;
 
 public final class TileReader {
 	private static final DecompressTestingVersion3 func = new DecompressTestingVersion3();

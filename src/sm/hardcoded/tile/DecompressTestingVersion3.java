@@ -1,37 +1,48 @@
  package sm.hardcoded.tile;
 
-class DecompressTestingVersion3 {
+public class DecompressTestingVersion3 {
 	private static final int[] INT_00e6cab8 = { 0x0, 0x1, 0x2, 0x1, 0x0, 0x4, 0x4, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x2, 0x0, 0x3, 0x1, 0x3, 0x1, 0x4, 0x2, 0x7, 0x0, 0x2, 0x3, 0x6, 0x1, 0x5, 0x3, 0x5, 0x1, 0x3, 0x4, 0x4, 0x2, 0x5, 0x6, 0x7, 0x7, 0x0, 0x1, 0x2, 0x3, 0x3, 0x4, 0x6, 0x2, 0x6, 0x5, 0x5, 0x3, 0x4, 0x5, 0x6, 0x7, 0x1, 0x2, 0x4, 0x6, 0x4, 0x4, 0x5, 0x7, 0x2, 0x6, 0x5, 0x7, 0x6, 0x7, 0x7, 0x1000b, 0x10 };
 	private static final int[] INT_00e6cbe0 = { 0x0, 0x0, 0x0, 0xffffffff, 0xfffffffc, 0x1, 0x2, 0x3, 0x6, 0xd, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x2, 0x0, 0x3, 0x1, 0x3, 0x1, 0x4, 0x2, 0x7, 0x0, 0x2, 0x3, 0x6, 0x1, 0x5, 0x3, 0x5, 0x1, 0x3, 0x4, 0x4, 0x2, 0x5, 0x6, 0x7, 0x7, 0x0, 0x1, 0x2, 0x3, 0x3, 0x4, 0x6, 0x2, 0x6, 0x5, 0x5, 0x3, 0x4, 0x5, 0x6, 0x7, 0x1, 0x2, 0x4, 0x6, 0x4, 0x4, 0x5, 0x7, 0x2, 0x6, 0x5, 0x7, 0x6, 0x7, 0x7 };
 	
-	public int decompress(byte[] bytes, byte[] input, int uncompressed_size) {
-		Pointer __input = new Pointer(1000000).WriteBytes(bytes);
-		Pointer __param_2 = new Pointer(1000000);
-		int __result = DecompressJava(__input, __param_2, uncompressed_size);
+	public int decompress(byte[] compressed, byte[] output, int uncompressed_size) {
+		if(compressed.length > 1000000) {
+			// This is more than what the game allows?
+		}
 		
-		__param_2.Bytes(input, 0, uncompressed_size, true);
+		if(output.length < uncompressed_size) {
+			// throw new Exception("output array is too small for the requested size uncompressed_size");
+			return -1;
+		}
 		
-		return __result;
+		// Create buffers
+		byte[] input = new byte[1000000];
+		byte[] param_2 = new byte[1000000];
+		
+		// Write the compressed bytes to the input buffer
+		System.arraycopy(compressed, 0, input, 0, compressed.length);
+		
+		// Run the decompresser
+		int result = DecompressJava(input, param_2, uncompressed_size);
+		
+		// Write the decompressed bytes to the output buffer
+		System.arraycopy(param_2, 0, output, 0, uncompressed_size);
+		
+		return result;
 	}
 	
-	private static final void memcpy(Pointer dst, int dstPos, Pointer src, int srcPos, int len) {
-		byte[] d = dst.data();
-		byte[] s = src.data();
+	private static final void memcpy(byte[] dst, int dstPos, byte[] src, int srcPos, int len) {
 		for(int i = 0; i < len; i++) {
-			d[i + dstPos] = s[i + srcPos];
+			dst[i + dstPos] = src[i + srcPos];
 		}
 	}
 	
-	private static final void memmove(Pointer dst, int dstPos, Pointer src, int srcPos, int len) {
-		byte[] d = dst.data();
-		byte[] s = src.data();
+	private static final void memmove(byte[] dst, int dstPos, byte[] src, int srcPos, int len) {
 		for(int i = len - 1; i >= 0; i--) {
-			d[i + dstPos] = s[i + srcPos];
+			dst[i + dstPos] = src[i + srcPos];
 		}
 	}
 	
-	// TODO: Use only byte arrays
-	private int DecompressJava(Pointer input, Pointer param_2, int size) {
+	private int DecompressJava(byte[] input, byte[] param_2, int size) {
 		int EAX = 0;
 		int index = 0;
 		int ESI = 0;
@@ -40,11 +51,11 @@ class DecompressTestingVersion3 {
 		int EBP_0x1c = 0;
 		
 		if(size == 0) {
-			return (input.Byte() == 0) ? -1:1;
+			return (input[0] == 0) ? -1:1;
 		}
 		
 		do {
-			int readByte = input.UnsignedByte(index++);
+			int readByte = input[index++] & 255;
 			int highByte = readByte >> 0x4;
 			int lowByte = readByte & 0xf;
 			
@@ -54,7 +65,7 @@ class DecompressTestingVersion3 {
 				ESI += highByte;
 				index += highByte;
 				
-				highByte = input.UnsignedShort(index);
+				highByte = (input[index] & 255) | ((input[index + 1] & 255) << 8);
 				
 				if((lowByte == 0xf) || (highByte < 0x8)) {
 					EAX = index;
@@ -74,7 +85,7 @@ class DecompressTestingVersion3 {
 					int read = 0;
 					
 					do {
-						read = input.UnsignedByte(index++);
+						read = input[index++] & 0xff;
 						value += read;
 					} while(read == 0xff);
 					
@@ -91,12 +102,11 @@ class DecompressTestingVersion3 {
 				memcpy(param_2, ESI, input, index, 8 * ((highByte + 7) / 8));
 				
 				index += highByte;
-				highByte = input.UnsignedShort(index);
+				highByte = (input[index] & 255) | ((input[index + 1] & 255) << 8);
 				
 				ESI = someOffset;
 				EDI = someOffset - highByte;
 				
-				// NOTE - EAX and EBX can probably be combined
 				EAX = index;
 			}
 			
@@ -108,7 +118,7 @@ class DecompressTestingVersion3 {
 				int read = 0;
 				
 				do {
-					read = input.UnsignedByte(index++);
+					read = input[index++] & 255;
 					value += read;
 				} while(read == 0xff);
 				
@@ -116,7 +126,11 @@ class DecompressTestingVersion3 {
 			}
 			
 			if(highByte < 8) {
-				param_2.WriteInt(0, ESI);
+				param_2[ESI] = 0;
+				param_2[ESI + 1] = 0;
+				param_2[ESI + 2] = 0;
+				param_2[ESI + 3] = 0;
+				
 				memcpy(param_2, ESI + 0x0, param_2, EDI, 4);
 				EDI += INT_00e6cab8[highByte];
 				
@@ -160,5 +174,4 @@ class DecompressTestingVersion3 {
 		
 		return - (index + 1);
 	}
-
 }

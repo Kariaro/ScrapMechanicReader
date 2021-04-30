@@ -311,8 +311,8 @@ public class Memory {
 	public short[] Shorts(int length, int offset, boolean bigEndian, boolean reverse) {
 		short[] result = new short[length];
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			result[idx] = Short(i * 2, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			result[idx] = Short(offset + i * 2, bigEndian);
 		}
 		return result;
 	}
@@ -324,8 +324,8 @@ public class Memory {
 	public Memory WriteShorts(short[] value, int length, int offset, boolean bigEndian) { return WriteShorts(value, length, offset, bigEndian, false); }
 	public Memory WriteShorts(short[] value, int length, int offset, boolean bigEndian, boolean reverse) {
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			WriteShort(value[idx], i * 2, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			WriteShort(value[idx], offset + i * 2, bigEndian);
 		}
 		return this;
 	}
@@ -356,8 +356,8 @@ public class Memory {
 	public int[] Ints(int length, int offset, boolean bigEndian, boolean reverse) {
 		int[] result = new int[length];
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			result[idx] = Int(i * 4, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			result[idx] = Int(offset + i * 4, bigEndian);
 		}
 		return result;
 	}
@@ -369,8 +369,8 @@ public class Memory {
 	public Memory WriteInts(int[] value, int length, int offset, boolean bigEndian) { return WriteInts(value, length, offset, bigEndian, false); }
 	public Memory WriteInts(int[] value, int length, int offset, boolean bigEndian, boolean reverse) {
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			WriteInt(value[idx], i * 4, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			WriteInt(value[idx], offset + i * 4, bigEndian);
 		}
 		return this;
 	}
@@ -401,8 +401,8 @@ public class Memory {
 	public long[] Longs(int length, int offset, boolean bigEndian, boolean reverse) {
 		long[] result = new long[length];
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			result[idx] = Long(i * 8, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			result[idx] = Long(offset + i * 8, bigEndian);
 		}
 		return result;
 	}
@@ -414,8 +414,8 @@ public class Memory {
 	public Memory WriteLongs(long[] value, int length, int offset, boolean bigEndian) { return WriteLongs(value, length, offset, bigEndian, false); }
 	public Memory WriteLongs(long[] value, int length, int offset, boolean bigEndian, boolean reverse) {
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			WriteLong(value[idx], i * 8, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			WriteLong(value[idx], offset + i * 8, bigEndian);
 		}
 		return this;
 	}
@@ -446,8 +446,8 @@ public class Memory {
 	public float[] Floats(int length, int offset, boolean bigEndian, boolean reverse) {
 		float[] result = new float[length];
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			result[idx] = Float(i * 4, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			result[idx] = Float(offset + i * 4, bigEndian);
 		}
 		return result;
 	}
@@ -459,8 +459,8 @@ public class Memory {
 	public Memory WriteFloats(float[] value, int length, int offset, boolean bigEndian) { return WriteFloats(value, length, offset, bigEndian, false); }
 	public Memory WriteFloats(float[] value, int length, int offset, boolean bigEndian, boolean reverse) {
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			WriteFloat(value[idx], i * 4, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			WriteFloat(value[idx], offset + i * 4, bigEndian);
 		}
 		return this;
 	}
@@ -491,8 +491,8 @@ public class Memory {
 	public double[] Doubles(int length, int offset, boolean bigEndian, boolean reverse) {
 		double[] result = new double[length];
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			result[idx] = Double(i * 8, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			result[idx] = Double(offset + i * 8, bigEndian);
 		}
 		return result;
 	}
@@ -504,8 +504,8 @@ public class Memory {
 	public Memory WriteDoubles(double[] value, int length, int offset, boolean bigEndian) { return WriteDoubles(value, length, offset, bigEndian, false); }
 	public Memory WriteDoubles(double[] value, int length, int offset, boolean bigEndian, boolean reverse) {
 		for(int i = 0; i < length; i++) {
-			int idx = reverse ? i:(length - 1 - i);
-			WriteDouble(value[idx], i * 8, bigEndian);
+			int idx = reverse ? (length - 1 - i):i;
+			WriteDouble(value[idx], offset + i * 8, bigEndian);
 		}
 		return this;
 	}

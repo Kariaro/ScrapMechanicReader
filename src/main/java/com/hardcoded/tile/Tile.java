@@ -2,6 +2,8 @@ package com.hardcoded.tile;
 
 import java.util.UUID;
 
+import com.hardcoded.tile.impl.TilePart;
+
 /**
  * A tile interface.
  * 

@@ -3,8 +3,8 @@ package com.hardcoded.tile.readers;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.TilePart;
 import com.hardcoded.tile.TileHeader.Header;
+import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
 /**

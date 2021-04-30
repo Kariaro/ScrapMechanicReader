@@ -18,6 +18,7 @@ public final class Log {
 	
 	private static class MSG {
 		
+		@SuppressWarnings("unused")
 		public MSG(Level level, String logger_name, int line_index, String format, Object[] args) {
 			this.level = level;
 			this.logger_name = logger_name;
@@ -88,6 +89,7 @@ public final class Log {
 		SHOW_LINE_INDEX = enable;
 	}
 	
+	@SuppressWarnings("unused")
 	private final String customName;
 	private Log(Class<?> clazz) {
 		this(clazz.getName());

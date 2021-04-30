@@ -1,9 +1,9 @@
-package sm.hardcoded.data;
+package com.hardcoded.data;
 
 import java.util.UUID;
 
 /**
- * This class contains a set of functions that make's it easy to read byte streams as serialized data.
+ * A class designed to make it easier to read serialized data.
  * 
  * @author HardCoded
  */
@@ -81,7 +81,7 @@ public class Memory {
 		for(int i = 0; i < length; i++) {
 			long shr = (bigEndian ? (length - 1 - i):i) * 8L;
 			byte val = (byte)((value >>> shr) & 0xff);
-			bytes[offset + i] = val;
+			bytes[index + offset + i] = val;
 		}
 		
 		return this;

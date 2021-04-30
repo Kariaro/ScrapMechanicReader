@@ -1,15 +1,25 @@
-package sm.hardcoded.lua;
+package com.hardcoded.lua;
 
-import sm.hardcoded.data.Memory;
+import com.hardcoded.data.Memory;
 
 class LuaDecomp {
 	public static void main(String[] args) {
 		LuaDecomp comp = new LuaDecomp();
-		// byte[] bytes = hex("f0154c55410000000105000000050200000009006c69676874496e74657261637461626c65731d00f3000680000000b2000013938000000532090014061200140712001407120014081200fe0308820000000c8064697370656e736572626f5e0010007b00ed0c806e6f74657465726d696e616c82001801820010043100ff000d0073686970776f726b62656e636832000b10038700a003006163746976650200");
-		byte[] bytes = hex("4c55410000000105000000050200000009006c69676874496e74657261637461626c65731d00f3000680000000b2000013938000000532090014061200140712001407120014081200fe0308820000000c8064697370656e736572626f5e0010007b00ed0c806e6f74657465726d696e616c82001801820010043100ff000d0073686970776f726b62656e636832000b10038700a003006163746976650200");
+		//byte[] bytes = hex("f0154c55410000000105000000050200000009006c69676874496e74657261637461626c65731d00f3000680000000b2000013938000000532090014061200140712001407120014081200fe0308820000000c8064697370656e736572626f5e0010007b00ed0c806e6f74657465726d696e616c82001801820010043100ff000d0073686970776f726b62656e636832000b10038700a003006163746976650200");
+		byte[] bytes = hex("0000000100010b030000004bf11e3b8d6a5e003024535552564956414c5f444154412f536372697074732f67616d652f776f726c64732f4f7665720b00652e6c756100090f00f00000056e756c6c0a0000000000000000");
+		//byte[] bytes = hex("4c55410000000105000000050200000009006c69676874496e74657261637461626c65731d00f3000680000000b2000013938000000532090014061200140712001407120014081200fe0308820000000c8064697370656e736572626f5e0010007b00ed0c806e6f74657465726d696e616c82001801820010043100ff000d0073686970776f726b62656e636832000b10038700a003006163746976650200");
+		//bytes = hex("000004fe00012e030000006dd04c5541000000010500000004020500f016007175616e74697479080104000000107469636b734c656674496e576f726c64060001f2e31a00f00b047575696464000027115ed92dfd4df4259c524c07e68c120ffb1e00f0050e6c6173745469636b5570646174650600026c54");
 		
 		
-		int iOriginalSize = 0;
+		DecompressLua lua = new DecompressLua();
+		
+		byte[] outps = new byte[5616];
+		int decp = lua.decompress(bytes, outps, 0x20, 0x200);
+		// int decp = func.run(bytes, bytes, 0x200, 0x200);
+		
+		System.out.println("decp: " + decp);
+		System.out.println("decp:\n" + getHexString(outps, 512, 64));
+		int iOriginalSize = 159;
 		Memory mem = new Memory(bytes);
 		Memory type = new Memory(10000);
 		
@@ -17,7 +27,6 @@ class LuaDecomp {
 		
 		// BitStream_???_00c751c0(local_23c, SERIALIZED_BUFFER, (uint)iOriginalSize, 0);
 		// (int* test, byte* input, int size, char param_4)
-		
 		inp._0 = iOriginalSize * 8;
 		inp._1 = iOriginalSize * 8;
 		inp._2 = 0;
@@ -26,13 +35,15 @@ class LuaDecomp {
 		
 		System.out.println("hex: " + getHexString(inp._3, 64, bytes.length));
 		
-		int result1 = comp.DECOMP_00c75540(inp, type, 0x20, 1);
-		System.out.println("result: " + result1);
-		System.out.println("hex: " + getHexString(type, 64, bytes.length));
-		
-		int result2 = comp.DECOMP_00c75540(inp, type, 0x20, 1);
-		System.out.println("result: " + result2);
-		System.out.println("hex: " + getHexString(type, 64, bytes.length));
+		for(int i = 0; i < 100; i++) {
+			int result = comp.DECOMP_00c75540(inp, type, 0x20, 2);
+			
+			if(result == 0) break;
+			
+			System.out.println("result: " + result);
+			System.out.println("hex: " + getHexString(type, 16, bytes.length));
+			System.out.println("str: '" + new String(type.data(), 0, 16) + "'");
+		}
 	}
 	
 	public static String getHexString(Memory bytes, int maxLength, int lineLength) {

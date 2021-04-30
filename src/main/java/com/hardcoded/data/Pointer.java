@@ -1,4 +1,4 @@
-package sm.hardcoded.tile;
+package com.hardcoded.data;
 
 
 import java.util.LinkedList;
@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 // TODO: Create a private long ReadValue(int offset, int size, boolean bigEndian)
 //       that reads 'size' bytes and creates a long.
-class Pointer {
+public class Pointer {
 	private LinkedList<Integer> pos = new LinkedList<>();
 	private byte[] bytes;
 	private int index;

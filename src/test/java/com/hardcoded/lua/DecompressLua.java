@@ -1,10 +1,10 @@
- package sm.hardcoded.tile;
+ package com.hardcoded.lua;
 
-public class DecompressTestingVersion3 {
+public class DecompressLua {
 	private static final int[] INT_00e6cab8 = { 0x0, 0x1, 0x2, 0x1, 0x0, 0x4, 0x4, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x2, 0x0, 0x3, 0x1, 0x3, 0x1, 0x4, 0x2, 0x7, 0x0, 0x2, 0x3, 0x6, 0x1, 0x5, 0x3, 0x5, 0x1, 0x3, 0x4, 0x4, 0x2, 0x5, 0x6, 0x7, 0x7, 0x0, 0x1, 0x2, 0x3, 0x3, 0x4, 0x6, 0x2, 0x6, 0x5, 0x5, 0x3, 0x4, 0x5, 0x6, 0x7, 0x1, 0x2, 0x4, 0x6, 0x4, 0x4, 0x5, 0x7, 0x2, 0x6, 0x5, 0x7, 0x6, 0x7, 0x7, 0x1000b, 0x10 };
 	private static final int[] INT_00e6cbe0 = { 0x0, 0x0, 0x0, 0xffffffff, 0xfffffffc, 0x1, 0x2, 0x3, 0x6, 0xd, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x2, 0x0, 0x3, 0x1, 0x3, 0x1, 0x4, 0x2, 0x7, 0x0, 0x2, 0x3, 0x6, 0x1, 0x5, 0x3, 0x5, 0x1, 0x3, 0x4, 0x4, 0x2, 0x5, 0x6, 0x7, 0x7, 0x0, 0x1, 0x2, 0x3, 0x3, 0x4, 0x6, 0x2, 0x6, 0x5, 0x5, 0x3, 0x4, 0x5, 0x6, 0x7, 0x1, 0x2, 0x4, 0x6, 0x4, 0x4, 0x5, 0x7, 0x2, 0x6, 0x5, 0x7, 0x6, 0x7, 0x7 };
 	
-	public int decompress(byte[] compressed, byte[] output, int uncompressed_size) {
+	public int decompress(byte[] compressed, byte[] output, int size_maybe, int uncompressed_size) {
 		if(compressed.length > 1000000) {
 			// This is more than what the game allows?
 		}
@@ -22,7 +22,7 @@ public class DecompressTestingVersion3 {
 		System.arraycopy(compressed, 0, input, 0, compressed.length);
 		
 		// Run the decompresser
-		int result = DecompressJava(input, param_2, uncompressed_size);
+		int result = DecompressJava(input, param_2, size_maybe, uncompressed_size);
 		
 		// Write the decompressed bytes to the output buffer
 		System.arraycopy(param_2, 0, output, 0, uncompressed_size);
@@ -42,7 +42,7 @@ public class DecompressTestingVersion3 {
 		}
 	}
 	
-	private int DecompressJava(byte[] input, byte[] param_2, int size) {
+	private int DecompressJava(byte[] input, byte[] param_2, int param_1_00, int size) {
 		int EAX = 0;
 		int index = 0;
 		int ESI = 0;
@@ -50,8 +50,12 @@ public class DecompressTestingVersion3 {
 		
 		int EBP_0x1c = 0;
 		
+		int L_MAD = param_1_00;
 		if(size == 0) {
-			return (input[0] == 0) ? -1:1;
+			if(param_1_00 == 1 && input[0] == 0) {
+				return 0;
+			}
+			// return (input[0] == 0) ? -1:1;
 		}
 		
 		do {
@@ -60,14 +64,16 @@ public class DecompressTestingVersion3 {
 			int lowByte = readByte & 0xf;
 			
 			if((highByte < 0x9) && (ESI <= size - 26)) {
-				memcpy(param_2, ESI, input, index, 8);
+				memcpy(param_2, ESI, input, index, 16); // EDITED
 				
 				ESI += highByte;
 				index += highByte;
 				
+				int ohb = highByte;
 				highByte = (input[index] & 255) | ((input[index + 1] & 255) << 8);
 				
-				if((lowByte == 0xf) || (highByte < 0x8)) {
+				// if((lowByte == 0xf) || (highByte < 0x8) || (EDI - ohb - highByte < EDI)) {
+				if((lowByte == 0xf) || (highByte < 0x8) || (- ohb - highByte < 0)) {
 					EAX = index;
 					index += 0x2;
 					
@@ -84,6 +90,8 @@ public class DecompressTestingVersion3 {
 					int value = 0;
 					int read = 0;
 					
+					if(L_MAD - 15 <= index) return -1; //break;
+					
 					do {
 						read = input[index++] & 0xff;
 						value += read;
@@ -92,11 +100,18 @@ public class DecompressTestingVersion3 {
 					highByte = value + 0xf;
 				}
 				
+				if(highByte < 0) break;
+				
 				int someOffset = highByte + ESI;
 				if(someOffset > size - 8) {
-					if(someOffset != size) break;
-					memmove(param_2, ESI, input, index, highByte);
-					return highByte + index;
+					//if(someOffset != size) break;
+					if((someOffset == L_MAD) && (someOffset <= size)) {
+						memmove(param_2, ESI, input, index, highByte);
+						// return highByte + index;
+						return highByte - 0 + ESI;
+					}
+					
+					return 0 - 1 + index;
 				}
 				
 				memcpy(param_2, ESI, input, index, 8 * ((highByte + 7) / 8));
@@ -120,10 +135,17 @@ public class DecompressTestingVersion3 {
 				do {
 					read = input[index++] & 255;
 					value += read;
+					
+					if(L_MAD < index + 3) break; // ?????
 				} while(read == 0xff);
 				
 				lowByte = value + 0xf;
+				
+				if(lowByte < 0) break; // ?????
 			}
+			
+			
+			// Everything below this is correct
 			
 			if(highByte < 8) {
 				param_2[ESI] = 0;
@@ -172,6 +194,6 @@ public class DecompressTestingVersion3 {
 			ESI = EBP_0x1c;
 		} while(true);
 		
-		return - (index + 1);
+		return -1;
 	}
 }

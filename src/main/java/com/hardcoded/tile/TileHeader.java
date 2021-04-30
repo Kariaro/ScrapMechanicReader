@@ -1,7 +1,8 @@
-package sm.hardcoded.tile;
+package com.hardcoded.tile;
 
 import java.util.UUID;
-import static sm.hardcoded.tile.TileReader.Assert;
+
+import com.hardcoded.data.Pointer;
 
 public class TileHeader {
 	private byte[] bytes;
@@ -51,7 +52,7 @@ public class TileHeader {
 			type = reader.NextInt() >>> 0x18;
 		}
 		
-		Assert(reader.index() == cellHeadersOffset, "pos == header.cellHeadersOffset", 207);
+		// Assert(reader.index() == cellHeadersOffset, "pos == header.cellHeadersOffset", 207);
 		
 		if(width * height != 0) {
 			byte[] headerBytes = new byte[width * height * 0x124];
@@ -84,8 +85,9 @@ public class TileHeader {
 		return headers[x + y * width];
 	}
 	
-	class Header {
+	public class Header {
 		private byte[] bytes;
+		
 		/** 0x0 */ public int mipIndex;
 		/** 0x18 */ public int mipCompressedSize;
 		/** 0x30 */ public int mipSize;
@@ -106,20 +108,20 @@ public class TileHeader {
 		/** 0x9c */ public int blueprintListCompressedSize;
 		/** 0xa0 */ public int blueprintListSize;
 		
-		/** 0xa4 */ int bytes_a4;
-		/** 0xa8 */ int bytes_a8;
-		/** 0xac */ int nodeCompressedSize;
-		/** 0xb0 */ int nodeSize;
+		/** 0xa4 */ public int bytes_a4;
+		/** 0xa8 */ public int bytes_a8;
+		/** 0xac */ public int nodeCompressedSize;
+		/** 0xb0 */ public int nodeSize;
 		
-		/** 0xc4 */ int bytes_c4;
-		/** 0xc8 */ int bytes_c8;
-		/** 0xcc */ int prefabCompressedSize;
-		/** 0xd0 */ int prefabSize;
+		/** 0xc4 */ public int bytes_c4;
+		/** 0xc8 */ public int bytes_c8;
+		/** 0xcc */ public int prefabCompressedSize;
+		/** 0xd0 */ public int prefabSize;
 		
-		/** 0xd4 */ int bytes_d4;
-		/** 0xd8 */ int bytes_d8;
-		/** 0xdC */ int decalCompressedSize;
-		/** 0xe0 */ int decalSize;
+		/** 0xd4 */ public int bytes_d4;
+		/** 0xd8 */ public int bytes_d8;
+		/** 0xdC */ public int decalCompressedSize;
+		/** 0xe0 */ public int decalSize;
 		
 		
 		/** 0xe4 */ public boolean[] harvestableListDefined;

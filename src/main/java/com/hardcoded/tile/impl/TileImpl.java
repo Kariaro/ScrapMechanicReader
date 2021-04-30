@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import com.hardcoded.error.TileException;
 import com.hardcoded.tile.Tile;
-import com.hardcoded.tile.TilePart;
 
 /**
  * A implementation of a tile.
@@ -26,7 +25,7 @@ public class TileImpl implements Tile {
 		this.height = height;
 		this.tiles = new TilePart[width * height];
 		for(int i = 0; i < tiles.length; i++) {
-			tiles[i] = new TilePart();
+			tiles[i] = new TilePart(this);
 		}
 	}
 	
@@ -97,7 +96,7 @@ public class TileImpl implements Tile {
 		}
 		
 		for(int i = 0; i < array.length; i++) {
-			if(array[i] == null) array[i] = new TilePart();
+			if(array[i] == null) array[i] = new TilePart(this);
 		}
 		
 		this.width = width;

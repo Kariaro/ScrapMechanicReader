@@ -3,6 +3,7 @@ package com.hardcoded.tile;
 import java.util.UUID;
 
 import com.hardcoded.data.Pointer;
+import com.hardcoded.error.TileException;
 
 public class TileHeader {
 	private byte[] bytes;
@@ -19,13 +20,13 @@ public class TileHeader {
 	public Header[] headers;
 	
 	// TODO - Mailformated Tile Header Exception
-	public TileHeader(byte[] bytes) throws Exception {
+	public TileHeader(byte[] bytes) {
 		this.bytes = bytes;
 		
 		Pointer reader = new Pointer(bytes);
 		String magic = reader.NextString(4, true);
 		if(!magic.equals("TILE")) {
-			throw new Exception("File magic value was wrong. Should be 'TILE'");
+			throw new TileException("File magic value was wrong. Should be 'TILE'");
 		}
 		
 		version = reader.NextInt();
@@ -97,7 +98,7 @@ public class TileHeader {
 		/** 0x50 */ public int clutterSize;
 		
 		
-		/** 0x54 */ public boolean[] assetListDefined;
+		/** 0x54 */ public int[] assetListDefined;
 		/** 0x64 */ public int[] assetListIndex;
 		/** 0x74 */ public int[] assetListCompressedSize;
 		/** 0x84 */ public int[] assetListSize;
@@ -134,7 +135,7 @@ public class TileHeader {
 			assetListCompressedSize = new int[4];
 			assetListSize = new int[4];
 			assetListIndex = new int[4];
-			assetListDefined = new boolean[4];
+			assetListDefined = new int[4];
 			
 
 			harvestableListCompressedSize = new int[4];
@@ -155,7 +156,7 @@ public class TileHeader {
 			clutterSize = memory.Int(0x50);
 			
 			for(int i = 0; i < 4; i++) {
-				assetListDefined[i] = memory.Int(0x54 + i * 4) != 0;
+				assetListDefined[i] = memory.Int(0x54 + i * 4);
 				assetListIndex[i] = memory.Int(0x64 + i * 4);
 				assetListCompressedSize[i] = memory.Int(0x74 + i * 4);
 				assetListSize[i] = memory.Int(0x84 + i * 4);

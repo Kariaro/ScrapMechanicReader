@@ -1,46 +1,57 @@
 package com.hardcoded.tile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.hardcoded.data.Memory;
+import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
 import com.hardcoded.tile.TileHeader.Header;
 import com.hardcoded.tile.impl.TileImpl;
+import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.tile.readers.*;
 
-public final class TileReader {
+/**
+ * This class is made for reading {@code .tile} files created by ScrapMechanic.
+ * 
+ * <p><b><i>This reader is not able to parse all data and will return incomplete results!<i><b>
+ * 
+ * <p>
+ * 
+ * @author HardCoded <https://github.com/Kariaro>
+ */
+public class TileReader {
 	private static final Log LOGGER = Log.getLogger();
-	private static final MipReader             mip_reader = new MipReader();
-	private static final ClutterReader         clutter_reader = new ClutterReader();
-	private static final AssetListReader       assetList_reader = new AssetListReader();
-	private static final NodeReader            node_reader = new NodeReader();
-	private static final PrefabReader          prefab_reader = new PrefabReader();
-	private static final BlueprintListReader   blueprintList_reader = new BlueprintListReader();
-	private static final DecalReader           decal_reader = new DecalReader();
+	
+	private static final MipReader mip_reader = new MipReader();
+	private static final ClutterReader clutter_reader = new ClutterReader();
+	private static final AssetListReader assetList_reader = new AssetListReader();
+	private static final NodeReader node_reader = new NodeReader();
+	private static final PrefabReader prefab_reader = new PrefabReader();
+	private static final BlueprintListReader blueprintList_reader = new BlueprintListReader();
+	private static final DecalReader decal_reader = new DecalReader();
 	private static final HarvestableListReader harvestableList_reader = new HarvestableListReader();
 	
 	private TileReader() {
 		
 	}
 	
-	public static TileImpl read(String path) throws Exception {
+	public static Tile readTileFromPath(String path) throws Exception {
 		return loadTile(path);
 	}
 	
-	public static void save(TileImpl tile, String path) throws IOException {
+	public static void save(Tile tile, String path) throws IOException {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 	
-	private static byte[] readFileBytes(String path) throws IOException {
-		File file = new File(path);
-		DataInputStream stream = new DataInputStream(new FileInputStream(file));
-		byte[] bytes = stream.readAllBytes();
-		stream.close();
-		return bytes;
+	public static Tile loadTile(String path) throws TileException, IOException {
+		byte[] bytes = Files.readAllBytes(Path.of(path));
+		return loadTile(bytes);
 	}
 	
-	public static TileImpl loadTile(String path) throws Exception {
-		TileHeader header = new TileHeader(readFileBytes(path));
+	public static Tile loadTile(byte[] tile_data) throws TileException {
+		TileHeader header = new TileHeader(tile_data);
 		
 		LOGGER.info("TileFileVersion: %d", header.version);
 		LOGGER.info("TileUuid: {%s}", header.uuid);
@@ -54,18 +65,17 @@ public final class TileReader {
 		LOGGER.info();
 		LOGGER.info("Headers:");
 		
-		
 		for(int i = 0; i < header.width * header.height; i++) {
 			int x = i % header.width;
 			int y = i / header.height;
 			
 			byte[] bytes = header.getHeader(x, y).data();
-			System.out.printf("	BLOB(%d, %d):\n", x, y);
-			System.out.printf("		%s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n		"));
+			LOGGER.info("    BLOB(%d, %d):", x, y);
+			LOGGER.info("        %s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n        "));
 		}
 		
-		System.out.println();
-		System.out.println("Reading header data:");
+		LOGGER.info();
+		LOGGER.info("Reading header data:");
 		
 		Memory reader = new Memory(header.data());
 		
@@ -73,6 +83,11 @@ public final class TileReader {
 		int tileYSize = header.height;
 
 		TileImpl tile = new TileImpl(tileXSize, tileYSize);
+		tile.setVersion(header.version);
+		tile.setTileType(header.type);
+		tile.setUUID(header.uuid);
+		tile.setCreatorId(header.creatorId);
+		
 		if(tileYSize > 0) {
 			for(int y = 0; y < tileYSize; y++) {
 				for(int x = 0; x < tileXSize; x++) {
@@ -107,25 +122,4 @@ public final class TileReader {
 		
 		return sb.toString();
 	}
-	
-//	static void Assert(boolean value, String message, int lineIndex) {
-//		if(value) return;
-//		
-//		String msg = String.format("ERROR: ASSERT: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\Tile.cpp:%d\n", message, lineIndex);
-//		System.err.println(msg);
-//		throw new AssertionError(msg, null);
-//	}
-//	
-//	static void Assert(boolean value, String name, String message, int lineIndex) {
-//		if(value) return;
-//		
-//		String msg = String.format("ERROR: ASSERT: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\%s.cpp:%d\n", message, name, lineIndex);
-//		System.err.println(msg);
-//		throw new AssertionError(msg, null);
-//	}
-//	
-//	static void Log(String name, String message, int lineIndex) {
-//		String msg = String.format("INFO: '%s' : Z:\\Jenkins\\workspace\\sm\\TileEditorCommon\\%s.cpp:%d\n", message, name, lineIndex);
-//		System.err.println(msg);
-//	}
 }

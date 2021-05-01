@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.hardcoded.data.Pointer;
 import com.hardcoded.error.TileException;
+import com.hardcoded.utils.TileUtils;
 
 public class TileHeader {
 	private byte[] bytes;
@@ -19,8 +20,7 @@ public class TileHeader {
 	
 	public Header[] headers;
 	
-	// TODO - Mailformated Tile Header Exception
-	public TileHeader(byte[] bytes) {
+	public TileHeader(byte[] bytes) throws TileException {
 		this.bytes = bytes;
 		
 		Pointer reader = new Pointer(bytes);
@@ -53,6 +53,10 @@ public class TileHeader {
 			type = reader.NextInt() >>> 0x18;
 		}
 		
+		if(reader.index() != cellHeadersOffset) {
+			TileUtils.error("reader.index() != header.cellHeadersOffset");
+			throw new TileException("reader.index() returned an invalid position");
+		}
 		// Assert(reader.index() == cellHeadersOffset, "pos == header.cellHeadersOffset", 207);
 		
 		if(width * height != 0) {

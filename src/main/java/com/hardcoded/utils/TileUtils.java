@@ -1,11 +1,16 @@
 package com.hardcoded.utils;
 
 public class TileUtils {
-	private static final DecompressTestingVersion6 func = new DecompressTestingVersion6();
+	private static final DecompressVersion6 func = new DecompressVersion6();
+	private static final CompressVersion1 func_comp = new CompressVersion1();
 	
 	public static int decompress_data(byte[] compressed, byte[] output, int size) {
 		int result = func.decompress(compressed, output, size);
 		return (int)result;
+	}
+	
+	public static byte[] compress_data(byte[] data) {
+		return func_comp.compress(data);
 	}
 	
 	public static void error(String format, Object... args) {

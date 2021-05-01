@@ -13,6 +13,13 @@ import com.hardcoded.tile.Tile;
 public class TileImpl implements Tile {
 	private UUID uuid = DEFAULT_UUID;
 	private int version;
+	
+	/**
+	 * <pre>
+	 * 0: Terrain
+	 * 1: Dungeon
+	 * </pre>
+	 */
 	private int type;
 	private long creatorId;
 	
@@ -91,7 +98,7 @@ public class TileImpl implements Tile {
 		int min_width = Math.min(width, this.width);
 		for(int y = 0; y < min_height; y++) {
 			for(int x = 0; x < min_width; x++) {
-				array[x + y * width] = getTile(x, y);
+				array[x + y * width] = getPart(x, y);
 			}
 		}
 		
@@ -112,7 +119,7 @@ public class TileImpl implements Tile {
 		
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				TilePart part = getTile(x, y);
+				TilePart part = getPart(x, y);
 				
 				float[] array = part.vertexHeight;
 				int idx = x * 32 + y * 32 * h;
@@ -133,7 +140,7 @@ public class TileImpl implements Tile {
 		
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				TilePart part = getTile(x, y);
+				TilePart part = getPart(x, y);
 				
 				int[] array = part.vertexColor;
 				int idx = x * 32 + y * 32 * h;
@@ -154,7 +161,7 @@ public class TileImpl implements Tile {
 		
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				TilePart part = getTile(x, y);
+				TilePart part = getPart(x, y);
 				
 				byte[] array = part.clutter;
 				int idx = x * 128 + y * 128 * h;
@@ -175,7 +182,7 @@ public class TileImpl implements Tile {
 		
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				TilePart part = getTile(x, y);
+				TilePart part = getPart(x, y);
 				
 				long[] array = part.ground;
 				int idx = x * 64 + y * 64 * h;
@@ -189,7 +196,7 @@ public class TileImpl implements Tile {
 	}
 	
 	@Override
-	public TilePart getTile(int x, int y) {
+	public TilePart getPart(int x, int y) {
 		return tiles[x + y * width];
 	}
 }

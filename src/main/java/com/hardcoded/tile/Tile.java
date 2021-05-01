@@ -85,5 +85,5 @@ public interface Tile {
 	byte[] getClutter();
 	long[] getGround();
 	
-	TilePart getTile(int x, int y);
+	TilePart getPart(int x, int y);
 }

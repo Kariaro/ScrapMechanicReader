@@ -2,8 +2,9 @@ package com.hardcoded.test;
 
 import java.awt.Window.Type;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.lang.reflect.Field;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -11,6 +12,8 @@ import javax.swing.JLabel;
 
 import com.hardcoded.tile.Tile;
 import com.hardcoded.tile.TileReader;
+import com.hardcoded.tile.TileWriter;
+import com.hardcoded.utils.TileUtils;
 
 public class Main {
 	public static void main(String[] args) {
@@ -29,32 +32,125 @@ public class Main {
 		//path = getGameTile("GROUND512_01");
 		
 		
+//		{
+//			test();
+//		}
+		
 		Tile tile = null;
 		try {
 			String path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
 			path = getGameTile("GROUND512_01");
-			path = "D:/Steam/steamapps/common/Scrap Mechanic/Data/LocalPrefabs/Warehouse_Room_Toilets_2x2x1_04.prefab";
-			path = "C:/Users/Admin/Downloads/warehouse3prefabbuttile.tile";
+			//path = "D:/Steam/steamapps/common/Scrap Mechanic/Data/LocalPrefabs/Warehouse_Room_Toilets_2x2x1_04.prefab";
+			//path = "C:/Users/Admin/Downloads/warehouse3prefabbuttile.tile";
+			//path = "C:/Users/Admin/Downloads/ChallengeBuilderDefault.tile";
+			//path = "C:/Users/Admin/Downloads/Warehouse_Exterior_4Floors_256_01.tile";
+			//path = "C:/Users/Admin/Downloads/bbbbbbbbbbbbbbbbbbb.tile.export";
 			//path = "C:/Users/Admin/Downloads/Warehouse_Interior_EncryptorFloor_01.tile";
 			//path = getGameTile("HILLS512_01");
-			
 			//path = getGameTile("Road_Dirt_Three-way_01");
+			System.out.println(path);
 			
 			tile = TileReader.readTileFromPath(path);
-			debug(tile);
+			tile.resize(1, 1);
+			TileWriter.writeTile(tile, "");
 			
-			if(true) return;
+			System.out.println("----------------------------------------------");
+			System.out.println("----------------------------------------------");
+			System.out.println("----------------------------------------------");
+			tile = TileReader.readTileFromPath("res/test.tile");
+			
+			//debug(tile);
 		} catch(Exception e) {
 			e.printStackTrace();
-			if(true) return;
 		}
 		
+		if(true) return;
 		
 		// String str = createJson(path);
 		
 //		StringSelection stringSelection = new StringSelection(str);
 //		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 //		clipboard.setContents(stringSelection, null);
+	}
+	
+	private static byte[] hex_to_bytes(String str) {
+		byte[] result = new byte[str.length() / 2];
+		for(int i = 0; i < str.length(); i += 2) {
+			String sub = str.substring(i, i + 2);
+			result[i / 2] = (byte)Integer.parseInt(sub, 16);
+		}
+		
+		return result;
+	}
+	
+	static void test() {
+		String test = "0123456789abcdef>hijklmnopqrstuvwxyz";
+		
+		for(int i = 1; i < 17; i++) {
+			System.out.println("-------------------------");
+			
+			String msg = test.substring(0, i);
+			int size = msg.length();
+			
+			byte[] compressed = TileUtils.compress_data(msg.getBytes());
+			int compressedSize = compressed.length;
+
+			{ for(byte b : compressed) System.out.printf("%02x", b); System.out.println(); }
+			
+			byte[] bytes = new byte[size];
+			int debugSize = TileUtils.decompress_data(compressed, bytes, size);
+			System.out.printf("  debugSize == compressed_size: %d == %d\n", debugSize, compressedSize);
+			if(debugSize != compressedSize) {
+				System.out.println("  [ERROR] debugSize != compressed_size");
+			}
+			System.out.println();
+			
+			// { for(byte b : bytes) System.out.printf("%02x", b); System.out.println(); }
+			
+			String uncompressedMessage = new String(bytes, 0, size);
+			System.out.printf("  True Message: [%s]\n", msg);
+			System.out.printf("  Read Message: [%s]\n", uncompressedMessage);
+			
+		}
+//		String message = "Hello this is a message compressed with some random compression system?";
+//		int uncomp_length = message.length();
+//		int compressed_length = message.getBytes().length;
+//		
+//		byte[] compressed = tryCompress(message);
+//		{
+//			byte[] bytes = //hex_to_bytes("f0099a9981400000004000005040f304353f279446b2279446320c00440000803e0400f0029b555ab0485e4b2b9809e41d83bbf7fe00");
+//			hex_to_bytes("9a9981400000004000005040f304353f279446b227944632f304353f0000803e0000803e0000803e9b555ab0485e4b2b9809e41d83bb");
+//					//    9a9981400000004000005040f304353f279446b227944632f304353f0000803e0000803e0000803e9b555ab0485e4b2b9809e41d83bb
+//			
+//			uncomp_length = bytes.length;
+//			compressed = tryCompress(bytes);
+//			compressed_length = bytes.length;
+//			
+//			for(int i = 0; i < bytes.length; i++) System.out.printf("%02x", bytes[i]);
+//			System.out.println();
+//			
+//		}
+//		
+//		for(int i = 0; i < compressed.length; i++) System.out.printf("%02x", compressed[i]);
+//		System.out.println();
+//		
+//		byte[] uncompressed = new byte[100000];
+//		int debugSize = func.decompress(compressed, uncompressed, compressed_length);
+//		
+//		System.out.printf("debugSize == compressed_size: %d == %d\n", debugSize, compressed.length);
+//		for(int i = 0; i < uncomp_length; i++) System.out.printf("%02x", uncompressed[i]);
+//		System.out.println();
+//		System.out.println("Output: " + new String(uncompressed, 0, uncomp_length));
+//		
+		System.exit(0);
+	}
+	
+	static byte[] tryCompress(String str) {
+		return TileUtils.compress_data(str.getBytes());
+	}
+	
+	static byte[] tryCompress(byte[] input) {
+		return TileUtils.compress_data(input);
 	}
 	
 	static String getTile(String name) {
@@ -95,13 +191,13 @@ public class Main {
 	}
 	
 	private static void debug(Tile tile) {
-		int tileHeight = tile.getHeight();
-		int tileWidth = tile.getWidth();
+		int th = tile.getHeight();
+		int tw = tile.getWidth();
 		int m = 2;
 		
-		BufferedImage bi1 = new BufferedImage(0x20 * tileWidth + 1, 0x20 * tileHeight + 1, BufferedImage.TYPE_INT_ARGB);
-		BufferedImage bi2 = new BufferedImage(0x20 * tileWidth + 1, 0x20 * tileHeight + 1, BufferedImage.TYPE_INT_ARGB);
-		BufferedImage bi3 = new BufferedImage(0x80 * tileWidth, 0x80 * tileHeight, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage bi1 = new BufferedImage(0x20 * tw + 1, 0x20 * th + 1, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage bi2 = new BufferedImage(0x20 * tw + 1, 0x20 * th + 1, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage bi3 = new BufferedImage(0x80 * tw, 0x80 * th, BufferedImage.TYPE_INT_ARGB);
 		
 		int[] colors = tile.getVertexColor(); // getObject(tile, "vertexColor");
 		bi1.setRGB(0, 0, bi1.getWidth(), bi1.getHeight(),
@@ -131,25 +227,6 @@ public class Main {
 		createWindow(bi1, "ColorMap", m);
 		createWindow(bi2, "HeightMap", m);
 		createWindow(bi3, "Clutter", m / 2);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static <T> T getObject(Object obj, String fieldName) {
-		Class<?> clazz = obj.getClass();
-		
-		try {
-			Field field = clazz.getDeclaredField(fieldName);
-			boolean old = field.canAccess(obj);
-			field.setAccessible(true);
-			Object result = field.get(obj);
-			field.setAccessible(old);
-			
-			return (T) result;
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 	private static void createWindow(BufferedImage bi, String name, int m) {

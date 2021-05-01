@@ -67,7 +67,7 @@ public class TileReader {
 		
 		for(int i = 0; i < header.width * header.height; i++) {
 			int x = i % header.width;
-			int y = i / header.height;
+			int y = i / header.width;
 			
 			byte[] bytes = header.getHeader(x, y).data();
 			LOGGER.info("    BLOB(%d, %d):", x, y);
@@ -92,7 +92,7 @@ public class TileReader {
 			for(int y = 0; y < tileYSize; y++) {
 				for(int x = 0; x < tileXSize; x++) {
 					Header h = header.getHeader(x, y);
-					TilePart part = tile.getTile(x, y);
+					TilePart part = tile.getPart(x, y);
 					
 					if(header.type == 0) {
 						mip_reader.read(h, reader, part);

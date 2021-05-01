@@ -10,6 +10,7 @@ import java.util.UUID;
 public class Memory {
 	private final byte[] bytes;
 	private boolean defaultEndian;
+	private int highest_written_index;
 	private int index;
 	
 	public Memory(int capacity) {
@@ -54,6 +55,10 @@ public class Memory {
 		return index;
 	}
 	
+	public int getHighestWrittenIndex() {
+		return highest_written_index;
+	}
+	
 	// ======================= //
 	
 	private long readValue(int offset, int length, boolean bigEndian) {
@@ -81,7 +86,10 @@ public class Memory {
 		for(int i = 0; i < length; i++) {
 			long shr = (bigEndian ? (length - 1 - i):i) * 8L;
 			byte val = (byte)((value >>> shr) & 0xff);
-			bytes[index + offset + i] = val;
+			int idx = index + offset + i;
+			bytes[idx] = val;
+			
+			if(idx > highest_written_index) highest_written_index = idx;
 		}
 		
 		return this;
@@ -95,7 +103,10 @@ public class Memory {
 	public int UnsignedByte(int offset) { return Byte.toUnsignedInt(bytes[index + offset]); }
 	public Memory WriteByte(int value) { return WriteByte(value, 0); }
 	public Memory WriteByte(int value, int offset) {
-		bytes[index + offset] = (byte)value;
+		int idx = index + offset;
+		bytes[idx] = (byte)value;
+		if(idx > highest_written_index) highest_written_index = idx;
+		
 		return this;
 	}
 	
@@ -282,7 +293,11 @@ public class Memory {
 	public Memory WriteBytes(byte[] value, int length, int offset, boolean reverse) {
 		for(int i = 0; i < length; i++) {
 			int idx = reverse ? (length - 1 - i):i;
-			bytes[index + offset + i] = value[idx];
+			
+			int byte_idx = index + offset + i;
+			bytes[byte_idx] = value[idx];
+			
+			if(byte_idx > highest_written_index) highest_written_index = byte_idx;
 		}
 		return this;
 	}
@@ -541,8 +556,29 @@ public class Memory {
 	
 	public UUID NextUuid() { return NextUuid(defaultEndian); }
 	public UUID NextUuid(boolean bigEndian) {
-		UUID result = Uuid();
+		UUID result = Uuid(bigEndian);
 		index += 16;
 		return result;
+	}
+	
+
+	public Memory WriteUUID(UUID uuid) { return WriteUUID(uuid, 0, defaultEndian); }
+	public Memory WriteUUID(UUID uuid, int offset) { return WriteUUID(uuid, offset, defaultEndian); }
+	public Memory WriteUUID(UUID uuid, boolean bigEndian) { return WriteUUID(uuid, 0, bigEndian); }
+	public Memory WriteUUID(UUID uuid, int offset, boolean bigEndian) {
+		if(bigEndian) {
+			WriteLong(uuid.getMostSignificantBits(), offset, bigEndian);
+			WriteLong(uuid.getLeastSignificantBits(), offset + 8, bigEndian);
+		} else {
+			WriteLong(uuid.getLeastSignificantBits(), offset, bigEndian);
+			WriteLong(uuid.getMostSignificantBits(), offset + 8, bigEndian);
+		}
+		return this;
+	}
+	public Memory NextWriteUUID(UUID uuid) { return NextWriteUUID(uuid, defaultEndian); }
+	public Memory NextWriteUUID(UUID uuid, boolean bigEndian) {
+		WriteUUID(uuid, 0, bigEndian);
+		index += 16;
+		return this;
 	}
 }

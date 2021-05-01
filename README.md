@@ -8,15 +8,8 @@ The plan right now is to read as much as I can about reversing and looking into 
 I'm working on a lua deserializer right now.
 
 
-### Tiles
-Use the TileReader to read data from terrain tile files.
-
-<code>
-Tile tile = TileReader.read("../TilePath.tile");
-</code>
-
-
-### Lua
-Use the LuaDeserializer to parse serialized lua data.
+### Example
+There are examples for how to use this api.
+See [Example.java](../main/src/test/hava/com/hardcoded/example/Example.java).
 
 

@@ -41,7 +41,7 @@ public class TileWriter {
 		
 		LOGGER.info("SerializedData: ");
 		
-		try(FileOutputStream stream = new FileOutputStream(new File("res/test.tile"))) {
+		try(FileOutputStream stream = new FileOutputStream(new File(path))) {
 			stream.write(data);
 		} catch(IOException e) {
 			e.printStackTrace();

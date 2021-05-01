@@ -20,14 +20,14 @@ public class ClutterReader implements TileReaderImpl {
 	}
 	
 	public byte[] read(HeaderPart h, Memory reader) {
-		TileUtils.log("  Clutter          : %d / %d", h.clutterCompressedSize, h.clutterSize);
+		TileUtils.log("  Clutter          : %d, %d", h.clutterCompressedSize, h.clutterSize);
 		
 		byte[] compressed = reader.set(h.clutterIndex).Bytes(h.clutterCompressedSize);
 		byte[] bytes = new byte[h.clutterSize];
 		
 		int debugSize = TileUtils.decompress_data(compressed, bytes, h.clutterSize);
 		if(debugSize != h.clutterCompressedSize) {
-			TileUtils.error("debugSize != h.clutterCompressedSize"); // 242
+			TileUtils.error("debugSize != h.clutterCompressedSize");
 		}
 		
 		return bytes;

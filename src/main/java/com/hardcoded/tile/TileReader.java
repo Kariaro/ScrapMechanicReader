@@ -1,13 +1,12 @@
 package com.hardcoded.tile;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
-import com.hardcoded.tile.TileHeader.Header;
 import com.hardcoded.tile.impl.TileImpl;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.tile.readers.*;
@@ -91,7 +90,7 @@ public class TileReader {
 		if(tileYSize > 0) {
 			for(int y = 0; y < tileYSize; y++) {
 				for(int x = 0; x < tileXSize; x++) {
-					Header h = header.getHeader(x, y);
+					HeaderPart h = header.getHeader(x, y);
 					TilePart part = tile.getPart(x, y);
 					
 					if(header.type == 0) {

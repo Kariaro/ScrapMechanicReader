@@ -1,6 +1,7 @@
 package com.hardcoded.tile.writers;
 
 import com.hardcoded.data.Memory;
+import com.hardcoded.tile.HeaderPart;
 import com.hardcoded.tile.impl.TilePart;
 
 /**

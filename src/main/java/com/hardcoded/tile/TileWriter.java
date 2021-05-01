@@ -9,7 +9,6 @@ import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.tile.writers.ClutterWriter;
-import com.hardcoded.tile.writers.HeaderPart;
 import com.hardcoded.tile.writers.MipWriter;
 
 /**

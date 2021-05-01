@@ -3,7 +3,7 @@ package com.hardcoded.tile.readers;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.TileHeader.Header;
+import com.hardcoded.tile.HeaderPart;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -15,11 +15,11 @@ import com.hardcoded.utils.TileUtils;
 public class ClutterReader implements TileReaderImpl {
 	
 	@Override
-	public void read(Header header, Memory memory, TilePart part) {
+	public void read(HeaderPart header, Memory memory, TilePart part) {
 		read(read(header, memory), part);
 	}
 	
-	public byte[] read(Header h, Memory reader) {
+	public byte[] read(HeaderPart h, Memory reader) {
 		TileUtils.log("  Clutter          : %d / %d", h.clutterCompressedSize, h.clutterSize);
 		
 		byte[] compressed = reader.set(h.clutterIndex).Bytes(h.clutterCompressedSize);

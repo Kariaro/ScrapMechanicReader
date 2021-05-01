@@ -36,12 +36,8 @@ public class TileReader {
 		
 	}
 	
-	public static Tile readTileFromPath(String path) throws Exception {
+	public static Tile readTile(String path) throws TileException, IOException {
 		return loadTile(path);
-	}
-	
-	public static void save(Tile tile, String path) throws IOException {
-		throw new UnsupportedOperationException("Not implemented");
 	}
 	
 	public static Tile loadTile(String path) throws TileException, IOException {

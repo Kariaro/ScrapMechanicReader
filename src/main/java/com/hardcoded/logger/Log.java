@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import com.hardcoded.utils.TileUtils;
+
 /**
  * A simple Logging utility class.
  * 
@@ -121,6 +123,7 @@ public final class Log {
 	private void internal_log(Level level, int line_index, String format, Object... args) {
 		if(!shouldLog(level)) return;
 		if(format == null) format = "";
+		if(!TileUtils.isDev()) return;
 		
 		//messages.add(new MSG(level, customName, line_index, format, args));
 		// [%s]: 

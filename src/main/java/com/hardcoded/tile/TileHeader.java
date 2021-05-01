@@ -3,7 +3,6 @@ package com.hardcoded.tile;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.data.Pointer;
 import com.hardcoded.error.TileException;
 import com.hardcoded.utils.TileUtils;
 
@@ -24,8 +23,8 @@ public class TileHeader {
 	public TileHeader(byte[] bytes) throws TileException {
 		this.bytes = bytes;
 		
-		Pointer reader = new Pointer(bytes);
-		String magic = reader.NextString(4, true);
+		Memory reader = new Memory(bytes);
+		String magic = reader.NextString(4);
 		if(!magic.equals("TILE")) {
 			throw new TileException("File magic value was wrong. Should be 'TILE'");
 		}
@@ -63,7 +62,8 @@ public class TileHeader {
 			byte[] headerBytes = new byte[width * height * 0x124];
 			
 			for(int i = 0; i < width * height; i++) {
-				reader.NextBytes(headerBytes, i * 0x124, cellHeadersSize);
+				byte[] data = reader.NextBytes(cellHeadersSize);
+				System.arraycopy(data, 0, headerBytes, i * 0x124, cellHeadersSize);
 			}
 			
 			fillHeaderBytes(headerBytes);

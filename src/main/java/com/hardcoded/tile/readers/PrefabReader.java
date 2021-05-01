@@ -18,8 +18,8 @@ public class PrefabReader implements TileReaderImpl {
 	}
 	
 	public byte[] read(HeaderPart h, Memory reader) {
-		if((h.bytes_c4 == 0) || (h.bytes_c8 == 0)) return null;
-		reader.set(h.bytes_c8);
+		if((h.prefabDefined == 0) || (h.prefabIndex == 0)) return null;
+		reader.set(h.prefabIndex);
 		
 		TileUtils.log("  Prefab           : %d / %d", h.prefabSize, h.prefabCompressedSize);
 		

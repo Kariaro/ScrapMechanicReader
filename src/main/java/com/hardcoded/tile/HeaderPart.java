@@ -21,26 +21,25 @@ public class HeaderPart {
 	/** 0x84 */ public int[] assetListSize;
 	
 	
-	/** 0x94 */ public int bytes_94;
-	/** 0x98 */ public int bytes_98;
+	/** 0x94 */ public int blueprintListDefined;
+	/** 0x98 */ public int blueprintListIndex;
 	/** 0x9c */ public int blueprintListCompressedSize;
 	/** 0xa0 */ public int blueprintListSize;
 	
-	/** 0xa4 */ public int bytes_a4;
-	/** 0xa8 */ public int bytes_a8;
+	/** 0xa4 */ public int nodeDefined;
+	/** 0xa8 */ public int nodeIndex;
 	/** 0xac */ public int nodeCompressedSize;
 	/** 0xb0 */ public int nodeSize;
 	
-	/** 0xc4 */ public int bytes_c4;
-	/** 0xc8 */ public int bytes_c8;
+	/** 0xc4 */ public int prefabDefined;
+	/** 0xc8 */ public int prefabIndex;
 	/** 0xcc */ public int prefabCompressedSize;
 	/** 0xd0 */ public int prefabSize;
 	
-	/** 0xd4 */ public int bytes_d4;
-	/** 0xd8 */ public int bytes_d8;
+	/** 0xd4 */ public int decalDefined;
+	/** 0xd8 */ public int decalIndex;
 	/** 0xdC */ public int decalCompressedSize;
 	/** 0xe0 */ public int decalSize;
-	
 	
 	/** 0xe4 */ public int[] harvestableListDefined;
 	/** 0xf4 */ public int[] harvestableListIndex;
@@ -83,23 +82,23 @@ public class HeaderPart {
 			assetListSize[i] = memory.Int(0x84 + i * 4);
 		}
 		
-		bytes_94 = memory.Int(0x94);
-		bytes_98 = memory.Int(0x98);
+		blueprintListDefined = memory.Int(0x94);
+		blueprintListIndex = memory.Int(0x98);
 		blueprintListCompressedSize = memory.Int(0x9c);
 		blueprintListSize = memory.Int(0xa0);
 		
-		bytes_a4 = memory.Int(0xa4);
-		bytes_a8 = memory.Int(0xa8);
+		nodeDefined = memory.Int(0xa4);
+		nodeIndex = memory.Int(0xa8);
 		nodeCompressedSize = memory.Int(0xac);
 		nodeSize = memory.Int(0xb0);
 		
-		bytes_c4 = memory.Int(0xc4);
-		bytes_c8 = memory.Int(0xc8);
+		prefabDefined = memory.Int(0xc4);
+		prefabIndex = memory.Int(0xc8);
 		prefabCompressedSize = memory.Int(0xcc);
 		prefabSize = memory.Int(0xd0);
 		
-		bytes_d4 = memory.Int(0xd4);
-		bytes_d8 = memory.Int(0xd8);
+		decalDefined = memory.Int(0xd4);
+		decalIndex = memory.Int(0xd8);
 		decalCompressedSize = memory.Int(0xdc);
 		decalSize = memory.Int(0xe0);
 		
@@ -132,23 +131,23 @@ public class HeaderPart {
 			memory.WriteInt(assetListSize[i], 0x84 + i * 4);
 		}
 		
-		memory.WriteInt(bytes_94, 0x94);
-		memory.WriteInt(bytes_98, 0x98);
+		memory.WriteInt(blueprintListDefined, 0x94);
+		memory.WriteInt(blueprintListIndex, 0x98);
 		memory.WriteInt(blueprintListCompressedSize, 0x9c);
 		memory.WriteInt(blueprintListSize, 0xa0);
 		
-		memory.WriteInt(bytes_a4, 0xa4);
-		memory.WriteInt(bytes_a8, 0xa8);
+		memory.WriteInt(nodeDefined, 0xa4);
+		memory.WriteInt(nodeIndex, 0xa8);
 		memory.WriteInt(nodeCompressedSize, 0xac);
 		memory.WriteInt(nodeSize, 0xb0);
 		
-		memory.WriteInt(bytes_c4, 0xc4);
-		memory.WriteInt(bytes_c8, 0xc8);
+		memory.WriteInt(prefabDefined, 0xc4);
+		memory.WriteInt(prefabIndex, 0xc8);
 		memory.WriteInt(prefabCompressedSize, 0xcc);
 		memory.WriteInt(prefabSize, 0xd0);
 		
-		memory.WriteInt(bytes_d4, 0xd4);
-		memory.WriteInt(bytes_d8, 0xd8);
+		memory.WriteInt(decalDefined, 0xd4);
+		memory.WriteInt(decalIndex, 0xd8);
 		memory.WriteInt(decalCompressedSize, 0xdc);
 		memory.WriteInt(decalSize, 0xe0);
 		

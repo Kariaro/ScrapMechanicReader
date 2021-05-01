@@ -88,9 +88,10 @@ public class Memory {
 			byte val = (byte)((value >>> shr) & 0xff);
 			int idx = index + offset + i;
 			bytes[idx] = val;
-			
-			if(idx > highest_written_index) highest_written_index = idx;
 		}
+		
+		int idx = index + length + offset;
+		if(idx > highest_written_index) highest_written_index = idx;
 		
 		return this;
 	}

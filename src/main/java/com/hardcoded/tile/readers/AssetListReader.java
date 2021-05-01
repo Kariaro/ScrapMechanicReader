@@ -1,5 +1,7 @@
 package com.hardcoded.tile.readers;
 
+import java.util.UUID;
+
 import com.hardcoded.data.Memory;
 import com.hardcoded.tile.HeaderPart;
 import com.hardcoded.tile.impl.AssetImpl;
@@ -30,18 +32,18 @@ public class AssetListReader implements TileReaderImpl {
 				
 				int debugSize = TileUtils.decompress_data(compressed, bytes[i], assetListSize);
 				if(debugSize != h.assetListCompressedSize[i]) {
-					TileUtils.error("debugSize != h.assetListCompressedSize[%d]", i);
+					TileUtils.error("debugSize != h.assetListCompressedSize[%d]: %d != %d", i, debugSize, h.assetListCompressedSize[i]);
 				}
 				
-				debugSize = read(bytes[i], h.assetListDefined[i], part.parent.getVersion(), part);
+				debugSize = read(bytes[i], i, h.assetListDefined[i], part.parent.getVersion(), part);
 				if(debugSize != h.assetListSize[i]) {
-					TileUtils.error("debugSize != h.assetListSize[%d]", i);
+					TileUtils.error("debugSize != h.assetListSize[%d]: %d != %d", i, debugSize, h.assetListSize[i]);
 				}
 			}
 		}
 	}
 
-	public int read(byte[] bytes, int len, int version, TilePart part) {
+	public int read(byte[] bytes, int asset_index, int len, int version, TilePart part) {
 		Memory memory = new Memory(bytes);
 		// System.out.println(new String(bytes));
 		
@@ -59,7 +61,8 @@ public class AssetListReader implements TileReaderImpl {
 				f_size = memory.Floats(3, index + 0x1c);
 				index += 0x28;
 			}
-
+			
+			UUID uuid = null;
 			AssetImpl asset = new AssetImpl();
 			
 			//float[] local_e8 = new float[4];
@@ -72,6 +75,7 @@ public class AssetListReader implements TileReaderImpl {
 				
 			} else {
 				//local_e8 = memory.Floats(4, index);
+				uuid = memory.Uuid(index);
 				// UUID???
 				//System.out.printf("local_e8: %.8f, %.8f, %.8f, %.8f\n", local_e8[0], local_e8[1], local_e8[2], local_e8[3]);
 				index += 0x10;
@@ -93,30 +97,28 @@ public class AssetListReader implements TileReaderImpl {
 				}
 			}
 			
-			asset.pos[0] = f_pos[0]; // + position[0]
-			asset.pos[1] = f_pos[1]; // + position[1]
-			asset.pos[2] = f_pos[2]; // + position[2]
 			
-			asset.quat[0] = f_quat[0];
-			asset.quat[1] = f_quat[1];
-			asset.quat[2] = f_quat[2];
-			asset.quat[3] = f_quat[3];
+			asset.setPosition(
+				f_pos[0], // + position[0]
+				f_pos[1], // + position[1]
+				f_pos[2]  // + position[2]
+			);
 			
-			asset.size[0] = f_size[0];
-			asset.size[1] = f_size[1];
-			asset.size[2] = f_size[2];
+			asset.setRotation(f_quat[0], f_quat[1], f_quat[2], f_quat[3]);
+			asset.setSize(f_size[0], f_size[1], f_size[2]);
 			
-			part.addAsset(asset);
+			if(uuid != null) {
+				asset.uuid = uuid;
+			}
+			
+			part.addAsset(asset, asset_index);
 			
 //			{
-//				float[] pos = asset.pos;
-//				float[] size = asset.size;
-//				float[] quat = asset.quat;
-//				
-//				System.out.printf("  pos : %.8f, %.8f, %.8f\n", pos[0], pos[1], pos[2]);
-//				System.out.printf("  quat: %.8f, %.8f, %.8f, %.8f\n", quat[0], quat[1], quat[2], quat[3]);
-//				System.out.printf("  size: %.8f, %.8f, %.8f\n", size[0], size[1], size[2]);
+//				System.out.printf("  pos : %s\n", asset.pos);
+//				System.out.printf("  rot : %s\n", asset.rot);
+//				System.out.printf("  size: %s\n", asset.size);
 //				System.out.printf("  mats: %s\n", asset.materials);
+//				System.out.printf("  uuid: %s\n", asset.uuid);
 //				System.out.println();
 //			}
 		}

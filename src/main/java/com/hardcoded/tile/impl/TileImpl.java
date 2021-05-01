@@ -6,7 +6,7 @@ import com.hardcoded.error.TileException;
 import com.hardcoded.tile.Tile;
 
 /**
- * A implementation of a tile.
+ * A tile implementation.
  * 
  * @author HardCoded <https://github.com/Kariaro>
  */

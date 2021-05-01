@@ -1,7 +1,7 @@
 package com.hardcoded.tile.readers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.TileHeader.Header;
+import com.hardcoded.tile.HeaderPart;
 import com.hardcoded.tile.impl.AssetImpl;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
@@ -14,7 +14,7 @@ import com.hardcoded.utils.TileUtils;
 public class AssetListReader implements TileReaderImpl {
 	
 	@Override
-	public void read(Header h, Memory reader, TilePart part) {
+	public void read(HeaderPart h, Memory reader, TilePart part) {
 		byte[][] bytes = new byte[4][];
 		for(int i = 0; i < 4; i++) {
 			int assetListCompressedSize = h.assetListCompressedSize[i];

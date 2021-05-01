@@ -1,4 +1,4 @@
-package com.hardcoded.tile.writers;
+package com.hardcoded.tile;
 
 import com.hardcoded.data.Memory;
 
@@ -64,7 +64,7 @@ public class HeaderPart {
 		harvestableListDefined = new int[4];
 	}
 	
-	public void read() {
+	protected void read() {
 		int old_index = memory.index();
 		memory.set(index);
 		
@@ -113,7 +113,7 @@ public class HeaderPart {
 		memory.set(old_index);
 	}
 	
-	public void write() {
+	protected void write() {
 		int old_index = memory.index();
 		memory.set(index);
 		
@@ -160,5 +160,12 @@ public class HeaderPart {
 		}
 		
 		memory.set(old_index);
+	}
+	
+	public byte[] data() {
+		int old_index = memory.index();
+		byte[] bytes = memory.Bytes(0x124);
+		memory.set(old_index);
+		return bytes;
 	}
 }

@@ -1,7 +1,7 @@
 package com.hardcoded.tile.readers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.TileHeader.Header;
+import com.hardcoded.tile.HeaderPart;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -13,11 +13,11 @@ import com.hardcoded.utils.TileUtils;
 public class NodeReader implements TileReaderImpl {
 	
 	@Override
-	public void read(Header header, Memory memory, TilePart part) {
+	public void read(HeaderPart header, Memory memory, TilePart part) {
 		read(read(header, memory), part);
 	}
 	
-	public byte[] read(Header h, Memory reader) {
+	public byte[] read(HeaderPart h, Memory reader) {
 		if((h.bytes_a4 == 0) || (h.bytes_a8 == 0)) return null;
 		reader.set(h.bytes_a8);
 		

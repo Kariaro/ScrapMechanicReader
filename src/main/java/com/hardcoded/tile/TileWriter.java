@@ -10,6 +10,7 @@ import com.hardcoded.logger.Log;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.tile.writers.ClutterWriter;
 import com.hardcoded.tile.writers.MipWriter;
+import com.hardcoded.utils.TileUtils;
 
 /**
  * This class is made for reading {@code .tile} files created by ScrapMechanic.
@@ -39,7 +40,9 @@ public class TileWriter {
 	public static boolean writeTile(Tile tile, String path) throws TileException {
 		byte[] data = writeTile(tile);
 		
-		LOGGER.info("SerializedData: ");
+		if(TileUtils.isDev()) {
+			LOGGER.info("SerializedData: ");
+		}
 		
 		try(FileOutputStream stream = new FileOutputStream(new File(path))) {
 			stream.write(data);

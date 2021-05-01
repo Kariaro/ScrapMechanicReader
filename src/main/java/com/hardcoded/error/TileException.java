@@ -1,5 +1,10 @@
 package com.hardcoded.error;
 
+/**
+ * A tile exception class.
+ * 
+ * @author HardCoded
+ */
 @SuppressWarnings("serial")
 public class TileException extends RuntimeException {
 	public TileException() {

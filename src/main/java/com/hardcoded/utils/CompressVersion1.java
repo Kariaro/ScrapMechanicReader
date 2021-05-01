@@ -10,7 +10,6 @@ import java.io.IOException;
  */
 class CompressVersion1 {
 	
-	// TODO: Make sure this works for arrays smaller than 15 bytes
 	public byte[] compress(byte[] data) {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		

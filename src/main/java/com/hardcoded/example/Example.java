@@ -66,7 +66,10 @@ public class Example {
 	public static String getGameTile(String name) {
 		File tile_path = new File(GAME_DIRECTORY, "Data/Terrain/Tiles/CreativeTiles/");
 		
-		for(File file : tile_path.listFiles()) {
+		File[] array = tile_path.listFiles();
+		if(array == null) return null;
+		
+		for(File file : array) {
 			if(file.getName().equals(name + ".tile")) return file.getAbsolutePath();
 		}
 		

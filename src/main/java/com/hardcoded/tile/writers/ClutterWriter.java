@@ -6,6 +6,8 @@ import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
 /**
+ * <b>This writer is incomplete!</b>
+ * 
  * @author HardCoded
  */
 public class ClutterWriter implements TileWriterImpl {
@@ -24,6 +26,7 @@ public class ClutterWriter implements TileWriterImpl {
 	public byte[] write(TilePart part) {
 		Memory memory = new Memory(128 * 128 + 1);
 		memory.NextWriteByte(0); // no uuid's
+		
 		byte[] temp = new byte[128 * 128];
 		for(int i = 0; i < temp.length; i++) {
 			temp[i] = (byte)0xff;

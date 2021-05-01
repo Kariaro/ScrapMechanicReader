@@ -30,12 +30,12 @@ public class AssetListReader implements TileReaderImpl {
 				
 				int debugSize = TileUtils.decompress_data(compressed, bytes[i], assetListSize);
 				if(debugSize != h.assetListCompressedSize[i]) {
-					TileUtils.error("debugSize != h.assetListCompressedSize[%d]", i); // 254
+					TileUtils.error("debugSize != h.assetListCompressedSize[%d]", i);
 				}
 				
 				debugSize = read(bytes[i], h.assetListDefined[i], part.parent.getVersion(), part);
 				if(debugSize != h.assetListSize[i]) {
-					TileUtils.error("debugSize != h.assetListSize[%d]", i); // 256
+					TileUtils.error("debugSize != h.assetListSize[%d]", i);
 				}
 			}
 		}
@@ -85,14 +85,11 @@ public class AssetListReader implements TileReaderImpl {
 				for(int local_2f8 = 0; local_2f8 < length; local_2f8++) {
 					bVar4 = memory.UnsignedByte(index++) & 0xff;
 					String str = memory.String(bVar4, index);
-					// System.out.printf("  : [%s]\n", str);
 					asset.materials.add(str);
 					
 					index += bVar4;
 					// int local_2b4 = memory.Int(index);
 					index += 4;
-					
-					// local_2f8 += 1;
 				}
 			}
 			
@@ -111,17 +108,17 @@ public class AssetListReader implements TileReaderImpl {
 			
 			part.addAsset(asset);
 			
-			{
-				float[] pos = asset.pos;
-				float[] size = asset.size;
-				float[] quat = asset.quat;
-				
+//			{
+//				float[] pos = asset.pos;
+//				float[] size = asset.size;
+//				float[] quat = asset.quat;
+//				
 //				System.out.printf("  pos : %.8f, %.8f, %.8f\n", pos[0], pos[1], pos[2]);
 //				System.out.printf("  quat: %.8f, %.8f, %.8f, %.8f\n", quat[0], quat[1], quat[2], quat[3]);
 //				System.out.printf("  size: %.8f, %.8f, %.8f\n", size[0], size[1], size[2]);
 //				System.out.printf("  mats: %s\n", asset.materials);
 //				System.out.println();
-			}
+//			}
 		}
 		
 		return index;

@@ -18,7 +18,7 @@ public class Example {
 	 * To aid finding tiles in your computer you can specify the game's
 	 * directory and use the {@link #getTilePath(String)} method.
 	 */
-	public static final String GAME_DIRECTORY = "D:/Steam/steamapps/common/Scrap Mechanic";//<game_path>";
+	public static final String GAME_DIRECTORY = "<game_path>";
 	
 	public static void main(String[] args) throws TileException, IOException {
 		// To read a tile you need to get the path to the tile

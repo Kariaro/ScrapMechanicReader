@@ -10,6 +10,6 @@ I'm working on a lua deserializer right now.
 
 ### Example
 There are examples for how to use this api.
-See [Example.java](../main/src/test/hava/com/hardcoded/example/Example.java).
+See [Example.java](../main/src/main/java/com/hardcoded/example/Example.java).
 
 

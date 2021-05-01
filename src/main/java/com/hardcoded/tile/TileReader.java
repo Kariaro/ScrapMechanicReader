@@ -10,6 +10,7 @@ import com.hardcoded.logger.Log;
 import com.hardcoded.tile.impl.TileImpl;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.tile.readers.*;
+import com.hardcoded.utils.TileUtils;
 
 /**
  * This class is made for reading {@code .tile} files created by ScrapMechanic.
@@ -48,29 +49,31 @@ public class TileReader {
 	public static Tile loadTile(byte[] tile_data) throws TileException {
 		TileHeader header = new TileHeader(tile_data);
 		
-		LOGGER.info("TileFileVersion: %d", header.version);
-		LOGGER.info("TileUuid: {%s}", header.uuid);
-		LOGGER.info("CreatorId: %d", header.creatorId);
-		LOGGER.info("Size: %d, %d", header.width, header.height);
-		LOGGER.info("Type: %d", header.type);
-		LOGGER.info();
-		LOGGER.info("Header info:");
-		LOGGER.info("CellHeadersOffset: %d", header.cellHeadersOffset);
-		LOGGER.info("CellHeadersSize: %d", header.cellHeadersSize);
-		LOGGER.info();
-		LOGGER.info("Headers:");
-		
-		for(int i = 0; i < header.width * header.height; i++) {
-			int x = i % header.width;
-			int y = i / header.width;
+		if(TileUtils.isDev()) {
+			LOGGER.info("TileFileVersion: %d", header.version);
+			LOGGER.info("TileUuid: {%s}", header.uuid);
+			LOGGER.info("CreatorId: %d", header.creatorId);
+			LOGGER.info("Size: %d, %d", header.width, header.height);
+			LOGGER.info("Type: %d", header.type);
+			LOGGER.info();
+			LOGGER.info("Header info:");
+			LOGGER.info("CellHeadersOffset: %d", header.cellHeadersOffset);
+			LOGGER.info("CellHeadersSize: %d", header.cellHeadersSize);
+			LOGGER.info();
+			LOGGER.info("Headers:");
 			
-			byte[] bytes = header.getHeader(x, y).data();
-			LOGGER.info("    BLOB(%d, %d):", x, y);
-			LOGGER.info("        %s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n        "));
+			for(int i = 0; i < header.width * header.height; i++) {
+				int x = i % header.width;
+				int y = i / header.width;
+				
+				byte[] bytes = header.getHeader(x, y).data();
+				LOGGER.info("    BLOB(%d, %d):", x, y);
+				LOGGER.info("        %s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n        "));
+			}
+			
+			LOGGER.info();
+			LOGGER.info("Reading header data:");
 		}
-		
-		LOGGER.info();
-		LOGGER.info("Reading header data:");
 		
 		Memory reader = new Memory(header.data());
 		

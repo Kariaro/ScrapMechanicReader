@@ -2,11 +2,25 @@
 This project contains a collection of readers that can parse files made by the game ScrapMechanic.
 
 
-#### Ideas
+### Info
+The focus of this project is to discover how the tile files are generated and provide an api to
+create tiles from code.
 
-The plan right now is to read as much as I can about reversing and looking into the game for clues about how stuff will work.
-I'm working on a lua deserializer right now.
+The game does not currently allow users to export nodes and blueprints inside tile files and this
+project is going to try fix that.
 
+### Usage
+Some example code of how to use this api.
+
+```java
+Tile tile = TileReader.readTile("<path to tile>");
+tile.setVersion(9); // Change the tile version
+tile.resize(2, 2);  // Change the tile size
+
+if(!TileWriter.saveTile(tile, "<path to write>")) {
+    throw new TileException("Failed to write tile");
+}
+```
 
 ### Example
 There are examples for how to use this api.

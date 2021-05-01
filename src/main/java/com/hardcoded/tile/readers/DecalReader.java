@@ -18,8 +18,8 @@ public class DecalReader implements TileReaderImpl {
 	}
 	
 	public byte[] read(HeaderPart h, Memory reader) {
-		if((h.bytes_d4 == 0) || (h.bytes_d8 == 0)) return null;
-		reader.set(h.bytes_d8);
+		if((h.decalDefined == 0) || (h.decalIndex == 0)) return null;
+		reader.set(h.decalIndex);
 		
 		TileUtils.log("  Decal            : %d / %d", h.decalSize, h.decalCompressedSize);
 		

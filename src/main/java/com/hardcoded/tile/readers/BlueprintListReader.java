@@ -18,8 +18,8 @@ public class BlueprintListReader implements TileReaderImpl {
 	}
 	
 	public byte[] read(HeaderPart h, Memory reader) {
-		if((h.bytes_94 == 0) || (h.bytes_98 == 0)) return null;
-		reader.set(h.bytes_98);
+		if((h.blueprintListDefined == 0) || (h.blueprintListIndex == 0)) return null;
+		reader.set(h.blueprintListIndex);
 		
 		TileUtils.log("  BlueprintList    : %d / %d", h.blueprintListSize, h.blueprintListCompressedSize);
 		

@@ -8,14 +8,13 @@ import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
 import com.hardcoded.tile.impl.TilePart;
-import com.hardcoded.tile.writers.ClutterWriter;
-import com.hardcoded.tile.writers.MipWriter;
+import com.hardcoded.tile.writers.*;
 import com.hardcoded.utils.TileUtils;
 
 /**
- * This class is made for reading {@code .tile} files created by ScrapMechanic.
+ * This class is made for writing {@code .tile} files.
  * 
- * <p><b><i>This reader is not able to parse all data and will return incomplete results!<i><b>
+ * <p><b><i>This writer is not able to save all data and will return incomplete results!<i><b>
  * 
  * <p>
  * 
@@ -26,8 +25,8 @@ public class TileWriter {
 	
 	private static final MipWriter mip_writer = new MipWriter();
 	private static final ClutterWriter clutter_writer = new ClutterWriter();
-	//private static final AssetListReader assetList_reader = new AssetListReader();
-	//private static final NodeReader node_reader = new NodeReader();
+	private static final AssetListWriter assetList_writer = new AssetListWriter();
+	private static final NodeWriter node_writer = new NodeWriter();
 	//private static final PrefabReader prefab_reader = new PrefabReader();
 	//private static final BlueprintListReader blueprintList_reader = new BlueprintListReader();
 	//private static final DecalReader decal_reader = new DecalReader();
@@ -103,29 +102,6 @@ public class TileWriter {
 		memory.WriteByte(0);
 		//memory.WriteBytes(new byte[0x10000]);
 		
-		// Assert(reader.index() == cellHeadersOffset, "pos == header.cellHeadersOffset", 207);
-		
-//		if(width * height != 0) {
-//			byte[] headerBytes = new byte[width * height * 0x124];
-//			
-//			for(int i = 0; i < width * height; i++) {
-//				reader.NextBytes(headerBytes, i * 0x124, cellHeadersSize);
-//			}
-//			
-//			fillHeaderBytes(headerBytes);
-//		}
-//		TileHeader header = new TileHeader(tile_data);
-//		
-//		for(int i = 0; i < header.width * header.height; i++) {
-//			int x = i % header.width;
-//			int y = i / header.height;
-//			
-//			byte[] bytes = header.getHeader(x, y).data();
-//			LOGGER.info("    BLOB(%d, %d):", x, y);
-//			LOGGER.info("        %s\n\n", getHexString(bytes, header.cellHeadersSize, 32).replace("\n", "\n        "));
-//		}
-//		
-		
 		byte[] bytes = new byte[memory.getHighestWrittenIndex()];
 		System.arraycopy(memory.data(), 0, bytes, 0, bytes.length);
 		return bytes;
@@ -137,8 +113,8 @@ public class TileWriter {
 			clutter_writer.write(header, memory, part);
 		}
 		
-//		assetList_writer.write(header, memory, part);
-//		node_writer.write(header, memory, part);
+		assetList_writer.write(header, memory, part);
+		node_writer.write(header, memory, part);
 //		prefab_writer.write(header, memory, part);
 //		blueprintList_writer.write(header, memory, part);
 //		decal_writer.write(header, memory, part);

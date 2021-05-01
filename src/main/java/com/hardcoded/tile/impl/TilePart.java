@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardcoded.tile.Asset;
+import com.hardcoded.tile.Node;
 import com.hardcoded.tile.Tile;
 
 /**
@@ -22,8 +23,10 @@ public class TilePart {
 	public final byte[] clutter;
 	
 	// AssetList
-	public final List<Asset> assets;
+	public final List<Asset>[] assets;
+	
 	// Node
+	public final List<Node> nodes;
 	
 	// Prefab
 	
@@ -33,6 +36,8 @@ public class TilePart {
 	
 	// HarvestableList
 	
+	
+	@SuppressWarnings("unchecked")
 	protected TilePart(Tile parent) {
 		this.parent = parent;
 		
@@ -41,7 +46,14 @@ public class TilePart {
 		ground = new long[65 * 65];
 		clutter = new byte[128 * 128];
 		
-		assets = new ArrayList<>();
+		assets = new List[] {
+			new ArrayList<Asset>(),
+			new ArrayList<Asset>(),
+			new ArrayList<Asset>(),
+			new ArrayList<Asset>()
+		};
+		
+		nodes = new ArrayList<>();
 	}
 
 	public void setVertexColor(int[] array) {
@@ -60,8 +72,14 @@ public class TilePart {
 		System.arraycopy(array, 0, this.clutter, 0, Math.min(array.length, this.clutter.length));
 	}
 
-	public void addAsset(Asset asset) {
+	public void addAsset(Asset asset, int index) {
 		if(asset == null) throw new NullPointerException("A tile cannot contain null assets");
-		assets.add(asset);
+		if(index < 0 || index >= 3) throw new ArrayIndexOutOfBoundsException("Invalid asset index. The index must be one of [ 0, 1, 2, 3 ]");
+		assets[index].add(asset);
+	}
+	
+	public void addNode(Node node) {
+		if(node == null) throw new NullPointerException("A tile cannot contain null nodes");
+		nodes.add(node);
 	}
 }

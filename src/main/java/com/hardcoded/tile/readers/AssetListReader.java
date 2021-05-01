@@ -72,6 +72,7 @@ public class AssetListReader implements TileReaderImpl {
 				
 			} else {
 				//local_e8 = memory.Floats(4, index);
+				// UUID???
 				//System.out.printf("local_e8: %.8f, %.8f, %.8f, %.8f\n", local_e8[0], local_e8[1], local_e8[2], local_e8[3]);
 				index += 0x10;
 			}
@@ -110,17 +111,17 @@ public class AssetListReader implements TileReaderImpl {
 			
 			part.addAsset(asset);
 			
-//			{
-//				float[] pos = asset.pos;
-//				float[] size = asset.size;
-//				float[] quat = asset.quat;
-//				
-//				System.out.printf("pos : %.8f, %.8f, %.8f\n", pos[0], pos[1], pos[2]);
-//				System.out.printf("quat: %.8f, %.8f, %.8f, %.8f\n", quat[0], quat[1], quat[2], quat[3]);
-//				System.out.printf("size: %.8f, %.8f, %.8f\n", size[0], size[1], size[2]);
-//				System.out.printf("mats: %s\n", asset.materials);
+			{
+				float[] pos = asset.pos;
+				float[] size = asset.size;
+				float[] quat = asset.quat;
+				
+//				System.out.printf("  pos : %.8f, %.8f, %.8f\n", pos[0], pos[1], pos[2]);
+//				System.out.printf("  quat: %.8f, %.8f, %.8f, %.8f\n", quat[0], quat[1], quat[2], quat[3]);
+//				System.out.printf("  size: %.8f, %.8f, %.8f\n", size[0], size[1], size[2]);
+//				System.out.printf("  mats: %s\n", asset.materials);
 //				System.out.println();
-//			}
+			}
 		}
 		
 		return index;

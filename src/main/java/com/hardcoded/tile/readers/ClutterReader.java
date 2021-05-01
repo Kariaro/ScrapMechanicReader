@@ -20,7 +20,7 @@ public class ClutterReader implements TileReaderImpl {
 	}
 	
 	public byte[] read(Header h, Memory reader) {
-		TileUtils.log("  Clutter          : %d", h.clutterCompressedSize);
+		TileUtils.log("  Clutter          : %d / %d", h.clutterCompressedSize, h.clutterSize);
 		
 		byte[] compressed = reader.set(h.clutterIndex).Bytes(h.clutterCompressedSize);
 		byte[] bytes = new byte[h.clutterSize];

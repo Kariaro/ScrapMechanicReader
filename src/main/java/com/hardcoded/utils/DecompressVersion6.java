@@ -1,6 +1,11 @@
- package com.hardcoded.utils;
+package com.hardcoded.utils;
 
-public class DecompressTestingVersion6 {
+/**
+ * This class should only be used internally
+ * 
+ * @author HardCoded
+ */
+class DecompressVersion6 {
 	public int decompress(byte[] compressed, byte[] output, int uncompressed_size) {
 		if(compressed.length > 1000000) {
 			// This is more than what the game allows?
@@ -11,30 +16,6 @@ public class DecompressTestingVersion6 {
 			return -1;
 		}
 		
-		/*
-		{
-			for(int highByte = 0; highByte < 8; highByte++) {
-				byte[] param_2 = { 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0 };
-				
-				int ESI = 7;
-				param_2[ESI] = 0;
-				param_2[ESI + 1] = 0;
-				param_2[ESI + 2] = 0;
-				param_2[ESI + 3] = 0;
-				
-				int EDI = ESI - highByte;
-				memcpy(param_2, ESI + 0x0, param_2, EDI, 4);
-				EDI += INT_00e6cab8[highByte];
-				
-				memcpy(param_2, ESI + 0x4, param_2, EDI, 4);
-				EDI += INT_00e6cbe0[highByte];
-				
-				System.out.printf("%x: %s, EDI += %d\n", highByte, Arrays.toString(param_2), INT_00e6cab8[highByte] + INT_00e6cbe0[highByte]);
-			}
-		}
-		
-		if(true) throw new NullPointerException();
-		*/
 		// Create buffers
 		byte[] input = new byte[1000000];
 		byte[] param_2 = new byte[1000000];

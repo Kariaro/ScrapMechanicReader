@@ -1,7 +1,7 @@
 package com.hardcoded.tile.readers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -11,19 +11,23 @@ import com.hardcoded.utils.TileUtils;
 public class MipReader implements TileReaderImpl {
 	
 	@Override
-	public void read(HeaderPart header, Memory memory, TilePart part) {
+	public void read(CellHeader header, Memory memory, TilePart part) {
 		read(read(header, memory), part);
 	}
 	
-	public byte[] read(HeaderPart h, Memory reader) {
-		TileUtils.log("  Mip              : %d, %d", h.mipCompressedSize, h.mipSize);
+	public byte[] read(CellHeader h, Memory reader) {
+		return read(h, 0, reader);
+	}
+	
+	public byte[] read(CellHeader h, int mipOrLevel, Memory reader) {
+		TileUtils.log("  Mip              : %d, %d", h.mipCompressedSize[mipOrLevel], h.mipSize[mipOrLevel]);
 		
-		byte[] compressed = reader.set(h.mipIndex).Bytes(h.mipCompressedSize);
-		byte[] bytes = new byte[h.mipSize];
+		byte[] compressed = reader.set(h.mipIndex[mipOrLevel]).Bytes(h.mipCompressedSize[mipOrLevel]);
+		byte[] bytes = new byte[h.mipSize[mipOrLevel]];
 		
-		int debugSize = TileUtils.decompress_data(compressed, bytes, h.mipSize);
-		if(debugSize != h.mipCompressedSize) {
-			TileUtils.error("debugSize != h.mipCompressedSize[0]"); // 235
+		int debugSize = TileUtils.decompress_data(compressed, bytes, h.mipSize[mipOrLevel]);
+		if(debugSize != h.mipCompressedSize[mipOrLevel]) {
+			TileUtils.error("debugSize != h.mipCompressedSize[%d]: %d != %d", mipOrLevel, debugSize, h.mipCompressedSize[mipOrLevel]); // 235
 		}
 		
 		return bytes;
@@ -49,6 +53,7 @@ public class MipReader implements TileReaderImpl {
 			ground[i] = memory.NextLong();
 		}
 		
+		part.test = bytes;
 		part.setVertexColor(color);
 		part.setVertexHeight(height);
 		part.setGroundMaterials(ground);

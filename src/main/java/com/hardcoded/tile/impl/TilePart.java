@@ -8,12 +8,26 @@ import com.hardcoded.tile.Node;
 import com.hardcoded.tile.Tile;
 
 /**
- * A implementation of a tile in ScrapMechanic.
+ * An implementation of a tile.
  * 
+ * <p>A tile contains multiple parts:
+ * <pre>
+ * * Mip
+ * * Clutter
+ * * AssetList
+ * * Node
+ * * Prefab
+ * * BlueprintList
+ * * Decal
+ * * HarvestableList
+ * </pre>
+ * 
+ * <p>These parts 
  * @author HardCoded <https://github.com/Kariaro>
  */
 public class TilePart {
-	public final Tile parent;
+	private final Tile parent;
+	
 	// Mip
 	public final float[] vertexHeight;
 	public final int[] vertexColor;
@@ -27,6 +41,8 @@ public class TilePart {
 	
 	// Node
 	public final List<Node> nodes;
+
+	public byte[] test;
 	
 	// Prefab
 	
@@ -81,5 +97,9 @@ public class TilePart {
 	public void addNode(Node node) {
 		if(node == null) throw new NullPointerException("A tile cannot contain null nodes");
 		nodes.add(node);
+	}
+	
+	public Tile getParent() {
+		return parent;
 	}
 }

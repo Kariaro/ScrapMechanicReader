@@ -1,7 +1,7 @@
 package com.hardcoded.tile.readers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -13,11 +13,11 @@ import com.hardcoded.utils.TileUtils;
 public class HarvestableListReader implements TileReaderImpl {
 	
 	@Override
-	public void read(HeaderPart header, Memory memory, TilePart part) {
+	public void read(CellHeader header, Memory memory, TilePart part) {
 		read(read(header, memory), part);
 	}
 	
-	public byte[][] read(HeaderPart h, Memory reader) {
+	public byte[][] read(CellHeader h, Memory reader) {
 		byte[][] bytes = new byte[4][];
 		
 		for(int i = 0; i < 4; i++) {
@@ -26,7 +26,7 @@ public class HarvestableListReader implements TileReaderImpl {
 			
 			TileUtils.log("    Harvestable[%d] : %d / %d", i, harvestableListSize, harvestableListCompressedSize);
 			
-			if(h.harvestableListDefined[i] != 0) {
+			if(h.harvestableListCount[i] != 0) {
 				reader.set(h.harvestableListIndex[i]);
 				
 				byte[] compressed = reader.Bytes(harvestableListCompressedSize);

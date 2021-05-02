@@ -28,6 +28,7 @@ public class TileReader {
 	private static final ClutterReader clutter_reader = new ClutterReader();
 	private static final AssetListReader assetList_reader = new AssetListReader();
 	private static final NodeReader node_reader = new NodeReader();
+	private static final ScriptReader script_reader = new ScriptReader();
 	private static final PrefabReader prefab_reader = new PrefabReader();
 	private static final BlueprintListReader blueprintList_reader = new BlueprintListReader();
 	private static final DecalReader decal_reader = new DecalReader();
@@ -89,7 +90,7 @@ public class TileReader {
 		if(tileYSize > 0) {
 			for(int y = 0; y < tileYSize; y++) {
 				for(int x = 0; x < tileXSize; x++) {
-					HeaderPart h = header.getHeader(x, y);
+					CellHeader h = header.getHeader(x, y);
 					TilePart part = tile.getPart(x, y);
 					
 					if(header.type == 0) {
@@ -99,6 +100,7 @@ public class TileReader {
 					
 					assetList_reader.read(h, reader, part);
 					node_reader.read(h, reader, part);
+					script_reader.read(h, reader, part);
 					prefab_reader.read(h, reader, part);
 					blueprintList_reader.read(h, reader, part);
 					decal_reader.read(h, reader, part);

@@ -1,7 +1,7 @@
 package com.hardcoded.tile.readers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -13,12 +13,12 @@ import com.hardcoded.utils.TileUtils;
 public class DecalReader implements TileReaderImpl {
 	
 	@Override
-	public void read(HeaderPart header, Memory memory, TilePart part) {
+	public void read(CellHeader header, Memory memory, TilePart part) {
 		read(read(header, memory), part);
 	}
 	
-	public byte[] read(HeaderPart h, Memory reader) {
-		if((h.decalDefined == 0) || (h.decalIndex == 0)) return null;
+	public byte[] read(CellHeader h, Memory reader) {
+		if((h.decalCount == 0) || (h.decalIndex == 0)) return null;
 		reader.set(h.decalIndex);
 		
 		TileUtils.log("  Decal            : %d / %d", h.decalSize, h.decalCompressedSize);

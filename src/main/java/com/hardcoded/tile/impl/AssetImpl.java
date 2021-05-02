@@ -1,7 +1,7 @@
 package com.hardcoded.tile.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.hardcoded.tile.Asset;
@@ -12,9 +12,8 @@ import com.hardcoded.tile.Asset;
  * @author HardCoded
  */
 public class AssetImpl extends TileEntityImpl implements Asset {
+	public final Map<String, Integer> materials = new HashMap<>();
 	public UUID uuid = DEFAULT_UUID;
-	
-	public final List<String> materials = new ArrayList<>();
 	
 	@Override
 	public UUID getUUID() {
@@ -22,7 +21,7 @@ public class AssetImpl extends TileEntityImpl implements Asset {
 	}
 	
 	@Override
-	public List<String> getMaterials() {
+	public Map<String, Integer> getMaterials() {
 		return materials;
 	}
 }

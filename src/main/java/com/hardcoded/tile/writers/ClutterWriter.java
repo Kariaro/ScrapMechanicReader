@@ -1,7 +1,7 @@
 package com.hardcoded.tile.writers;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -13,7 +13,7 @@ import com.hardcoded.utils.TileUtils;
 public class ClutterWriter implements TileWriterImpl {
 	
 	@Override
-	public void write(HeaderPart header, Memory memory, TilePart part) {
+	public void write(CellHeader header, Memory memory, TilePart part) {
 		byte[] data = write(part);
 		
 		byte[] compressed = TileUtils.compress_data(data);

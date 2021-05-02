@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.Node;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
@@ -18,14 +18,14 @@ import com.hardcoded.utils.TileUtils;
 public class NodeWriter implements TileWriterImpl {
 	
 	@Override
-	public void write(HeaderPart header, Memory memory, TilePart part) {
+	public void write(CellHeader header, Memory memory, TilePart part) {
 		List<Node> nodes = part.nodes;
 		if(nodes.isEmpty()) {
-			header.nodeDefined = 0;
+			header.nodeCount = 0;
 			return;
 		}
 		
-		header.nodeDefined = nodes.size();
+		header.nodeCount = nodes.size();
 		
 		byte[] data = write(nodes, part);
 		byte[] compressed = TileUtils.compress_data(data);

@@ -1,5 +1,7 @@
 package com.hardcoded.tile;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
@@ -18,7 +20,7 @@ public class TileHeader {
 	public int cellHeadersOffset;
 	public int cellHeadersSize;
 	
-	public HeaderPart[] headers;
+	public CellHeader[] headers;
 	
 	public TileHeader(byte[] bytes) throws TileException {
 		this.bytes = bytes;
@@ -41,7 +43,7 @@ public class TileHeader {
 		
 		width = reader.NextInt();
 		height = reader.NextInt();
-		headers = new HeaderPart[width * height];
+		headers = new CellHeader[width * height];
 		
 		cellHeadersOffset = reader.NextInt();
 		cellHeadersSize = reader.NextInt();
@@ -79,15 +81,34 @@ public class TileHeader {
 			byte[] bytes_temp = new byte[0x124];
 			System.arraycopy(bytes, i * 0x124, bytes_temp, 0, 0x124);
 			
-			HeaderPart part = new HeaderPart(new Memory(bytes_temp));
+			CellHeader part = new CellHeader(new Memory(bytes_temp));
 			part.read();
 			headers[i] = part;
+		}
+		
+		try {
+			Field[] array = CellHeader.class.getFields();
+			
+			for(int i = 0; i < headers.length; i++) {
+				CellHeader cell = headers[i];
+				System.out.printf("Header[%d]:\n", i);
+				for(Field f : array) {
+					Object value = f.get(cell);
+					if(value instanceof int[]) {
+						System.out.printf("    : %-30s= %s\n", f.getName(), Arrays.toString((int[])value));
+					} else {
+						System.out.printf("    : %-30s= %s\n", f.getName(), value);
+					}
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		
 		return this;
 	}
 	
-	public HeaderPart getHeader(int x, int y) {
+	public CellHeader getHeader(int x, int y) {
 		return headers[x + y * width];
 	}
 }

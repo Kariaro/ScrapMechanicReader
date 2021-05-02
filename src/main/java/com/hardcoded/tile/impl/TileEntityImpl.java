@@ -4,9 +4,14 @@ import com.hardcoded.math.Quat;
 import com.hardcoded.math.Vec3;
 import com.hardcoded.tile.object.TileEntity;
 
+/**
+ * A tile entity implementation.
+ * 
+ * @author HardCoded
+ */
 public class TileEntityImpl implements TileEntity {
 	public final Vec3 pos = new Vec3();
-	public final Quat rot = new Quat();
+	public final Quat rot = Quat.identity();
 	public final Vec3 size = new Vec3();
 	
 	@Override

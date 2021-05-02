@@ -3,7 +3,7 @@ package com.hardcoded.tile.readers;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.AssetImpl;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
@@ -16,7 +16,7 @@ import com.hardcoded.utils.TileUtils;
 public class AssetListReader implements TileReaderImpl {
 	
 	@Override
-	public void read(HeaderPart h, Memory reader, TilePart part) {
+	public void read(CellHeader h, Memory reader, TilePart part) {
 		byte[][] bytes = new byte[4][];
 		for(int i = 0; i < 4; i++) {
 			int assetListCompressedSize = h.assetListCompressedSize[i];
@@ -24,7 +24,7 @@ public class AssetListReader implements TileReaderImpl {
 			
 			TileUtils.log("    Asset[%d]       : %d / %d", i, assetListSize, assetListCompressedSize);
 			
-			if(h.assetListDefined[i] != 0) {
+			if(h.assetListCount[i] != 0) {
 				reader.set(h.assetListIndex[i]);
 				
 				byte[] compressed = reader.Bytes(assetListCompressedSize);
@@ -35,7 +35,7 @@ public class AssetListReader implements TileReaderImpl {
 					TileUtils.error("debugSize != h.assetListCompressedSize[%d]: %d != %d", i, debugSize, h.assetListCompressedSize[i]);
 				}
 				
-				debugSize = read(bytes[i], i, h.assetListDefined[i], part.parent.getVersion(), part);
+				debugSize = read(bytes[i], i, h.assetListCount[i], part.getParent().getVersion(), part);
 				if(debugSize != h.assetListSize[i]) {
 					TileUtils.error("debugSize != h.assetListSize[%d]: %d != %d", i, debugSize, h.assetListSize[i]);
 				}
@@ -89,10 +89,9 @@ public class AssetListReader implements TileReaderImpl {
 				for(int local_2f8 = 0; local_2f8 < length; local_2f8++) {
 					bVar4 = memory.UnsignedByte(index++) & 0xff;
 					String str = memory.String(bVar4, index);
-					asset.materials.add(str);
 					
 					index += bVar4;
-					// int local_2b4 = memory.Int(index);
+					asset.materials.put(str, memory.Int(index));
 					index += 4;
 				}
 			}

@@ -90,7 +90,7 @@ public class TilePart {
 
 	public void addAsset(Asset asset, int index) {
 		if(asset == null) throw new NullPointerException("A tile cannot contain null assets");
-		if(index < 0 || index >= 3) throw new ArrayIndexOutOfBoundsException("Invalid asset index. The index must be one of [ 0, 1, 2, 3 ]");
+		if(index < 0 || index > 3) throw new ArrayIndexOutOfBoundsException("Invalid asset index. The index must be one of [ 0, 1, 2, 3 ]");
 		assets[index].add(asset);
 	}
 	

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.hardcoded.math.Quat;
 import com.hardcoded.math.Vec3;
+import com.hardcoded.utils.NotNull;
 
 /**
  * A tile entity interface.
@@ -17,18 +18,21 @@ public interface TileEntity {
 	 * Returns the position of this tile entity.
 	 * @return the position of this tile entity
 	 */
+	@NotNull
 	Vec3 getPosition();
 	
 	/**
 	 * Returns the rotation of this tile entity.
 	 * @return the rotation of this tile entity
 	 */
+	@NotNull
 	Quat getRotation();
 	
 	/**
 	 * Returns the size of this tile entity.
 	 * @return the size of this tile entity
 	 */
+	@NotNull
 	Vec3 getSize();
 	
 	/**

@@ -86,8 +86,7 @@ public class Memory {
 		for(int i = 0; i < length; i++) {
 			long shr = (bigEndian ? (length - 1 - i):i) * 8L;
 			byte val = (byte)((value >>> shr) & 0xff);
-			int idx = index + offset + i;
-			bytes[idx] = val;
+			bytes[index + offset + i] = val;
 		}
 		
 		int idx = index + length + offset;
@@ -294,12 +293,11 @@ public class Memory {
 	public Memory WriteBytes(byte[] value, int length, int offset, boolean reverse) {
 		for(int i = 0; i < length; i++) {
 			int idx = reverse ? (length - 1 - i):i;
-			
-			int byte_idx = index + offset + i;
-			bytes[byte_idx] = value[idx];
-			
-			if(byte_idx > highest_written_index) highest_written_index = byte_idx;
+			bytes[index + offset + i] = value[idx];
 		}
+
+		int idx = index + offset + length;
+		if(idx > highest_written_index) highest_written_index = idx;
 		return this;
 	}
 	

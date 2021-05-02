@@ -35,6 +35,10 @@ public class Quat {
 		return new float[] { x, y, z, w };
 	}
 	
+	public static Quat identity() {
+		return new Quat(0, 0, 0, 1);
+	}
+	
 	@Override
 	public String toString() {
 		return String.format(Locale.US, "{ %.6f, %.6f, %.6f, %.6f }", x, y, z, w);

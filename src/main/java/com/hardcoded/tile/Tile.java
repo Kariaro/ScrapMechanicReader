@@ -3,6 +3,7 @@ package com.hardcoded.tile;
 import java.util.UUID;
 
 import com.hardcoded.tile.impl.TilePart;
+import com.hardcoded.utils.NotNull;
 
 /**
  * A tile interface.
@@ -34,6 +35,7 @@ public interface Tile {
 	 * Returns the UUID of this tile.
 	 * @return the UUID of this tile
 	 */
+	@NotNull
 	UUID getUUID();
 	
 	/**
@@ -80,10 +82,56 @@ public interface Tile {
 	 */
 	void resize(int width, int height);
 	
+	/**
+	 * Returns a combined array of all height data in this tile.
+	 * 
+	 * <p>The width of this array is:<br>
+	 * {@code 0x20 * tile.getWidth() + 1}
+	 * 
+	 * @return a combined array of all height data
+	 */
+	@NotNull
 	float[] getVertexHeight();
+	
+	/**
+	 * Returns a combined array of all color data in this tile.
+	 * 
+	 * <p>The width of this array is:<br>
+	 * {@code 0x20 * tile.getWidth() + 1}
+	 * 
+	 * @return a combined array of all color data
+	 */
+	@NotNull
 	int[] getVertexColor();
+	
+	/**
+	 * Returns a combined array of all clutter data in this tile.
+	 * 
+	 * <p>The width of this array is:<br>
+	 * {@code 0x80 * tile.getWidth() + 1}
+	 * 
+	 * @return a combined array of all color data
+	 */
+	@NotNull
 	byte[] getClutter();
+	
+	/**
+	 * Returns a combined array of all ground material data in this tile.
+	 * 
+	 * <p>The width of this array is:<br>
+	 * {@code 0x40 * tile.getWidth() + 1}
+	 * 
+	 * @return a combined array of all ground material data
+	 */
+	@NotNull
 	long[] getGround();
 	
+	/**
+	 * Returns the sub tile at the specified position in this tile.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return a sub tile at the specified position
+	 */
+	@NotNull
 	TilePart getPart(int x, int y);
 }

@@ -1,10 +1,11 @@
 package com.hardcoded.tile.writers;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hardcoded.data.Memory;
 import com.hardcoded.tile.Asset;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
 
@@ -16,28 +17,23 @@ import com.hardcoded.utils.TileUtils;
 public class AssetListWriter implements TileWriterImpl {
 	
 	@Override
-	public void write(HeaderPart header, Memory memory, TilePart part) {
+	public void write(CellHeader header, Memory memory, TilePart part) {
 		for(int i = 0; i < 4; i++) {
 			List<Asset> list = part.assets[i];
 			
 			if(list.isEmpty()) {
+				header.assetListCount[i] = 0;
+				header.assetListIndex[i] = 0;
 				header.assetListCompressedSize[i] = 0;
 				header.assetListSize[i] = 0;
-				header.assetListIndex[i] = 0;
-				header.assetListDefined[i] = 0;
 			} else {
 				byte[] data = write(list, part);
 				byte[] compressed = TileUtils.compress_data(data);
 				header.assetListCompressedSize[i] = compressed.length;
 				header.assetListSize[i] = data.length;
 				header.assetListIndex[i] = memory.index();
-				header.assetListDefined[i] = list.size();
+				header.assetListCount[i] = list.size();
 				memory.NextWriteBytes(compressed);
-				
-//				TileUtils.log("%d", header.assetListCompressedSize[i]);
-//				TileUtils.log("%d", header.assetListSize[i]);
-//				TileUtils.log("%d", header.assetListIndex[i]);
-//				TileUtils.log("%d", header.assetListDefined[i]);
 			}
 		}
 	}
@@ -51,14 +47,12 @@ public class AssetListWriter implements TileWriterImpl {
 			memory.NextWriteFloats(asset.getSize().toArray());
 			memory.NextWriteUUID(asset.getUUID());
 			
-			List<String> list = asset.getMaterials();
-			memory.NextWriteByte(list.size());
-			for(String str : list) {
-				memory.NextWriteByte(str.length());
-				memory.NextWriteString(str);
-				
-				// TODO: I do not understand this value?
-				memory.NextWriteInt(0);
+			Map<String, Integer> map = asset.getMaterials();
+			memory.NextWriteByte(map.size());
+			for(String key : map.keySet()) {
+				memory.NextWriteByte(key.length());
+				memory.NextWriteString(key);
+				memory.NextWriteInt(map.get(key));
 			}
 		}
 		

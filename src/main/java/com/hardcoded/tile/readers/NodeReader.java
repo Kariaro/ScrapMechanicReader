@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.HeaderPart;
+import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.NodeImpl;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.TileUtils;
@@ -17,8 +17,8 @@ import com.hardcoded.utils.TileUtils;
 public class NodeReader implements TileReaderImpl {
 	
 	@Override
-	public void read(HeaderPart h, Memory reader, TilePart part) {
-		if((h.nodeDefined == 0) || (h.nodeIndex == 0)) return;
+	public void read(CellHeader h, Memory reader, TilePart part) {
+		if((h.nodeCount == 0) || (h.nodeIndex == 0)) return;
 		reader.set(h.nodeIndex);
 		
 		TileUtils.log("  Node             : %d / %d", h.nodeSize, h.nodeCompressedSize);
@@ -31,7 +31,7 @@ public class NodeReader implements TileReaderImpl {
 			TileUtils.error("debugSize != h.nodeCompressedSize: %d != %d", debugSize, h.nodeCompressedSize);
 		}
 		
-		debugSize = read(bytes, h.nodeDefined, part);
+		debugSize = read(bytes, h.nodeCount, part);
 		if(debugSize != h.nodeSize) {
 			TileUtils.error("debugSize != h.nodeSize: %d != %d", debugSize, h.nodeSize);
 		}

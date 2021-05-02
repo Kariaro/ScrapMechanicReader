@@ -9,7 +9,7 @@ import com.hardcoded.tile.object.TileEntity;
  * 
  * @author HardCoded
  */
-public class TileEntityImpl implements TileEntity {
+public abstract class TileEntityImpl implements TileEntity {
 	public final Vec3 pos = new Vec3();
 	public final Quat rot = Quat.identity();
 	public final Vec3 size = new Vec3();

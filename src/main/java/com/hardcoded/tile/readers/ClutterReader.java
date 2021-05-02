@@ -56,7 +56,7 @@ public class ClutterReader implements TileReaderImpl {
 				}
 				UUID uuid = memory.Uuid(offset, true);
 				
-				TileUtils.log("Clutter: %s    %08x", uuid, uVar7);
+				TileUtils.log("    Clutter: %s    %08x", uuid, uVar7);
 				//TileUtils.log("%08x\n", uVar7);
 				
 				int iVar8 = 0;

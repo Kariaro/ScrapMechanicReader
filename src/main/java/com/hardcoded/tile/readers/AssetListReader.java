@@ -75,7 +75,7 @@ public class AssetListReader implements TileReaderImpl {
 				
 			} else {
 				//local_e8 = memory.Floats(4, index);
-				uuid = memory.Uuid(index);
+				uuid = memory.Uuid(index, true);
 				// UUID???
 				//System.out.printf("local_e8: %.8f, %.8f, %.8f, %.8f\n", local_e8[0], local_e8[1], local_e8[2], local_e8[3]);
 				index += 0x10;

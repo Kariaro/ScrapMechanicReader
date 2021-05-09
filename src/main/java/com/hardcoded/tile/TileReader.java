@@ -43,6 +43,7 @@ public class TileReader {
 	}
 	
 	public static Tile loadTile(String path) throws TileException, IOException {
+		if(path == null) throw new NullPointerException("File path was null");
 		byte[] bytes = Files.readAllBytes(Path.of(path));
 		return loadTile(bytes);
 	}

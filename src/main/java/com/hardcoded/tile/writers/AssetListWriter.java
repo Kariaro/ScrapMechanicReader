@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.tile.Asset;
 import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.TilePart;
+import com.hardcoded.tile.object.Asset;
 import com.hardcoded.utils.TileUtils;
 
 /**

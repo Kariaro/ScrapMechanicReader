@@ -1,6 +1,6 @@
 # ScrapMechanicReader
 This project contains a collection of readers that can parse files made by the game ScrapMechanic.
-
+The game uses `lz4` to compress most of the data.
 
 ### Info
 The focus of this project is to discover how the tile files are generated and provide an api to
@@ -17,7 +17,7 @@ Tile tile = TileReader.readTile("<path to tile>");
 tile.setVersion(9); // Change the tile version
 tile.resize(2, 2);  // Change the tile size
 
-if(!TileWriter.saveTile(tile, "<path to write>")) {
+if(!TileWriter.writeTile(tile, "<path to write>")) {
     throw new TileException("Failed to write tile");
 }
 ```

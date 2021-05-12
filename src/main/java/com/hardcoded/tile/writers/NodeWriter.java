@@ -6,8 +6,8 @@ import java.util.Set;
 
 import com.hardcoded.data.Memory;
 import com.hardcoded.tile.CellHeader;
-import com.hardcoded.tile.Node;
 import com.hardcoded.tile.impl.TilePart;
+import com.hardcoded.tile.object.Node;
 import com.hardcoded.utils.TileUtils;
 
 /**

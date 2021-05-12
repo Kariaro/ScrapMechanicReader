@@ -1,7 +1,5 @@
 package com.hardcoded.tile;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.UUID;
 
 import com.hardcoded.data.Memory;
@@ -86,24 +84,24 @@ public class TileHeader {
 			headers[i] = part;
 		}
 		
-		try {
-			Field[] array = CellHeader.class.getFields();
-			
-			for(int i = 0; i < headers.length; i++) {
-				CellHeader cell = headers[i];
-				System.out.printf("Header[%d]:\n", i);
-				for(Field f : array) {
-					Object value = f.get(cell);
-					if(value instanceof int[]) {
-						System.out.printf("    : %-30s= %s\n", f.getName(), Arrays.toString((int[])value));
-					} else {
-						System.out.printf("    : %-30s= %s\n", f.getName(), value);
-					}
-				}
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Field[] array = CellHeader.class.getFields();
+//			
+//			for(int i = 0; i < headers.length; i++) {
+//				CellHeader cell = headers[i];
+//				System.out.printf("Header[%d]:\n", i);
+//				for(Field f : array) {
+//					Object value = f.get(cell);
+//					if(value instanceof int[]) {
+//						System.out.printf("    : %-30s= %s\n", f.getName(), Arrays.toString((int[])value));
+//					} else {
+//						System.out.printf("    : %-30s= %s\n", f.getName(), value);
+//					}
+//				}
+//			}
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		return this;
 	}

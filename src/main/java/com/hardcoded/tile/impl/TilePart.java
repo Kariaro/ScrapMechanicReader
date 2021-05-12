@@ -3,9 +3,9 @@ package com.hardcoded.tile.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hardcoded.tile.Asset;
-import com.hardcoded.tile.Node;
 import com.hardcoded.tile.Tile;
+import com.hardcoded.tile.object.Asset;
+import com.hardcoded.tile.object.Node;
 
 /**
  * An implementation of a tile.

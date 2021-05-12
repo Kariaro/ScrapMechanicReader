@@ -199,4 +199,9 @@ public class TileImpl implements Tile {
 	public TilePart getPart(int x, int y) {
 		return tiles[x + y * width];
 	}
+	
+	public void setPart(int x, int y, TilePart part) {
+		if(part == null) throw new NullPointerException("TilePart must not be null");
+		tiles[x + y * width] = part;
+	}
 }

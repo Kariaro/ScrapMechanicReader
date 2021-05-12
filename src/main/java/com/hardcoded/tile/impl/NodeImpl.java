@@ -2,7 +2,7 @@ package com.hardcoded.tile.impl;
 
 import java.util.*;
 
-import com.hardcoded.tile.Node;
+import com.hardcoded.tile.object.Node;
 
 /**
  * A node implementation.

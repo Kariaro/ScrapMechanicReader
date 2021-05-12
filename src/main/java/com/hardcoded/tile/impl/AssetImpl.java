@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.hardcoded.tile.Asset;
+import com.hardcoded.tile.object.Asset;
 
 /**
  * A asset implementation.

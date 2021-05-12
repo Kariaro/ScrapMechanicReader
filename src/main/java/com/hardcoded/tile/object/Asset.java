@@ -1,9 +1,8 @@
-package com.hardcoded.tile;
+package com.hardcoded.tile.object;
 
 import java.util.Map;
 import java.util.UUID;
 
-import com.hardcoded.tile.object.TileEntity;
 import com.hardcoded.utils.NotNull;
 
 /**

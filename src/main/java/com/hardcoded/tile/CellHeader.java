@@ -5,7 +5,7 @@ import com.hardcoded.data.Memory;
 /**
  * This is the cell header used by ScrapMechanic.
  * 
- * <p>Its exactly {@code 0x124} bytes but is sometimes reduced to a lower value.
+ * <p>The header is exactly {@code 0x124} bytes but it's sometimes saved with a lower size.
  * 
  * @author HardCoded
  */

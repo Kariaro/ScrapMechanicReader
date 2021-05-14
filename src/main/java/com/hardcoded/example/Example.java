@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.hardcoded.error.TileException;
+import com.hardcoded.game.GameContext;
 import com.hardcoded.tile.Tile;
 import com.hardcoded.tile.TileReader;
 import com.hardcoded.tile.TileWriter;
@@ -18,16 +19,16 @@ public class Example {
 	 * To aid finding tiles in your computer you can specify the game's
 	 * directory and use the {@link #getTilePath(String)} method.
 	 */
-	public static final String GAME_DIRECTORY = "<game_path>";
+	public static final GameContext CONTEXT = new GameContext(/* Absolute game path */);
 	
 	public static void main(String[] args) throws TileException, IOException {
 		// To read a tile you need to get the path to the tile
 		String example_tile = "res/example.tile";
 		
-		Tile tile = TileReader.readTile(example_tile);
+		Tile tile = TileReader.readTile(example_tile, CONTEXT);
 		System.out.printf("Loading tile: '%s'\n", example_tile);
 		System.out.printf("  TileFileVersion: %d\n", tile.getVersion());
-		System.out.printf("  TileUuid: {%s}\n", tile.getUUID());
+		System.out.printf("  TileUuid: {%s}\n", tile.getUuid());
 		System.out.printf("  CreatorId: %d\n", tile.getCreatorId());
 		System.out.printf("  Size: %d, %d\n", tile.getWidth(), tile.getHeight());
 		System.out.printf("  Type: %d\n", tile.getTileType());
@@ -47,10 +48,10 @@ public class Example {
 			throw new TileException("GAME_DIRECTORY or tile name was not found!");
 		}
 		
-		tile = TileReader.readTile(tile_path);
+		tile = TileReader.readTile(tile_path, CONTEXT);
 		System.out.printf("Loading tile: '%s'\n", tile_path);
 		System.out.printf("  TileFileVersion: %d\n", tile.getVersion());
-		System.out.printf("  TileUuid: {%s}\n", tile.getUUID());
+		System.out.printf("  TileUuid: {%s}\n", tile.getUuid());
 		System.out.printf("  CreatorId: %d\n", tile.getCreatorId());
 		System.out.printf("  Size: %d, %d\n", tile.getWidth(), tile.getHeight());
 		System.out.printf("  Type: %d\n", tile.getTileType());
@@ -64,7 +65,9 @@ public class Example {
 	 * @return the path or {@code null} if no tile was found
 	 */
 	public static String getGameTile(String name) {
-		File tile_path = new File(GAME_DIRECTORY, "Data/Terrain/Tiles/CreativeTiles/");
+		if(!CONTEXT.isValid()) return null;
+		
+		File tile_path = new File(CONTEXT.getPath(), "Data/Terrain/Tiles/CreativeTiles/");
 		
 		File[] array = tile_path.listFiles();
 		if(array == null) return null;

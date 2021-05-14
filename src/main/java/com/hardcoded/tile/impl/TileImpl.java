@@ -3,6 +3,7 @@ package com.hardcoded.tile.impl;
 import java.util.UUID;
 
 import com.hardcoded.error.TileException;
+import com.hardcoded.game.GameContext;
 import com.hardcoded.tile.Tile;
 
 /**
@@ -12,6 +13,7 @@ import com.hardcoded.tile.Tile;
  * @since v0.1
  */
 public class TileImpl implements Tile {
+	private GameContext context = new GameContext();
 	private UUID uuid = DEFAULT_UUID;
 	private int version;
 	
@@ -38,6 +40,17 @@ public class TileImpl implements Tile {
 	}
 	
 	@Override
+	public GameContext getContext() {
+		return context;
+	}
+	
+	@Override
+	public void setContext(GameContext context) {
+		if(context == null) return;
+		this.context = context;
+	}
+	
+	@Override
 	public int getWidth() {
 		return width;
 	}
@@ -53,7 +66,7 @@ public class TileImpl implements Tile {
 	}
 	
 	@Override
-	public UUID getUUID() {
+	public UUID getUuid() {
 		return uuid;
 	}
 	
@@ -74,7 +87,7 @@ public class TileImpl implements Tile {
 	}
 	
 	@Override
-	public void setUUID(UUID uuid) {
+	public void setUuid(UUID uuid) {
 		if(uuid == null) throw new NullPointerException("The uuid of a tile cannot be null");
 		this.uuid = uuid;
 	}
@@ -125,7 +138,7 @@ public class TileImpl implements Tile {
 				float[] array = part.vertexHeight;
 				int idx = x * 32 + y * 32 * h;
 				for(int i = 0; i < 32; i++) {
-					System.arraycopy(array, i * 33, result, idx + i * w , 32);
+					System.arraycopy(array, i * 33, result, idx + i * w, 33);
 				}
 			}
 		}
@@ -146,7 +159,7 @@ public class TileImpl implements Tile {
 				int[] array = part.vertexColor;
 				int idx = x * 32 + y * 32 * h;
 				for(int i = 0; i < 32; i++) {
-					System.arraycopy(array, i * 33, result, idx + i * w , 32);
+					System.arraycopy(array, i * 33, result, idx + i * w, 33);
 				}
 			}
 		}
@@ -167,7 +180,7 @@ public class TileImpl implements Tile {
 				byte[] array = part.clutter;
 				int idx = x * 128 + y * 128 * h;
 				for(int i = 0; i < 128; i++) {
-					System.arraycopy(array, i * 128, result, idx + i * w , 128);
+					System.arraycopy(array, i * 128, result, idx + i * w, 128);
 				}
 			}
 		}
@@ -188,7 +201,7 @@ public class TileImpl implements Tile {
 				long[] array = part.ground;
 				int idx = x * 64 + y * 64 * h;
 				for(int i = 0; i < 64; i++) {
-					System.arraycopy(array, i * 65, result, idx + i * w, 64);
+					System.arraycopy(array, i * 65, result, idx + i * w, 65);
 				}
 			}
 		}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardcoded.data.Memory;
-import com.hardcoded.lua.LuaDeserializer;
 import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.NodeImpl;
 import com.hardcoded.tile.impl.TilePart;
@@ -40,7 +39,7 @@ public class NodeReader implements TileReaderImpl {
 		return;
 	}
 	
-	public int read(byte[] bytes, int nodeDefined, TilePart part) {
+	public int read(byte[] bytes, int nodeCount, TilePart part) {
 		int index = 0;
 		Memory memory = new Memory(bytes);
 		
@@ -54,24 +53,16 @@ public class NodeReader implements TileReaderImpl {
 			}
 		}
 		
-		if(nodeDefined != 0) {
-			for(int i = 0; i < nodeDefined; i++) {
+		if(nodeCount != 0) {
+			for(int i = 0; i < nodeCount; i++) {
 				float[] f_pos = memory.Floats(3, index);
 				float[] f_quat = memory.Floats(4, index + 0xc);
 				float[] f_size = memory.Floats(3, index + 0x1c);
 				
 				NodeImpl node = new NodeImpl(tags);
-				
-				{
-					node.setPosition(
-						f_pos[0], // + position[0]
-						f_pos[1], // + position[1]
-						f_pos[2]  // + position[2]
-					);
-					
-					node.setRotation(f_quat[0], f_quat[1], f_quat[2], f_quat[3]);
-					node.setSize(f_size[0], f_size[1], f_size[2]);
-				}
+				node.setPosition(f_pos /* + f_position */);
+				node.setRotation(f_quat);
+				node.setSize(f_size);
 				
 				index += 0x28;
 				int bVar2 = memory.UnsignedByte(index++);
@@ -87,39 +78,19 @@ public class NodeReader implements TileReaderImpl {
 				int uVar3 = memory.Int(index);
 				index += 4;
 				if(uVar3 != 0) {
-					//byte[] data = memory.Bytes(uVar3, index);
+					@SuppressWarnings("unused")
 					Memory blob = new Memory(memory.Bytes(uVar3, index));
 					index += uVar3;
 					
 					//TileUtils.debugPrint("LuaData", blob);
-					Object deserialized = LuaDeserializer.DeserializePure(blob);
-					
-					//TileUtils.log("ReadData: %s", deserialized);
-					//System.out.printf("Data: [%s]\n", new String(data));
-					
-					// LuaObjectSerializer.cpp
+					//Object deserialized = LuaDeserializer.DeserializePure(blob);
 				}
-				
-//				{
-//					System.out.printf("  pos : %s\n", node.pos);
-//					System.out.printf("  rot : %s\n", node.rot);
-//					System.out.printf("  size: %s\n", node.size);
-//					System.out.printf("  tags:\n");
-//					
-//					for(String tag : node.getDefinedTags()) {
-//						if(node.getTagState(tag)) {
-//							System.out.printf("    : %s\n", tag);
-//						}
-//					}
-//					
-//					System.out.println();
-//				}
 				
 				part.addNode(node);
 			}
 		}
 		
-		TileUtils.log("tags = %s", tags);
+		// TileUtils.log("tags = %s", tags);
 		
 		return index;
 	}

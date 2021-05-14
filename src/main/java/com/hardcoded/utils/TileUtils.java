@@ -52,6 +52,10 @@ public class TileUtils {
 		}
 	}
 	
+	public static void warn(String format, Object... args) {
+		LOGGER.log(Level.WARNING, 0, format, args);
+	}
+	
 	public static boolean isDev() {
 		return "true".equalsIgnoreCase(System.getProperty("com.hardcoded.dev"));
 	}

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 
 import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
+import com.hardcoded.game.GameContext;
 import com.hardcoded.logger.Log;
 import com.hardcoded.tile.impl.TileImpl;
 import com.hardcoded.tile.impl.TilePart;
@@ -20,6 +21,7 @@ import com.hardcoded.utils.TileUtils;
  * <p>
  * 
  * @author HardCoded <https://github.com/Kariaro>
+ * @since v0.1
  */
 public class TileReader {
 	private static final Log LOGGER = Log.getLogger();
@@ -38,17 +40,36 @@ public class TileReader {
 		
 	}
 	
+	/**
+	 * Returns a parsed instance of a {@code .TILE} file.
+	 * 
+	 * @param path the absolute path of the file
+	 * @return a parsed instance of a tile file
+	 * 
+	 * @throws TileException
+	 * @throws IOException
+	 */
 	public static Tile readTile(String path) throws TileException, IOException {
-		return loadTile(path);
+		return readTile(path, null);
 	}
 	
-	public static Tile loadTile(String path) throws TileException, IOException {
+	/**
+	 * Returns a parsed instance of a {@code .TILE} file.
+	 * 
+	 * @param path the absolute path of the file
+	 * @param context context information about the game or {@code null}
+	 * @return a parsed instance of a tile file
+	 * 
+	 * @throws TileException
+	 * @throws IOException
+	 */
+	public static Tile readTile(String path, GameContext context) throws TileException, IOException {
 		if(path == null) throw new NullPointerException("File path was null");
 		byte[] bytes = Files.readAllBytes(Path.of(path));
-		return loadTile(bytes);
+		return loadTile(bytes, context);
 	}
 	
-	public static Tile loadTile(byte[] tile_data) throws TileException {
+	public static Tile loadTile(byte[] tile_data, GameContext context) throws TileException {
 		TileHeader header = new TileHeader(tile_data);
 		
 		if(TileUtils.isDev()) {
@@ -83,9 +104,10 @@ public class TileReader {
 		int tileYSize = header.height;
 
 		TileImpl tile = new TileImpl(tileXSize, tileYSize);
+		tile.setContext(context);
 		tile.setVersion(header.version);
 		tile.setTileType(header.type);
-		tile.setUUID(header.uuid);
+		tile.setUuid(header.uuid);
 		tile.setCreatorId(header.creatorId);
 		
 		if(tileYSize > 0) {

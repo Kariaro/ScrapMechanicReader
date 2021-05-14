@@ -2,6 +2,7 @@ package com.hardcoded.tile;
 
 import java.util.UUID;
 
+import com.hardcoded.game.GameContext;
 import com.hardcoded.tile.impl.TilePart;
 import com.hardcoded.utils.NotNull;
 
@@ -12,6 +13,22 @@ import com.hardcoded.utils.NotNull;
  */
 public interface Tile {
 	static final UUID DEFAULT_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	
+	/**
+	 * Returns the current game context of this tile.
+	 * @return the current game context
+	 */
+	@NotNull
+	GameContext getContext();
+	
+	/**
+	 * Set the current game context of this tile.
+	 * <p>The game context is only used when reading.
+	 * 
+	 * @param context the new context
+	 * @since v0.2
+	 */
+	void setContext(GameContext context);
 	
 	/**
 	 * Returns the width of this tile.
@@ -32,11 +49,11 @@ public interface Tile {
 	int getVersion();
 	
 	/**
-	 * Returns the UUID of this tile.
-	 * @return the UUID of this tile
+	 * Returns the uuid of this tile.
+	 * @return the uuid of this tile
 	 */
 	@NotNull
-	UUID getUUID();
+	UUID getUuid();
 	
 	/**
 	 * Returns the type of this tile.
@@ -60,7 +77,7 @@ public interface Tile {
 	 * Set the uuid of this tile.
 	 * @param uuid the new uuid
 	 */
-	void setUUID(UUID uuid);
+	void setUuid(UUID uuid);
 	
 	/**
 	 * Set the type of this tile.

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardcoded.tile.Tile;
-import com.hardcoded.tile.object.Asset;
-import com.hardcoded.tile.object.Harvestable;
-import com.hardcoded.tile.object.Node;
+import com.hardcoded.tile.object.*;
 
 /**
  * An implementation of a tile.
@@ -48,6 +46,7 @@ public class TilePart {
 	public byte[] test;
 	
 	// Prefab
+	public final List<TilePrefab> prefabs;
 	
 	// BlueprintList
 	
@@ -75,6 +74,7 @@ public class TilePart {
 		};
 		
 		nodes = new ArrayList<>();
+		prefabs = new ArrayList<>();
 		
 		harvestables = new List[] {
 			new ArrayList<Harvestable>(),
@@ -115,6 +115,11 @@ public class TilePart {
 	public void addNode(Node node) {
 		if(node == null) throw new NullPointerException("A tile cannot contain null nodes");
 		nodes.add(node);
+	}
+	
+	public void addPrefab(TilePrefab prefab) {
+		if(prefab == null) throw new NullPointerException("A tile cannot contain null prefabs");
+		prefabs.add(prefab);
 	}
 	
 	public Tile getParent() {

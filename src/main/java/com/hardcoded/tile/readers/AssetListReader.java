@@ -97,14 +97,9 @@ public class AssetListReader implements TileReaderImpl {
 			}
 			
 			
-			asset.setPosition(
-				f_pos[0], // + position[0]
-				f_pos[1], // + position[1]
-				f_pos[2]  // + position[2]
-			);
-			
-			asset.setRotation(f_quat[0], f_quat[1], f_quat[2], f_quat[3]);
-			asset.setSize(f_size[0], f_size[1], f_size[2]);
+			asset.setPosition(f_pos /* + f_position */);
+			asset.setRotation(f_quat);
+			asset.setSize(f_size);
 			
 			if(uuid != null) {
 				asset.setUuid(uuid);

@@ -60,7 +60,7 @@ public class TileWriter {
 		memory.NextWriteString("TILE"); // Magic
 		memory.NextWriteInt(LATEST_VERSION);
 		
-		memory.NextWriteUUID(tile.getUUID(), true);
+		memory.NextWriteUUID(tile.getUuid(), true);
 		memory.NextWriteLong(tile.getCreatorId());
 		
 		memory.NextWriteInt(tile.getWidth());

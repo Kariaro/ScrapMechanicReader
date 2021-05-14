@@ -107,7 +107,7 @@ public class AssetListReader implements TileReaderImpl {
 			asset.setSize(f_size[0], f_size[1], f_size[2]);
 			
 			if(uuid != null) {
-				asset.uuid = uuid;
+				asset.setUuid(uuid);
 			}
 			
 			part.addAsset(asset, asset_index);

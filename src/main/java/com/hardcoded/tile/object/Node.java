@@ -9,11 +9,12 @@ import com.hardcoded.utils.NotNull;
  * A node interface.
  * 
  * @author HardCoded <https://github.com/Kariaro>
+ * @since v0.1
  */
 public interface Node extends TileEntity {
 	/**
-	 * Returns a unmodifiable list of tags this node defines.
-	 * @return a unmodifiable list of tags this node defines
+	 * Returns an unmodifiable list of tags this node defines.
+	 * @return an unmodifiable list of tags this node defines
 	 */
 	@NotNull
 	List<String> getDefinedTags();
@@ -27,7 +28,7 @@ public interface Node extends TileEntity {
 	boolean getTagState(String name);
 	
 	/**
-	 * Change the state of a tag
+	 * Set the state of a tag inside this node.
 	 * @param name the name of the tag
 	 * @param enable if the tag should be enabled
 	 * @throws NullPointerException if the tag was not found
@@ -35,8 +36,8 @@ public interface Node extends TileEntity {
 	void setTagState(String name, boolean enable);
 	
 	/**
-	 * Returns a unmodifiable set of the active tags inside this node.
-	 * @return a unmodifiable set of the active tags inside this node
+	 * Returns an unmodifiable set of the active tags inside this node.
+	 * @return an unmodifiable set of the active tags inside this node
 	 */
 	@NotNull
 	Set<String> getActiveTags();

@@ -10,6 +10,7 @@ import com.hardcoded.utils.NotNull;
  * A tile entity interface.
  * 
  * @author HardCoded
+ * @since v0.1
  */
 public interface TileEntity {
 	static final UUID DEFAULT_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
@@ -36,7 +37,7 @@ public interface TileEntity {
 	Vec3 getSize();
 	
 	/**
-	 * Change the position of this tile entity.
+	 * Set the position of this tile entity.
 	 * @param x the x coordinate
 	 * @param y the y coordinate
 	 * @param z the z coordinate
@@ -45,12 +46,18 @@ public interface TileEntity {
 	
 	/**
 	 * Change the position of this tile entity.
+	 * @param array an array containing the new coordinates
+	 */
+	void setPosition(float... array);
+	
+	/**
+	 * Set the position of this tile entity.
 	 * @param vec the new position
 	 */
 	void setPosition(Vec3 vec);
 	
 	/**
-	 * Change the rotation of this tile entity.
+	 * Set the rotation of this tile entity.
 	 * @param x the x axis
 	 * @param y the y axis
 	 * @param z the z axis
@@ -59,13 +66,19 @@ public interface TileEntity {
 	void setRotation(float x, float y, float z, float w);
 	
 	/**
-	 * Change the rotation of this tile entity.
+	 * Set the rotation of this tile entity.
+	 * @param array an array containing the new rotation
+	 */
+	void setRotation(float... array);
+	
+	/**
+	 * Set the rotation of this tile entity.
 	 * @param quat the new rotation
 	 */
 	void setRotation(Quat quat);
 	
 	/**
-	 * Change the size of this tile entity.
+	 * Set the size of this tile entity.
 	 * @param x the x size
 	 * @param y the y size
 	 * @param z the z size
@@ -73,7 +86,13 @@ public interface TileEntity {
 	void setSize(float x, float y, float z);
 	
 	/**
-	 * Change the size of this tile entity.
+	 * Set the size of this tile entity.
+	 * @param array an array containing the new size
+	 */
+	void setSize(float... array);
+	
+	/**
+	 * Set the size of this tile entity.
 	 * @param vec the new size
 	 */
 	void setSize(Vec3 vec);

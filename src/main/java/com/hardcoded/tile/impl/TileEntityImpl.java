@@ -8,6 +8,7 @@ import com.hardcoded.tile.object.TileEntity;
  * A tile entity implementation.
  * 
  * @author HardCoded
+ * @since v0.1
  */
 public abstract class TileEntityImpl implements TileEntity {
 	public final Vec3 pos = new Vec3();
@@ -31,45 +32,46 @@ public abstract class TileEntityImpl implements TileEntity {
 	
 	@Override
 	public void setPosition(float x, float y, float z) {
-		pos.x = x;
-		pos.y = y;
-		pos.z = z;
+		pos.set(x, y, z);
+	}
+	
+	@Override
+	public void setPosition(float... array) {
+		pos.set(array);
 	}
 	
 	@Override
 	public void setPosition(Vec3 vec) {
-		pos.x = vec.x;
-		pos.y = vec.y;
-		pos.z = vec.z;
+		pos.set(vec);
 	}
 	
 	@Override
 	public void setRotation(float x, float y, float z, float w) {
-		rot.x = x;
-		rot.y = y;
-		rot.z = z;
-		rot.w = w;
+		rot.set(x, y, z, w);
+	}
+	
+	@Override
+	public void setRotation(float... array) {
+		rot.set(array);
 	}
 	
 	@Override
 	public void setRotation(Quat quat) {
-		rot.x = quat.x;
-		rot.y = quat.y;
-		rot.z = quat.z;
-		rot.w = quat.w;
+		rot.set(quat);
 	}
 	
 	@Override
 	public void setSize(float x, float y, float z) {
-		size.x = x;
-		size.y = y;
-		size.z = z;
+		size.set(x, y, z);
+	}
+	
+	@Override
+	public void setSize(float... array) {
+		size.set(array);
 	}
 	
 	@Override
 	public void setSize(Vec3 vec) {
-		size.x = vec.x;
-		size.y = vec.y;
-		size.z = vec.z;
+		size.set(vec);
 	}
 }

@@ -45,7 +45,7 @@ public class AssetListWriter implements TileWriterImpl {
 			memory.NextWriteFloats(asset.getPosition().toArray());
 			memory.NextWriteFloats(asset.getRotation().toArray());
 			memory.NextWriteFloats(asset.getSize().toArray());
-			memory.NextWriteUUID(asset.getUUID(), true);
+			memory.NextWriteUUID(asset.getUuid(), true);
 			
 			Map<String, Integer> map = asset.getMaterials();
 			memory.NextWriteByte(map.size());

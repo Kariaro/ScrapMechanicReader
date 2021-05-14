@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.hardcoded.tile.Tile;
 import com.hardcoded.tile.object.Asset;
+import com.hardcoded.tile.object.Harvestable;
 import com.hardcoded.tile.object.Node;
 
 /**
@@ -22,8 +23,10 @@ import com.hardcoded.tile.object.Node;
  * * HarvestableList
  * </pre>
  * 
- * <p>These parts 
+ * <p>These parts
+ *  
  * @author HardCoded <https://github.com/Kariaro>
+ * @since v0.1
  */
 public class TilePart {
 	private final Tile parent;
@@ -41,7 +44,7 @@ public class TilePart {
 	
 	// Node
 	public final List<Node> nodes;
-
+	
 	public byte[] test;
 	
 	// Prefab
@@ -51,6 +54,8 @@ public class TilePart {
 	// Decal
 	
 	// HarvestableList
+	public final List<Harvestable>[] harvestables;
+	
 	
 	
 	@SuppressWarnings("unchecked")
@@ -70,6 +75,13 @@ public class TilePart {
 		};
 		
 		nodes = new ArrayList<>();
+		
+		harvestables = new List[] {
+			new ArrayList<Harvestable>(),
+			new ArrayList<Harvestable>(),
+			new ArrayList<Harvestable>(),
+			new ArrayList<Harvestable>()
+		};
 	}
 
 	public void setVertexColor(int[] array) {
@@ -92,6 +104,12 @@ public class TilePart {
 		if(asset == null) throw new NullPointerException("A tile cannot contain null assets");
 		if(index < 0 || index > 3) throw new ArrayIndexOutOfBoundsException("Invalid asset index. The index must be one of [ 0, 1, 2, 3 ]");
 		assets[index].add(asset);
+	}
+	
+	public void addHarvestable(Harvestable harvestable, int index) {
+		if(harvestable == null) throw new NullPointerException("A tile cannot contain null harvestables");
+		if(index < 0 || index > 3) throw new ArrayIndexOutOfBoundsException("Invalid harvestables index. The index must be one of [ 0, 1, 2, 3 ]");
+		harvestables[index].add(harvestable);
 	}
 	
 	public void addNode(Node node) {

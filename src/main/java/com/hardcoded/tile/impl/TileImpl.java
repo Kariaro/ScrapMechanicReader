@@ -9,6 +9,7 @@ import com.hardcoded.tile.Tile;
  * A tile implementation.
  * 
  * @author HardCoded <https://github.com/Kariaro>
+ * @since v0.1
  */
 public class TileImpl implements Tile {
 	private UUID uuid = DEFAULT_UUID;

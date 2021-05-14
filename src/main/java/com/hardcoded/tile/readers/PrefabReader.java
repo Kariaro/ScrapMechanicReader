@@ -28,7 +28,7 @@ public class PrefabReader implements TileReaderImpl {
 		
 		int debugSize = TileUtils.decompress_data(compressed, bytes, h.prefabSize);
 		if(debugSize != h.prefabCompressedSize) {
-			TileUtils.error("debugSize != h.prefabCompressedSize"); // 277
+			TileUtils.error("debugSize != h.prefabCompressedSize");
 		}
 		
 		// System.out.println(new String(bytes));

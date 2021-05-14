@@ -1,46 +1,43 @@
 package com.hardcoded.math;
 
-import java.util.Locale;
-
 /**
  * A quaternion object.
  * 
  * @author HardCoded
+ * @since v0.1
  */
-public class Quat {
-	public float x;
-	public float y;
-	public float z;
-	public float w;
-	
+public class Quat extends FloatVec<Quat> {
 	public Quat() {
-		
+		super(4);
 	}
 	
 	public Quat(float x, float y, float z, float w) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.w = w;
+		super(4);
+		set(x, y, z, w);
 	}
 	
-	public void set(float[] array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
-		this.w = array[3];
+	public Quat(float... array) {
+		super(4);
+		set(array);
 	}
 	
-	public float[] toArray() {
-		return new float[] { x, y, z, w };
+	public float getX() {
+		return array[0];
+	}
+	
+	public float getY() {
+		return array[1];
+	}
+	
+	public float getZ() {
+		return array[2];
+	}
+	
+	public float getW() {
+		return array[3];
 	}
 	
 	public static Quat identity() {
 		return new Quat(0, 0, 0, 1);
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(Locale.US, "{ %.6f, %.6f, %.6f, %.6f }", x, y, z, w);
 	}
 }

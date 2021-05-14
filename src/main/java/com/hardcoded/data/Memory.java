@@ -8,7 +8,7 @@ import java.util.UUID;
  * @author HardCoded
  */
 public class Memory {
-	private final byte[] bytes;
+	private byte[] bytes;
 	private boolean defaultEndian;
 	private int highest_written_index;
 	private int index;
@@ -26,6 +26,15 @@ public class Memory {
 		
 		if(bytes != null) 
 			System.arraycopy(bytes, 0, array, 0, Math.min(bytes.length, capacity));
+	
+		this.bytes = array;
+	}
+	
+	public Memory(byte[] bytes, int offset, int size) {
+		byte[] array = new byte[size];
+		
+		if(bytes != null) 
+			System.arraycopy(bytes, offset, array, 0, Math.min(bytes.length - offset, size));
 	
 		this.bytes = array;
 	}
@@ -59,6 +68,16 @@ public class Memory {
 		return highest_written_index;
 	}
 	
+	public void expand(int size) {
+		if(bytes.length >= size) return;
+		
+		byte[] array = new byte[size];
+		
+		if(bytes != null) 
+			System.arraycopy(bytes, 0, array, 0, bytes.length);
+		
+		this.bytes = array;
+	}
 	// ======================= //
 	
 	private long readValue(int offset, int length, boolean bigEndian) {

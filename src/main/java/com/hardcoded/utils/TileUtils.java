@@ -1,5 +1,6 @@
 package com.hardcoded.utils;
 
+import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
 import com.hardcoded.logger.Log.Level;
@@ -53,5 +54,46 @@ public class TileUtils {
 	
 	public static boolean isDev() {
 		return "true".equalsIgnoreCase(System.getProperty("com.hardcoded.dev"));
+	}
+	
+	
+	// Debug Print
+	public static void debugPrint(String name, Memory data, int offset) {
+		int len = data.data().length - data.index() - offset;
+		StringBuilder sb = new StringBuilder();
+		
+		if(name.isEmpty()) {
+			sb.append("######################");
+		} else {
+			sb.append("########### [").append(name).append("] ###########");
+		}
+		
+		
+		if(len > 255) len = 255;
+		
+		sb.append(": len=").append(len).append(", idx=").append(offset).append("\n");
+		
+		for(int i = 0; i < len; i++) sb.append(String.format("%02x ", data.UnsignedByte(i + offset)));
+		sb.append("\n");
+		for(int i = 0; i < len; i++) {
+			char c = (char)data.UnsignedByte(i + offset);
+			sb.append(String.format("%2s ", (Character.isWhitespace(c) || Character.isISOControl(c) ? ".":c)));
+		}
+		sb.append("\n");
+		if(name.isEmpty()) {
+			sb.append("######################");
+		} else {
+			sb.append("########### [").append(name).append("] ###########");
+		}
+		
+		System.out.println(sb.toString());
+	}
+	
+	public static void debugPrint(String str, Memory data) {
+		debugPrint(str, data, 0);
+	}
+	
+	public static void debugPrint(Memory data) {
+		debugPrint("", data, 0);
 	}
 }

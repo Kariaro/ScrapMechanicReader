@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardcoded.data.Memory;
+import com.hardcoded.lua.LuaDeserializer;
 import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.NodeImpl;
 import com.hardcoded.tile.impl.TilePart;
@@ -86,11 +87,15 @@ public class NodeReader implements TileReaderImpl {
 				int uVar3 = memory.Int(index);
 				index += 4;
 				if(uVar3 != 0) {
-					//int local_248 = (uVar3 * 8);
 					//byte[] data = memory.Bytes(uVar3, index);
+					Memory blob = new Memory(memory.Bytes(uVar3, index));
 					index += uVar3;
 					
-					// System.out.printf("Data: [%s]\n", new String(data));
+					//TileUtils.debugPrint("LuaData", blob);
+					Object deserialized = LuaDeserializer.DeserializePure(blob);
+					
+					//TileUtils.log("ReadData: %s", deserialized);
+					//System.out.printf("Data: [%s]\n", new String(data));
 					
 					// LuaObjectSerializer.cpp
 				}

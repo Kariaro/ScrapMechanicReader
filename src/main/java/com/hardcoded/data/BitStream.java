@@ -29,12 +29,18 @@ public class BitStream {
 	}
 	
 	public int readByte(boolean endian) {
+		if(length() < (index >> 3) + 8) {
+			// Bad
+			return 0;
+		}
+		
 		int offset = index & 7;
 		if(offset == 0) {
 			int result = memory.UnsignedByte((index >> 3));
 			index += 8;
 			return result;
 		}
+		
 		
 		//memory.WriteByte(0b10101101, (index >> 3) + 0);
 		//memory.WriteByte(0b11111110, (index >> 3) + 1);
@@ -62,9 +68,10 @@ public class BitStream {
 	}
 	
 	public boolean readBool() {
-		int value = readByte() & 1;
-		index -= 7;
-		return (value != 0);
+		int value = memory.UnsignedByte(index >> 3);
+		boolean result = (value & (0x80 >> (index & 7))) != 0;
+		index ++;
+		return result;
 	}
 	
 	public byte[] readBytes(int length) {

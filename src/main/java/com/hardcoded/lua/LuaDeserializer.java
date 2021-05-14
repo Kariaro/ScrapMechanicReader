@@ -1,9 +1,11 @@
 package com.hardcoded.lua;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.hardcoded.data.BitStream;
 import com.hardcoded.data.Memory;
+import com.hardcoded.logger.Log;
 import com.hardcoded.utils.TileUtils;
 
 /**
@@ -12,7 +14,7 @@ import com.hardcoded.utils.TileUtils;
  * @since v0.1
  */
 public class LuaDeserializer {
-	//private static final Log LOGGER = Log.getLogger();
+	private static final Log LOGGER = Log.getLogger();
 	public static final int VERSION = 1;
 	
 	public static enum LuaSaveDataType {
@@ -45,13 +47,20 @@ public class LuaDeserializer {
 	}
 	
 	public static Object Deserialize(Memory param_2, int size) {
-		BitStream stream;
-		{
-			byte[] output_test = new byte[0x400000];
-			byte[] inputs = param_2.Bytes(size);
-			int output_size = TileUtils.safe_decompress_data(inputs, output_test);
-			stream = new BitStream(new Memory(output_test, output_size));
-		}
+		byte[] output = new byte[0x400000];
+		int output_size = TileUtils.safe_decompress_data(param_2.Bytes(size), output);
+		
+		return DeserializePure(output, 0, output_size);
+	}
+	
+	public static Object DeserializePure(byte[] param_2, int offset, int size) {
+		return DeserializePure(new Memory(param_2, offset, size));
+	}
+	
+	public static Object DeserializePure(Memory memory) {
+		// Quick fix to make sure we have enough data to read
+		memory.expand(memory.data().length + 10);
+		BitStream stream = new BitStream(memory);
 		
 		char[] magic = stream.readChars(3);
 		if((magic[0] != 'L') || (magic[1] != 'U') || (magic[2] != 'A')) {
@@ -59,23 +68,39 @@ public class LuaDeserializer {
 		}
 		
 		int version = stream.readInt();
-		if(version != 1) {
+		if(version != VERSION) {
 			throw new RuntimeException("Failed Assertion: Outdated serialized data: version='" + version + "'");
 		}
 		
-		boolean keepReading = true;
-		do {
-			Object object = DeserializeLua(stream);
+		try {
+			boolean[] keepReading = { true };
+			do {
+				Object object = DeserializeLua(stream, keepReading);
+				
+				return object;
+			} while(keepReading[0]);
+		} catch(Exception e) {
+			LOGGER.throwing(e);
 			
-			return object;
-		} while(keepReading);
+			// In case there was an error return an empty map
+			return Map.of();
+		}
 	}
 	
-	private static Object DeserializeLua(BitStream stream) {
+	private static Object DeserializeLua(BitStream stream, boolean[] keepReading) {
 		Object output;
 		
 		int read_id = stream.readByte();
+		if(read_id == 0) {
+			keepReading[0] = false;
+			return null;
+		}
+		
 		LuaSaveDataType type = LuaSaveDataType.getType(read_id);
+		
+//		if(type != LuaSaveDataType.Table) {
+//			System.out.printf("ReadingType: (type)=%-10s, (id)   =%-5d, (value)=", type, read_id);
+//		}
 		
 		switch(type) {
 			case Nil: {
@@ -99,22 +124,23 @@ public class LuaDeserializer {
 				break;
 			}
 			case Table: {
-				Map<Object, Object> map = new HashMap<>();
+				Map<Object, Object> map = new LinkedHashMap<>();
 				
 				int length = stream.readInt();
 				boolean isArray = stream.readBool();
 				
+				//System.out.printf("ReadingType: (type)=%-10s, (array)=%-5s, (length)=%d\n", type, isArray, length);
 				if(!isArray) {
 					for(int i = 0; i < length; i++) {
-						Object key = DeserializeLua(stream);
-						Object val = DeserializeLua(stream);
+						Object key = DeserializeLua(stream, keepReading);
+						Object val = DeserializeLua(stream, keepReading);
 						map.put(key, val);
 					}
 				} else {
 					int offset = stream.readInt();
 					
 					for(int i = 0; i < length; i++) {
-						Object val = DeserializeLua(stream);
+						Object val = DeserializeLua(stream, keepReading);
 						map.put(offset + i, val);
 					}
 				}
@@ -157,35 +183,15 @@ public class LuaDeserializer {
 				break;
 			}
 			default: {
-				throw new RuntimeException("Invalid lua type: '" + type + "'");
+				throw new RuntimeException("Invalid lua type: '" + type + "' id='" + read_id + "'");
 			}
 		}
+		
+//		if(type != LuaSaveDataType.Table) {
+//			System.out.println(output);
+//		}
 		
 		return output;
 	}
 	
-	private static void dump(String str, Memory data, int offset) {
-		int len = data.data().length - data.index() - offset;
-		if(!str.isEmpty()) str = " [" + str + "] ";
-		
-		if(len > 255) len = 255;
-		
-		System.out.println("#########" + str + "###########: len=" + len + ", idx=" + offset);
-		for(int i = 0; i < len; i++) System.out.printf("%02x ", data.UnsignedByte(i + offset));
-		System.out.println();
-		for(int i = 0; i < len; i++) {
-			char c = (char)data.UnsignedByte(i + offset);
-			System.out.printf("%3s", (Character.isWhitespace(c) || Character.isISOControl(c) ? "":c) + " ");
-		}
-		System.out.println();
-		System.out.println("#########" + str + "###########");
-	}
-	
-	private static void dump(String str, Memory data) {
-		dump(str, data, 0);
-	}
-	
-	private static void dump(Memory data) {
-		dump("", data, 0);
-	}
 }

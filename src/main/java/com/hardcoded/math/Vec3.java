@@ -1,55 +1,30 @@
 package com.hardcoded.math;
 
-import java.util.Locale;
-
 /**
- * A vec3 class.
+ * A three dimensional vector class.
  * 
  * @author HardCoded
+ * @since v0.1
  */
-public class Vec3 {
-	public float x;
-	public float y;
-	public float z;
-	
+public class Vec3 extends FloatVec<Vec3> {
 	public Vec3() {
-		
+		super(3);
 	}
 	
-	public Vec3(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public Vec3(float... array) {
+		super(3);
+		set(array);
 	}
 	
-	public void set(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public float getX() {
+		return array[0];
 	}
 	
-	public void set(Vec3 vec) {
-		this.x = vec.x;
-		this.y = vec.y;
-		this.z = vec.z;
+	public float getY() {
+		return array[1];
 	}
 	
-	public void set(float[] array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
-	}
-	
-	public float[] toArray() {
-		return new float[] { x, y, z };
-	}
-	
-	public float getLength() {
-		return (float)Math.sqrt(x * x + y * y + z * z);
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(Locale.US, "{ %.6f, %.6f, %.6f }", x, y, z);
+	public float getZ() {
+		return array[2];
 	}
 }

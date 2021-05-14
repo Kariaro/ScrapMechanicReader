@@ -8,6 +8,7 @@ import com.hardcoded.tile.object.Node;
  * A node implementation.
  * 
  * @author HardCoded
+ * @since v0.1
  */
 public class NodeImpl extends TileEntityImpl implements Node {
 	private final List<String> defined_tags = new ArrayList<>();

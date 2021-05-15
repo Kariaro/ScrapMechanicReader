@@ -23,4 +23,17 @@ public interface Harvestable extends TileEntity {
 	 * @param uuid the new uuid
 	 */
 	void setUuid(UUID uuid);
+	
+	/**
+	 * Returns the color of this harvestable.
+	 * @return the color of this harvestable
+	 */
+	int getColor();
+	
+	/**
+	 * Set the color of this harvestable.
+	 * @param color the new color
+	 */
+	void setColor(int color);
+	
 }

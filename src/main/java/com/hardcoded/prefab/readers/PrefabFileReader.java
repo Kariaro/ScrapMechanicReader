@@ -174,16 +174,17 @@ public class PrefabFileReader {
 	}
 	
 	private void read_268(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_268", stream);
+		//TileUtils.debugPrint("read_268", stream);
+		
 	}
 	
 	private void read_decals(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_decals", stream);
+		//TileUtils.debugPrint("read_decals", stream);
 		
 	}
 	
 	private void read_248(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_248", stream);
+		//TileUtils.debugPrint("read_248", stream);
 		
 	}
 }

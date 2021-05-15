@@ -45,12 +45,11 @@ public class AssetListReader implements TileReaderImpl {
 
 	public int read(byte[] bytes, int asset_index, int len, int version, TilePart part) {
 		Memory memory = new Memory(bytes);
-		// System.out.println(new String(bytes));
 		
 		int index = 0;
 		for(int i = 0; i < len; i++) {
-			float[] f_pos = memory.Floats(3, index); // 12 bytes
-			float[] f_quat = memory.Floats(4, index + 0xc); // 16 bytes
+			float[] f_pos = memory.Floats(3, index);
+			float[] f_quat = memory.Floats(4, index + 0xc);
 			float[] f_size;
 			
 			if(version < 5) {
@@ -65,7 +64,6 @@ public class AssetListReader implements TileReaderImpl {
 			UUID uuid = null;
 			AssetImpl asset = new AssetImpl();
 			
-			//float[] local_e8 = new float[4];
 			if(version < 4) {
 				// int bVar4 = memory.Byte(index++);
 				// String str = memory.String(bVar4, index);
@@ -74,16 +72,12 @@ public class AssetListReader implements TileReaderImpl {
 				// TODO: ????
 				
 			} else {
-				//local_e8 = memory.Floats(4, index);
 				uuid = memory.Uuid(index, true);
-				// UUID???
-				//System.out.printf("local_e8: %.8f, %.8f, %.8f, %.8f\n", local_e8[0], local_e8[1], local_e8[2], local_e8[3]);
 				index += 0x10;
 			}
 			
 			int bVar4 = memory.UnsignedByte(index++);
 			
-			// Asset size 0xa0
 			if(bVar4 != 0) {
 				int length = bVar4;
 				for(int j = 0; j < length; j++) {
@@ -91,7 +85,7 @@ public class AssetListReader implements TileReaderImpl {
 					String str = memory.String(bVar4, index);
 					
 					index += bVar4;
-					asset.materials.put(str, memory.Int(index));
+					asset.materials.put(str, memory.Int(index, true));
 					index += 4;
 				}
 			}

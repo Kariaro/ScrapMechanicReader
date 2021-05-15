@@ -49,9 +49,10 @@ public class MipReader implements TileReaderImpl {
 		w = 0x41;
 		h = 0x41;
 		long[] ground = new long[0x41 * 0x41];
-		for(int i = 0; i < w * h; i++) {
-			ground[i] = memory.NextLong();
-		}
+		ground = memory.Longs(w * h);
+//		for(int i = 0; i < w * h; i++) {
+//			ground[i] = memory.nextReadLong();
+//		}
 		
 		part.test = bytes;
 		part.setVertexColor(color);

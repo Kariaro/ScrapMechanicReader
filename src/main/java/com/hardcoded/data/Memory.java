@@ -6,6 +6,9 @@ import java.util.UUID;
  * A class designed to make it easier to read serialized data.
  * 
  * @author HardCoded
+ * @since v0.1
+ * 
+ * TODO: Because this class is used so much. This needs to be optimized.
  */
 public class Memory {
 	private byte[] bytes;
@@ -116,16 +119,31 @@ public class Memory {
 	
 	// ======================= //
 	
-	public byte Byte() { return Byte(0); }
-	public byte Byte(int offset) { return bytes[index + offset]; }
-	public int UnsignedByte() { return UnsignedByte(0); }
-	public int UnsignedByte(int offset) { return Byte.toUnsignedInt(bytes[index + offset]); }
-	public Memory WriteByte(int value) { return WriteByte(value, 0); }
+	public byte Byte() {
+		return bytes[index];
+	}
+	public byte Byte(int offset) {
+		return bytes[index + offset];
+	}
+	
+	public int UnsignedByte() {
+		return ((int)bytes[index]) & 0xff;
+	}
+	
+	public int UnsignedByte(int offset) {
+		return ((int)bytes[index + offset]) & 0xff;
+	}
+	
+	public Memory WriteByte(int value) {
+		bytes[index] = (byte)value;
+		if(index > highest_written_index) highest_written_index = index;
+		return this;
+	}
+	
 	public Memory WriteByte(int value, int offset) {
 		int idx = index + offset;
 		bytes[idx] = (byte)value;
 		if(idx > highest_written_index) highest_written_index = idx;
-		
 		return this;
 	}
 	
@@ -310,9 +328,13 @@ public class Memory {
 	public Memory WriteBytes(byte[] value, int length, int offset) { return WriteBytes(value, length, offset, false); }
 	public Memory WriteBytes(byte[] value, int length, boolean reverse) { return WriteBytes(value, length, 0, reverse); }
 	public Memory WriteBytes(byte[] value, int length, int offset, boolean reverse) {
-		for(int i = 0; i < length; i++) {
-			int idx = reverse ? (length - 1 - i):i;
-			bytes[index + offset + i] = value[idx];
+		if(!reverse) {
+			System.arraycopy(value, 0, this.bytes, index + offset, length);
+		} else {
+			for(int i = 0; i < length; i++) {
+				int idx = reverse ? (length - 1 - i):i;
+				bytes[index + offset + i] = value[idx];
+			}
 		}
 
 		int idx = index + offset + length;
@@ -580,10 +602,10 @@ public class Memory {
 	}
 	
 
-	public Memory WriteUUID(UUID uuid) { return WriteUUID(uuid, 0, defaultEndian); }
-	public Memory WriteUUID(UUID uuid, int offset) { return WriteUUID(uuid, offset, defaultEndian); }
-	public Memory WriteUUID(UUID uuid, boolean bigEndian) { return WriteUUID(uuid, 0, bigEndian); }
-	public Memory WriteUUID(UUID uuid, int offset, boolean bigEndian) {
+	public Memory WriteUuid(UUID uuid) { return WriteUuid(uuid, 0, defaultEndian); }
+	public Memory WriteUuid(UUID uuid, int offset) { return WriteUuid(uuid, offset, defaultEndian); }
+	public Memory WriteUuid(UUID uuid, boolean bigEndian) { return WriteUuid(uuid, 0, bigEndian); }
+	public Memory WriteUuid(UUID uuid, int offset, boolean bigEndian) {
 		if(bigEndian) {
 			WriteLong(uuid.getMostSignificantBits(), offset, bigEndian);
 			WriteLong(uuid.getLeastSignificantBits(), offset + 8, bigEndian);
@@ -593,9 +615,9 @@ public class Memory {
 		}
 		return this;
 	}
-	public Memory NextWriteUUID(UUID uuid) { return NextWriteUUID(uuid, defaultEndian); }
-	public Memory NextWriteUUID(UUID uuid, boolean bigEndian) {
-		WriteUUID(uuid, 0, bigEndian);
+	public Memory NextWriteUuid(UUID uuid) { return NextWriteUuid(uuid, defaultEndian); }
+	public Memory NextWriteUuid(UUID uuid, boolean bigEndian) {
+		WriteUuid(uuid, 0, bigEndian);
 		index += 16;
 		return this;
 	}

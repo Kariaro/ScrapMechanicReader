@@ -1,5 +1,6 @@
 package com.hardcoded.utils;
 
+import com.hardcoded.data.BitStream;
 import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
 import com.hardcoded.logger.Log;
@@ -61,9 +62,13 @@ public class TileUtils {
 	}
 	
 	
+	public static void debugPrint(String name, Memory memory, int offset) {
+		debugPrint(name, memory.data(), offset + memory.index());
+	}
+	
 	// Debug Print
-	public static void debugPrint(String name, Memory data, int offset) {
-		int len = data.data().length - data.index() - offset;
+	public static void debugPrint(String name, byte[] data, int offset) {
+		int len = data.length - offset;
 		StringBuilder sb = new StringBuilder();
 		
 		if(name.isEmpty()) {
@@ -77,10 +82,10 @@ public class TileUtils {
 		
 		sb.append(": len=").append(len).append(", idx=").append(offset).append("\n");
 		
-		for(int i = 0; i < len; i++) sb.append(String.format("%02x ", data.UnsignedByte(i + offset)));
+		for(int i = 0; i < len; i++) sb.append(String.format("%02x ", ((int)data[i + offset]) & 0xff));
 		sb.append("\n");
 		for(int i = 0; i < len; i++) {
-			char c = (char)data.UnsignedByte(i + offset);
+			char c = (char)(((int)data[i + offset]) & 0xff);
 			sb.append(String.format("%2s ", (Character.isWhitespace(c) || Character.isISOControl(c) ? ".":c)));
 		}
 		sb.append("\n");
@@ -93,11 +98,15 @@ public class TileUtils {
 		System.out.println(sb.toString());
 	}
 	
-	public static void debugPrint(String str, Memory data) {
+	public static void debugPrint(String str, BitStream stream) {
+		debugPrint(str, stream.data(), stream.index() >> 3);
+	}
+	
+	public static void debugPrint(String str, byte[] data) {
 		debugPrint(str, data, 0);
 	}
 	
-	public static void debugPrint(Memory data) {
+	public static void debugPrint(byte[] data) {
 		debugPrint("", data, 0);
 	}
 }

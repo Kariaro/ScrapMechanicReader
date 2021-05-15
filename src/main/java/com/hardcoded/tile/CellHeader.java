@@ -86,12 +86,16 @@ public class CellHeader {
 		clutterCompressedSize = memory.Int(0x4c);
 		clutterSize = memory.Int(0x50);
 		
-		for(int i = 0; i < 4; i++) {
-			assetListCount[i] = memory.Int(0x54 + i * 4);
-			assetListIndex[i] = memory.Int(0x64 + i * 4);
-			assetListCompressedSize[i] = memory.Int(0x74 + i * 4);
-			assetListSize[i] = memory.Int(0x84 + i * 4);
-		}
+		assetListCount = memory.Ints(4, 0x54);
+		assetListIndex = memory.Ints(4, 0x64);
+		assetListCompressedSize = memory.Ints(4, 0x74);
+		assetListSize = memory.Ints(4, 0x84);
+//		for(int i = 0; i < 4; i++) {
+//			assetListCount[i] = memory.Int(0x54 + i * 4);
+//			assetListIndex[i] = memory.Int(0x64 + i * 4);
+//			assetListCompressedSize[i] = memory.Int(0x74 + i * 4);
+//			assetListSize[i] = memory.Int(0x84 + i * 4);
+//		}
 		
 		blueprintListCount = memory.Int(0x94);
 		blueprintListIndex = memory.Int(0x98);
@@ -113,12 +117,16 @@ public class CellHeader {
 		decalCompressedSize = memory.Int(0xdc);
 		decalSize = memory.Int(0xe0);
 		
-		for(int i = 0; i < 4; i++) {
-			harvestableListCount[i] = memory.Int(0xe4 + i * 4);
-			harvestableListIndex[i] = memory.Int(0xf4 + i * 4);
-			harvestableListCompressedSize[i] = memory.Int(0x104 + i * 4);
-			harvestableListSize[i] = memory.Int(0x114 + i * 4);
-		}
+		harvestableListCount = memory.Ints(4, 0xe4);
+		harvestableListIndex = memory.Ints(4, 0xf4);
+		harvestableListCompressedSize = memory.Ints(4, 0x104);
+		harvestableListSize = memory.Ints(4, 0x114);
+//		for(int i = 0; i < 4; i++) {
+//			harvestableListCount[i] = memory.Int(0xe4 + i * 4);
+//			harvestableListIndex[i] = memory.Int(0xf4 + i * 4);
+//			harvestableListCompressedSize[i] = memory.Int(0x104 + i * 4);
+//			harvestableListSize[i] = memory.Int(0x114 + i * 4);
+//		}
 		
 		memory.set(old_index);
 	}
@@ -135,12 +143,16 @@ public class CellHeader {
 		memory.WriteInt(clutterCompressedSize, 0x4c);
 		memory.WriteInt(clutterSize, 0x50);
 		
-		for(int i = 0; i < 4; i++) {
-			memory.WriteInt(assetListCount[i], 0x54 + i * 4);
-			memory.WriteInt(assetListIndex[i], 0x64 + i * 4);
-			memory.WriteInt(assetListCompressedSize[i], 0x74 + i * 4);
-			memory.WriteInt(assetListSize[i], 0x84 + i * 4);
-		}
+		memory.WriteInts(assetListCount, 4, 0x54);
+		memory.WriteInts(assetListIndex, 4, 0x64);
+		memory.WriteInts(assetListCompressedSize, 4, 0x74);
+		memory.WriteInts(assetListSize, 4, 0x84);
+//		for(int i = 0; i < 4; i++) {
+//			memory.WriteInt(assetListCount[i], 0x54 + i * 4);
+//			memory.WriteInt(assetListIndex[i], 0x64 + i * 4);
+//			memory.WriteInt(assetListCompressedSize[i], 0x74 + i * 4);
+//			memory.WriteInt(assetListSize[i], 0x84 + i * 4);
+//		}
 		
 		memory.WriteInt(blueprintListCount, 0x94);
 		memory.WriteInt(blueprintListIndex, 0x98);
@@ -167,12 +179,16 @@ public class CellHeader {
 		memory.WriteInt(decalCompressedSize, 0xdc);
 		memory.WriteInt(decalSize, 0xe0);
 		
-		for(int i = 0; i < 4; i++) {
-			memory.WriteInt(harvestableListCount[i], 0xe4 + i * 4);
-			memory.WriteInt(harvestableListIndex[i], 0xf4 + i * 4);
-			memory.WriteInt(harvestableListCompressedSize[i], 0x104 + i * 4);
-			memory.WriteInt(harvestableListSize[i], 0x114 + i * 4);
-		}
+		memory.WriteInts(harvestableListCount, 4, 0xe4);
+		memory.WriteInts(harvestableListIndex, 4, 0xf4);
+		memory.WriteInts(harvestableListCompressedSize, 4, 0x104);
+		memory.WriteInts(harvestableListSize, 4, 0x114);
+//		for(int i = 0; i < 4; i++) {
+//			memory.WriteInt(harvestableListCount[i], 0xe4 + i * 4);
+//			memory.WriteInt(harvestableListIndex[i], 0xf4 + i * 4);
+//			memory.WriteInt(harvestableListCompressedSize[i], 0x104 + i * 4);
+//			memory.WriteInt(harvestableListSize[i], 0x114 + i * 4);
+//		}
 		
 		memory.set(old_index);
 	}

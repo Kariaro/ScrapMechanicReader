@@ -62,8 +62,9 @@ public class LuaDeserializer {
 		memory.expand(memory.data().length + 10);
 		BitStream stream = new BitStream(memory);
 		
-		char[] magic = stream.readChars(3);
-		if((magic[0] != 'L') || (magic[1] != 'U') || (magic[2] != 'A')) {
+		String magic = stream.readString(3);
+		//System.out.println("music: '" + magic + "'");
+		if(!"LUA".equals(magic)) {
 			throw new RuntimeException("Failed Assertion: tag[i] == LUA_MAGIC_TAG[i]");
 		}
 		

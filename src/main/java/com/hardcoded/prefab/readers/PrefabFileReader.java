@@ -143,12 +143,10 @@ public class PrefabFileReader {
 		}
 		
 		for(int i = 0; i < count; i++) {
-			stream.readFloat();
-			
 			float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
 			float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
 			float[] f_size = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
-			
+
 			NodeImpl node = new NodeImpl(tags);
 			node.setPosition(f_pos /* + f_position */);
 			node.setRotation(f_quat);
@@ -165,10 +163,7 @@ public class PrefabFileReader {
 			
 			int uVar3 = stream.readInt();
 			if(uVar3 != 0) {
-				@SuppressWarnings("unused")
-				Memory blob = new Memory(stream.readBytes(uVar3));
-				
-				//TileUtils.debugPrint("LuaData", blob);
+				stream.readBytes(uVar3);
 				//Object deserialized = LuaDeserializer.DeserializePure(blob);
 			}
 			
@@ -179,17 +174,16 @@ public class PrefabFileReader {
 	}
 	
 	private void read_268(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_268", stream.memory(), stream.index() >> 3);
-		
+		TileUtils.debugPrint("read_268", stream);
 	}
 	
 	private void read_decals(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_decals", stream.memory(), stream.index() >> 3);
+		TileUtils.debugPrint("read_decals", stream);
 		
 	}
 	
 	private void read_248(BitStream stream, PrefabImpl prefab, int count) {
-		TileUtils.debugPrint("read_248", stream.memory(), stream.index() >> 3);
+		TileUtils.debugPrint("read_248", stream);
 		
 	}
 }

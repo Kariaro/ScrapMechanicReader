@@ -81,12 +81,12 @@ public class AssetListReader implements TileReaderImpl {
 				index += 0x10;
 			}
 			
-			int bVar4 = memory.Byte(index++);
+			int bVar4 = memory.UnsignedByte(index++);
 			
 			// Asset size 0xa0
 			if(bVar4 != 0) {
 				int length = bVar4;
-				for(int local_2f8 = 0; local_2f8 < length; local_2f8++) {
+				for(int j = 0; j < length; j++) {
 					bVar4 = memory.UnsignedByte(index++) & 0xff;
 					String str = memory.String(bVar4, index);
 					

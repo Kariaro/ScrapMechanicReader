@@ -51,6 +51,7 @@ public class TilePart {
 	// BlueprintList
 	
 	// Decal
+	public final List<Decal> decals;
 	
 	// HarvestableList
 	public final List<Harvestable>[] harvestables;
@@ -75,6 +76,7 @@ public class TilePart {
 		
 		nodes = new ArrayList<>();
 		prefabs = new ArrayList<>();
+		decals = new ArrayList<>();
 		
 		harvestables = new List[] {
 			new ArrayList<Harvestable>(),
@@ -120,6 +122,11 @@ public class TilePart {
 	public void addPrefab(TilePrefab prefab) {
 		if(prefab == null) throw new NullPointerException("A tile cannot contain null prefabs");
 		prefabs.add(prefab);
+	}
+	
+	public void addDecal(Decal decal) {
+		if(decal == null) throw new NullPointerException("A tile cannot contain null decals");
+		decals.add(decal);
 	}
 	
 	public Tile getParent() {

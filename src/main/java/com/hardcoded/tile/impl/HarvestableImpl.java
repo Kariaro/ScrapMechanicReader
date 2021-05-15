@@ -13,6 +13,7 @@ import com.hardcoded.tile.object.Harvestable;
  */
 public class HarvestableImpl extends TileEntityImpl implements Harvestable {
 	public UUID uuid = DEFAULT_UUID;
+	public int color;
 	
 	@Override
 	public UUID getUuid() {
@@ -22,5 +23,15 @@ public class HarvestableImpl extends TileEntityImpl implements Harvestable {
 	@Override
 	public void setUuid(UUID uuid) {
 		this.uuid = Objects.requireNonNull(uuid, "A harvestables uuid must not be null");
+	}
+	
+	@Override
+	public int getColor() {
+		return color;
+	}
+	
+	@Override
+	public void setColor(int color) {
+		this.color = color;
 	}
 }

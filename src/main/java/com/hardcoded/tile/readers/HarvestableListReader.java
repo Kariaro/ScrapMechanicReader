@@ -54,8 +54,7 @@ public class HarvestableListReader implements TileReaderImpl {
 			float[] f_quat = memory.Floats(4, index + 0xc);
 			float[] f_size = memory.Floats(3, index + 0x1c);
 			UUID uuid = memory.Uuid(index + 0x28, true);
-			@SuppressWarnings("unused")
-			int uVar12 = memory.Int(index + 0x38);
+			int color = memory.Int(index + 0x38, true);
 			index += 0x3c;
 			
 			HarvestableImpl harvestable = new HarvestableImpl();
@@ -63,6 +62,9 @@ public class HarvestableListReader implements TileReaderImpl {
 			harvestable.setRotation(f_quat);
 			harvestable.setSize(f_size);
 			harvestable.setUuid(uuid);
+			
+			// Convert to RGBA
+			harvestable.setColor(color);
 			
 			part.addHarvestable(harvestable, harvestable_index);
 		}

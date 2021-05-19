@@ -18,8 +18,8 @@ public class PrefabHeader {
 	public int nodeCount;
 	public int hasNodes;
 	
-	public int count_0x34;
-	public int has_0x3c;
+	public int assetCount;
+	public int hasAssets;
 	
 	public int decalsCount;
 	public int hasDecals;
@@ -54,9 +54,9 @@ public class PrefabHeader {
 		
 		if(2 < version) {
 			stream.move(4 * 8);
-			count_0x34 = stream.readInt();
+			assetCount = stream.readInt();
 			stream.move(4 * 8);
-			has_0x3c = stream.readInt();
+			hasAssets = stream.readInt();
 		}
 		
 		if(3 < version) {

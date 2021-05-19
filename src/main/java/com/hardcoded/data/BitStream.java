@@ -1,5 +1,7 @@
 package com.hardcoded.data;
 
+import java.util.UUID;
+
 /**
  * A bit stream implementation.
  * 
@@ -61,6 +63,10 @@ public class BitStream {
 	
 	public float readFloat() {
 		return Float.intBitsToFloat((int)readNBytes(4));
+	}
+	
+	public UUID readUuid() {
+		return new UUID(readNBytes(8), readNBytes(8));
 	}
 	
 	public int readInt() {

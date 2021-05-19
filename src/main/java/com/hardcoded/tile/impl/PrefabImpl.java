@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.hardcoded.tile.object.Blueprint;
-import com.hardcoded.tile.object.Node;
-import com.hardcoded.tile.object.TilePrefab;
+import com.hardcoded.error.TileException;
+import com.hardcoded.tile.object.*;
 
 /**
  * A prefab implementation.
@@ -27,6 +26,9 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 	// Nodes
 	protected final List<Node> nodes;
 	
+	// Assets
+	protected final List<Asset> assets;
+	
 	
 	public final List<String> blueprint_paths;
 	public final List<String> prefabs_paths;
@@ -45,6 +47,7 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 		blueprints = new ArrayList<>();
 		prefabs = new ArrayList<>();
 		nodes = new ArrayList<>();
+		assets = new ArrayList<>();
 		
 		blueprint_paths = new ArrayList<>();
 		prefabs_paths = new ArrayList<>();
@@ -74,16 +77,28 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 		this.flag = flag;
 	}
 	
+	private void checkModification() {
+		if(!is_loaded)
+			throw new TileException("You cannot modify the entity contents of an unloaded prefab");
+	}
 	
 	public void addBlueprint(Blueprint blueprint) {
+		checkModification();
 		blueprints.add(Objects.requireNonNull(blueprint, "Prefab blueprint must not be null"));
 	}
 	
 	public void addPrefab(TilePrefab prefab) {
+		checkModification();
 		prefabs.add(Objects.requireNonNull(prefab, "Prefab prefab must not be null"));
 	}
 	
 	public void addNode(Node node) {
+		checkModification();
 		nodes.add(Objects.requireNonNull(node, "Prefab node must not be null"));
+	}
+	
+	public void addAsset(Asset prefab) {
+		checkModification();
+		assets.add(Objects.requireNonNull(prefab, "Prefab assets must not be null"));
 	}
 }

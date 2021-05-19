@@ -100,15 +100,6 @@ public class AssetListReader implements TileReaderImpl {
 			}
 			
 			part.addAsset(asset, asset_index);
-			
-//			{
-//				System.out.printf("  pos : %s\n", asset.pos);
-//				System.out.printf("  rot : %s\n", asset.rot);
-//				System.out.printf("  size: %s\n", asset.size);
-//				System.out.printf("  mats: %s\n", asset.materials);
-//				System.out.printf("  uuid: %s\n", asset.uuid);
-//				System.out.println();
-//			}
 		}
 		
 		return index;

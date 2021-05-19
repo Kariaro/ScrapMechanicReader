@@ -6,14 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.hardcoded.data.BitStream;
 import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
+import com.hardcoded.tile.impl.AssetImpl;
 import com.hardcoded.tile.impl.NodeImpl;
 import com.hardcoded.tile.impl.PrefabImpl;
 import com.hardcoded.tile.object.TilePrefab;
-import com.hardcoded.utils.TileUtils;
 
 /**
  * This class is used to read {@code .PREFAB} files.
@@ -67,8 +68,8 @@ public class PrefabFileReader {
 			read_nodes(stream, prefab, header.nodeCount);
 		}
 		
-		if(header.has_0x3c != 0) {
-			read_268(stream, prefab, header.count_0x34);
+		if(header.hasAssets != 0) {
+			read_assets(stream, prefab, header.assetCount);
 		}
 		
 		if(header.hasDecals != 0) {
@@ -83,7 +84,7 @@ public class PrefabFileReader {
 	}
 	
 	private void read_blueprints(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_blueprints", stream.memory(), stream.index() >> 3);
+		// TileUtils.debugPrint("read_blueprints", stream);
 		
 		for(int i = 0; i < count; i++) {
 			int string_length = stream.readInt();
@@ -104,7 +105,7 @@ public class PrefabFileReader {
 	}
 	
 	private void read_prefabs(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_prefabs", stream.memory(), stream.index() >> 3);
+		// TileUtils.debugPrint("read_prefabs", stream);
 		
 		for(int i = 0; i < count; i++) {
 			int string_length = stream.readInt();
@@ -131,7 +132,7 @@ public class PrefabFileReader {
 	}
 	
 	private void read_nodes(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_nodes", stream.memory(), stream.index() >> 3);
+		// TileUtils.debugPrint("read_nodes", stream);
 		
 		int uVar2 = stream.readByte();
 		List<String> tags = new ArrayList<>();
@@ -173,18 +174,43 @@ public class PrefabFileReader {
 		//TileUtils.log("read_nodes: TAGS=%s", tags);
 	}
 	
-	private void read_268(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_268", stream);
+	private void read_assets(BitStream stream, PrefabImpl prefab, int count) {
+		// TileUtils.debugPrint("read_assets", stream);
 		
+		for(int i = 0; i < count; i++) {
+			float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+			float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
+			float[] f_size = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+			
+			AssetImpl asset = new AssetImpl();
+			
+			UUID uuid = stream.readUuid();
+			final int materialCount = stream.readByte();
+			
+			if(materialCount != 0) {
+				for(int j = 0; j < materialCount; j++) {
+					int length = stream.readByte();
+					String str = stream.readString(length);
+					asset.materials.put(str, stream.readInt());
+				}
+			}
+			
+			asset.setPosition(f_pos);
+			asset.setRotation(f_quat);
+			asset.setSize(f_size);
+			asset.setUuid(uuid);
+			
+			prefab.addAsset(asset);
+		}
 	}
 	
 	private void read_decals(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_decals", stream);
+		// TileUtils.debugPrint("read_decals", stream);
 		
 	}
 	
 	private void read_248(BitStream stream, PrefabImpl prefab, int count) {
-		//TileUtils.debugPrint("read_248", stream);
+		// TileUtils.debugPrint("read_248", stream);
 		
 	}
 }

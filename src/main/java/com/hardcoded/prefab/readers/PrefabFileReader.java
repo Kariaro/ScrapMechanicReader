@@ -14,7 +14,7 @@ import com.hardcoded.error.TileException;
 import com.hardcoded.tile.impl.AssetImpl;
 import com.hardcoded.tile.impl.NodeImpl;
 import com.hardcoded.tile.impl.PrefabImpl;
-import com.hardcoded.tile.object.TilePrefab;
+import com.hardcoded.tile.object.Prefab;
 
 /**
  * This class is used to read {@code .PREFAB} files.
@@ -29,19 +29,19 @@ public class PrefabFileReader {
 		
 	}
 	
-	public static TilePrefab readPrefab(String path) throws TileException, IOException {
+	public static Prefab readPrefab(String path) throws TileException, IOException {
 		if(path == null) throw new NullPointerException("File path was null");
 		byte[] bytes = Files.readAllBytes(Path.of(path));
 		return reader.readPrefab(bytes);
 	}
 	
-	public static TilePrefab readPrefab(File file) throws TileException, IOException {
+	public static Prefab readPrefab(File file) throws TileException, IOException {
 		if(file == null) throw new NullPointerException("File path was null");
 		byte[] bytes = Files.readAllBytes(Path.of(file.toURI()));
 		return reader.readPrefab(bytes);
 	}
 	
-	public TilePrefab readPrefab(byte[] bytes) throws TileException {
+	public Prefab readPrefab(byte[] bytes) throws TileException {
 		PrefabImpl prefab = new PrefabImpl(true);
 		
 		Memory reader = new Memory(bytes);
@@ -61,7 +61,7 @@ public class PrefabFileReader {
 		}
 		
 		if(header.hasPrefabs != 0) {
-			read_prefabs(stream, prefab, header.prefabCount);
+			read_prefabs(stream, prefab, header.prefabCount, version);
 		}
 		
 		if(header.hasNodes != 0) {
@@ -104,30 +104,36 @@ public class PrefabFileReader {
 		}
 	}
 	
-	private void read_prefabs(BitStream stream, PrefabImpl prefab, int count) {
+	private void read_prefabs(BitStream stream, PrefabImpl prefab, int count, int version) {
 		// TileUtils.debugPrint("read_prefabs", stream);
 		
 		for(int i = 0; i < count; i++) {
 			int string_length = stream.readInt();
 			String path = stream.readString(string_length);
 			
-			int bVar4 = 0;
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
+			PrefabImpl pref = new PrefabImpl(false);
+			pref.setPath(path);
 			
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
+			if(version < 5) {
+				float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+				float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
+				
+				pref.setPosition(f_pos);
+				pref.setRotation(f_quat);
+			} else {
+				float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+				float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
+				float[] f_size = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+				pref.setPosition(f_pos);
+				pref.setRotation(f_quat);
+				pref.setSize(f_size);
+			}
 			
-			//TileUtils.log("read_prefabs: '%s'", path);
-			prefab.prefabs_paths.add(path);
+			// What are these fields ?
+			stream.readInt();
+			stream.readInt();
+			
+			prefab.addPrefab(pref);
 		}
 	}
 	

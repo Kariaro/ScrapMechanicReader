@@ -53,7 +53,6 @@ public class NodeWriter implements TileWriterImpl {
 			memory.NextWriteFloats(node.getPosition().toArray());
 			memory.NextWriteFloats(node.getRotation().toArray());
 			memory.NextWriteFloats(node.getSize().toArray());
-			
 			Set<String> active_tags = node.getActiveTags();
 			memory.NextWriteByte(active_tags.size());
 			

@@ -18,8 +18,6 @@ public class HarvestableListReader implements TileReaderImpl {
 	
 	@Override
 	public void read(CellHeader h, Memory reader, TilePart part) {
-		byte[][] bytes = new byte[4][];
-		
 		for(int i = 0; i < 4; i++) {
 			int harvestableListCompressedSize = h.harvestableListCompressedSize[i];
 			int harvestableListSize = h.harvestableListSize[i];
@@ -30,14 +28,14 @@ public class HarvestableListReader implements TileReaderImpl {
 				reader.set(h.harvestableListIndex[i]);
 				
 				byte[] compressed = reader.Bytes(harvestableListCompressedSize);
-				bytes[i] = new byte[harvestableListSize];
+				byte[] bytes = new byte[harvestableListSize];
 				
-				int debugSize = TileUtils.decompress_data(compressed, bytes[i], h.harvestableListSize[i]);
+				int debugSize = TileUtils.decompress_data(compressed, bytes, h.harvestableListSize[i]);
 				if(debugSize != h.harvestableListCompressedSize[i]) {
 					TileUtils.error("debugSize != h.harvestableListCompressedSize[%d]", i); // 314
 				}
 				
-				debugSize = read(bytes[i], i, h.harvestableListCount[i], part.getParent().getVersion(), part);
+				debugSize = read(bytes, i, h.harvestableListCount[i], part.getParent().getVersion(), part);
 				if(debugSize != h.harvestableListSize[i]) {
 					TileUtils.error("debugSize != h.harvestableListSize[%d]: %d != %d", i, debugSize, h.harvestableListSize[i]);
 				}

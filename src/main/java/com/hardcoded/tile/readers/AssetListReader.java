@@ -17,7 +17,6 @@ public class AssetListReader implements TileReaderImpl {
 	
 	@Override
 	public void read(CellHeader h, Memory reader, TilePart part) {
-		byte[][] bytes = new byte[4][];
 		for(int i = 0; i < 4; i++) {
 			int assetListCompressedSize = h.assetListCompressedSize[i];
 			int assetListSize = h.assetListSize[i];
@@ -28,14 +27,14 @@ public class AssetListReader implements TileReaderImpl {
 				reader.set(h.assetListIndex[i]);
 				
 				byte[] compressed = reader.Bytes(assetListCompressedSize);
-				bytes[i] = new byte[assetListSize];
+				byte[] bytes = new byte[assetListSize];
 				
-				int debugSize = TileUtils.decompress_data(compressed, bytes[i], assetListSize);
+				int debugSize = TileUtils.decompress_data(compressed, bytes, assetListSize);
 				if(debugSize != h.assetListCompressedSize[i]) {
 					TileUtils.error("debugSize != h.assetListCompressedSize[%d]: %d != %d", i, debugSize, h.assetListCompressedSize[i]);
 				}
 				
-				debugSize = read(bytes[i], i, h.assetListCount[i], part.getParent().getVersion(), part);
+				debugSize = read(bytes, i, h.assetListCount[i], part.getParent().getVersion(), part);
 				if(debugSize != h.assetListSize[i]) {
 					TileUtils.error("debugSize != h.assetListSize[%d]: %d != %d", i, debugSize, h.assetListSize[i]);
 				}

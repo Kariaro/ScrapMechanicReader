@@ -13,7 +13,7 @@ import com.hardcoded.tile.object.*;
  * @author HardCoded
  * @since v0.2
  */
-public class PrefabImpl extends TileEntityImpl implements TilePrefab {
+public class PrefabImpl extends TileEntityImpl implements Prefab {
 	protected String flag = "";
 	protected String path = "";
 	
@@ -21,7 +21,7 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 	protected final List<Blueprint> blueprints;
 	
 	// Prefabs
-	protected final List<TilePrefab> prefabs;
+	protected final List<Prefab> prefabs;
 	
 	// Nodes
 	protected final List<Node> nodes;
@@ -37,7 +37,7 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 	 * If this value is {@code false} then it means that this object has not
 	 * been loaded from the {@link com.hardcoded.prefab.readers.PrefabFileReader}.
 	 */
-	public final boolean is_loaded;
+	private final boolean loaded;
 	
 	public PrefabImpl() {
 		this(false);
@@ -52,7 +52,13 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 		blueprint_paths = new ArrayList<>();
 		prefabs_paths = new ArrayList<>();
 		
-		this.is_loaded = loaded;
+		this.loaded = loaded;
+	}
+	
+	
+	@Override
+	public boolean isLoaded() {
+		return loaded;
 	}
 	
 	@Override
@@ -78,7 +84,7 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 	}
 	
 	private void checkModification() {
-		if(!is_loaded)
+		if(!loaded)
 			throw new TileException("You cannot modify the entity contents of an unloaded prefab");
 	}
 	
@@ -87,7 +93,7 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 		blueprints.add(Objects.requireNonNull(blueprint, "Prefab blueprint must not be null"));
 	}
 	
-	public void addPrefab(TilePrefab prefab) {
+	public void addPrefab(Prefab prefab) {
 		checkModification();
 		prefabs.add(Objects.requireNonNull(prefab, "Prefab prefab must not be null"));
 	}
@@ -100,5 +106,30 @@ public class PrefabImpl extends TileEntityImpl implements TilePrefab {
 	public void addAsset(Asset prefab) {
 		checkModification();
 		assets.add(Objects.requireNonNull(prefab, "Prefab assets must not be null"));
+	}
+	
+	@Override
+	public List<Blueprint> getBlueprints() {
+		return blueprints;
+	}
+	
+	@Override
+	public List<Prefab> getPrefabs() {
+		return prefabs;
+	}
+	
+	@Override
+	public List<Node> getNodes() {
+		return nodes;
+	}
+	
+	@Override
+	public List<Harvestable> getHarvestables() {
+		return List.of();
+	}
+	
+	@Override
+	public List<Asset> getAssets() {
+		return assets;
 	}
 }

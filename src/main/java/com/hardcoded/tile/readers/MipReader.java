@@ -27,7 +27,7 @@ public class MipReader implements TileReaderImpl {
 		
 		int debugSize = TileUtils.decompress_data(compressed, bytes, h.mipSize[mipOrLevel]);
 		if(debugSize != h.mipCompressedSize[mipOrLevel]) {
-			TileUtils.error("debugSize != h.mipCompressedSize[%d]: %d != %d", mipOrLevel, debugSize, h.mipCompressedSize[mipOrLevel]); // 235
+			TileUtils.error("debugSize != h.mipCompressedSize[%d]: %d != %d", mipOrLevel, debugSize, h.mipCompressedSize[mipOrLevel]);
 		}
 		
 		return bytes;

@@ -12,8 +12,8 @@ import com.hardcoded.tile.object.TileEntity;
  */
 public abstract class TileEntityImpl implements TileEntity {
 	public final Vec3 pos = new Vec3();
+	public final Vec3 size = new Vec3(1, 1, 1);
 	public final Quat rot = Quat.identity();
-	public final Vec3 size = new Vec3();
 	
 	@Override
 	public Vec3 getPosition() {
@@ -52,7 +52,7 @@ public abstract class TileEntityImpl implements TileEntity {
 	
 	@Override
 	public void setRotation(float... array) {
-		rot.set(array);
+		rot.set(array[0], array[1], array[2], array[3]);
 	}
 	
 	@Override

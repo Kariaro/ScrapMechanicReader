@@ -8,7 +8,7 @@ import com.hardcoded.utils.NotNull;
  * @author HardCoded
  * @since v0.2
  */
-public interface Blueprint {
+public interface Blueprint extends TileEntity {
 	
 	/**
 	 * Returns {@code true} if this blueprint contains json data and not a path.

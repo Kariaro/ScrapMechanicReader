@@ -1,13 +1,6 @@
 package com.hardcoded.tile.readers;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.hardcoded.data.Memory;
-import com.hardcoded.game.GameContext;
-import com.hardcoded.math.Quat;
-import com.hardcoded.math.Vec3;
-import com.hardcoded.prefab.readers.PrefabFileReader;
 import com.hardcoded.tile.CellHeader;
 import com.hardcoded.tile.impl.PrefabImpl;
 import com.hardcoded.tile.impl.TilePart;
@@ -19,6 +12,7 @@ import com.hardcoded.utils.TileUtils;
  * @author HardCoded
  */
 public class PrefabReader implements TileReaderImpl {
+	
 	@Override
 	public void read(CellHeader h, Memory reader, TilePart part) {
 		if((h.prefabCount == 0) || (h.prefabIndex == 0)) return;
@@ -46,8 +40,6 @@ public class PrefabReader implements TileReaderImpl {
 		int index = 0;
 		Memory memory = new Memory(bytes);
 		int version = part.getParent().getVersion();
-		
-		//GameContext context = part.getParent().getContext();
 		
 		for(int i = 0; i < prefabCount; i++) {
 			float[] f_pos = memory.Floats(3, index);
@@ -79,28 +71,6 @@ public class PrefabReader implements TileReaderImpl {
 			prefab.setSize(f_size);
 			prefab.setPath(path);
 			prefab.setFlag(flag);
-			
-//			{
-//				System.out.printf("Prefab:\n");
-//				System.out.printf("  path : %s\n", path);
-//				System.out.printf("  flag : %s\n", flag);
-//				System.out.printf("  pos  : %s\n", new Vec3(f_pos));
-//				System.out.printf("  rot  : %s\n", new Quat(f_quat));
-//				System.out.printf("  size : %s\n", new Vec3(f_size));
-//				System.out.println();
-//			}
-//			
-//			GameContext context = part.getParent().getContext();
-//			if(!context.isValid()) {
-//				TileUtils.warn("GameContext was not valid so prefab file cannot be parsed");
-//			} else {
-//				File prefab_file = context.resolve(path);
-//				try {
-//					PrefabFileReader.readPrefab(prefab_file.getAbsolutePath());
-//				} catch(IOException e) {
-//					TileUtils.error("Failed to read the prefab file '%s'", prefab_file);
-//				}
-//			}
 			
 			part.addPrefab(prefab);
 		}

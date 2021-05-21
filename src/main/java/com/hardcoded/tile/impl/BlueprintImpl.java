@@ -22,7 +22,7 @@ public class BlueprintImpl extends TileEntityImpl implements Blueprint {
 	 */
 	@Override
 	public Vec3 getSize() {
-		return new Vec3();
+		return new Vec3(1, 1, 1);
 	}
 	
 	@Override

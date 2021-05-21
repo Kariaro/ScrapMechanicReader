@@ -11,10 +11,9 @@ import java.util.UUID;
 import com.hardcoded.data.BitStream;
 import com.hardcoded.data.Memory;
 import com.hardcoded.error.TileException;
-import com.hardcoded.tile.impl.AssetImpl;
-import com.hardcoded.tile.impl.NodeImpl;
-import com.hardcoded.tile.impl.PrefabImpl;
+import com.hardcoded.tile.impl.*;
 import com.hardcoded.tile.object.Prefab;
+import com.hardcoded.utils.TileUtils;
 
 /**
  * This class is used to read {@code .PREFAB} files.
@@ -88,19 +87,45 @@ public class PrefabFileReader {
 		
 		for(int i = 0; i < count; i++) {
 			int string_length = stream.readInt();
-			String path = stream.readString(string_length);
-			int bVar4 = 0;
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
-			bVar4 = stream.readInt();
+			String value = stream.readString(string_length);
 			
+			float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+			float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
+			
+			BlueprintImpl blueprint = new BlueprintImpl(value.startsWith("?JB:"));
+			blueprint.setPosition(f_pos);
+			blueprint.setRotation(f_quat);
+			blueprint.setValue(value);
+			
+//			if(version < 5) {
+//				
+//				blueprint.setPosition(f_pos);
+//				blueprint.setRotation(f_quat);
+//			} else {
+//				float[] f_pos = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+//				float[] f_quat = { stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat() };
+//				float[] f_size = { stream.readFloat(), stream.readFloat(), stream.readFloat() };
+//				blueprint.setPosition(f_pos);
+//				blueprint.setRotation(f_quat);
+//				blueprint.setSize(f_size);
+//			}
+			
+			//int bVar4 = 0;
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+//			bVar4 = stream.readInt();
+			
+			
+			// What is this used for?
+			stream.readInt();
+			
+			prefab.addBlueprint(blueprint);
 			//TileUtils.log("read_blueprints: '%s'", path);
-			prefab.blueprint_paths.add(path);
+			//prefab.blueprint_paths.add(path);
 		}
 	}
 	

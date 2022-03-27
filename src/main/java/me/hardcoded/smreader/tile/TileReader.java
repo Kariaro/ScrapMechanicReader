@@ -9,9 +9,7 @@ import me.hardcoded.smreader.game.GameContext;
 import me.hardcoded.smreader.logger.Log;
 import me.hardcoded.smreader.tile.impl.TileImpl;
 import me.hardcoded.smreader.tile.impl.TilePart;
-import com.hardcoded.tile.readers.*;
 import me.hardcoded.smreader.tile.readers.*;
-import me.hardcoded.tile.readers.*;
 import me.hardcoded.smreader.utils.TileUtils;
 
 /**

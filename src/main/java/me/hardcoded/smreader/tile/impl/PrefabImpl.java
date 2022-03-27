@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 import me.hardcoded.smreader.error.TileException;
-import com.hardcoded.tile.object.*;
 import me.hardcoded.smreader.prefab.readers.PrefabFileReader;
 import me.hardcoded.smreader.tile.object.*;
-import me.hardcoded.tile.object.*;
 
 /**
  * A prefab implementation.

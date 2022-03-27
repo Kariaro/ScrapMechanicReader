@@ -18,10 +18,10 @@ public class AssetListWriter implements TileWriterImpl {
 	
 	@Override
 	public void write(CellHeader header, Memory memory, TilePart part) {
-		for(int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {
 			List<Asset> list = part.assets[i];
 			
-			if(list.isEmpty()) {
+			if (list.isEmpty()) {
 				header.assetListCount[i] = 0;
 				header.assetListIndex[i] = 0;
 				header.assetListCompressedSize[i] = 0;
@@ -41,7 +41,7 @@ public class AssetListWriter implements TileWriterImpl {
 	public byte[] write(List<Asset> asset_list, TilePart part) {
 		Memory memory = new Memory(160 * asset_list.size());
 		
-		for(Asset asset : asset_list) {
+		for (Asset asset : asset_list) {
 			memory.NextWriteFloats(asset.getPosition().toArray());
 			memory.NextWriteFloats(asset.getRotation().toArray());
 			memory.NextWriteFloats(asset.getSize().toArray());
@@ -49,7 +49,7 @@ public class AssetListWriter implements TileWriterImpl {
 			
 			Map<String, Integer> map = asset.getMaterials();
 			memory.NextWriteByte(map.size());
-			for(String key : map.keySet()) {
+			for (String key : map.keySet()) {
 				memory.NextWriteByte(key.length());
 				memory.NextWriteString(key);
 				memory.NextWriteInt(map.get(key));

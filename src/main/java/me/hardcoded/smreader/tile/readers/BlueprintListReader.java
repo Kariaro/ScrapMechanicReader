@@ -66,7 +66,7 @@ public class BlueprintListReader implements TileReaderImpl {
 			blueprint.setRotation(f_quat);
 			
 //			boolean bVar10;
-//			if(tileVersion == 6) {
+//			if (tileVersion == 6) {
 //				bVar10 = true;
 //			} else {
 //				bVar10 = false;

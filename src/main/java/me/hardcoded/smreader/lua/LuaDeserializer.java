@@ -10,6 +10,7 @@ import me.hardcoded.smreader.utils.TileUtils;
 
 /**
  * A implementation of a lua deserializer
+ *
  * @author HardCoded
  * @since v0.1
  */
@@ -17,7 +18,7 @@ public class LuaDeserializer {
 	private static final Log LOGGER = Log.getLogger(LuaDeserializer.class);
 	public static final int VERSION = 1;
 	
-	public static enum LuaSaveDataType {
+	public enum LuaSaveDataType {
 		Unknown(0x0),
 		Nil(0x1),
 		Bool(0x2),

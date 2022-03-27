@@ -6,7 +6,7 @@ import java.util.UUID;
 import me.hardcoded.smreader.utils.NotNull;
 
 /**
- * A asset interface.
+ * An asset interface.
  * 
  * @author HardCoded <https://github.com/Kariaro>
  * @since v0.1

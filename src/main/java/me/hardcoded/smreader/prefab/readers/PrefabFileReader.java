@@ -11,7 +11,6 @@ import java.util.UUID;
 import me.hardcoded.smreader.data.BitStream;
 import me.hardcoded.smreader.data.Memory;
 import me.hardcoded.smreader.error.TileException;
-import com.hardcoded.tile.impl.*;
 import me.hardcoded.smreader.tile.impl.AssetImpl;
 import me.hardcoded.smreader.tile.impl.BlueprintImpl;
 import me.hardcoded.smreader.tile.impl.NodeImpl;

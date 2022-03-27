@@ -12,7 +12,7 @@ public class MipWriter implements TileWriterImpl {
 	
 	@Override
 	public void write(CellHeader header, Memory memory, TilePart part) {
-		for(int i = 0; i < 6; i++) {
+		for (int i = 0; i < 6; i++) {
 			write(header, memory, i, part);
 		}
 	}
@@ -35,7 +35,7 @@ public class MipWriter implements TileWriterImpl {
 		long[] ground = part.ground;
 		
 		Memory memory = new Memory((fs * fs * 8) + (ls * ls * 8));
-		for(int i = 0; i < fs * fs; i++) {
+		for (int i = 0; i < fs * fs; i++) {
 			int x = (i % fs) << mipLevel;
 			int y = (i / fs) << mipLevel;
 			int idx = x + y * 0x21;
@@ -46,7 +46,7 @@ public class MipWriter implements TileWriterImpl {
 		
 		memory.set(fs * fs * 8);
 		
-		for(int i = 0; i < ls * ls; i++) {
+		for (int i = 0; i < ls * ls; i++) {
 			int x = (i % ls) << mipLevel;
 			int y = (i / ls) << mipLevel;
 			int idx = x + y * 0x41;

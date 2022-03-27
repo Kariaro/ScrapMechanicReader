@@ -28,7 +28,7 @@ public class ClutterWriter implements TileWriterImpl {
 		memory.NextWriteByte(0); // no uuid's
 		
 		byte[] temp = new byte[128 * 128];
-		for(int i = 0; i < temp.length; i++) {
+		for (int i = 0; i < temp.length; i++) {
 			temp[i] = (byte)0xff;
 		}
 		
@@ -37,7 +37,7 @@ public class ClutterWriter implements TileWriterImpl {
 //		{
 //			int offset = 0;
 //			
-//			for(int i = 0; i < 128 * 128; i++) {
+//			for (int i = 0; i < 128 * 128; i++) {
 //				byte read = memory.Byte(1 + i + offset);
 //				next[i] = (byte)read;
 //			}

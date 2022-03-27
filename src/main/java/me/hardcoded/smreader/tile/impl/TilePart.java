@@ -5,8 +5,6 @@ import java.util.List;
 
 import me.hardcoded.smreader.tile.object.*;
 import me.hardcoded.smreader.tile.Tile;
-import com.hardcoded.tile.object.*;
-import me.hardcoded.tile.object.*;
 
 /**
  * An implementation of a tile.

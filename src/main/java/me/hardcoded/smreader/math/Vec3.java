@@ -1,7 +1,7 @@
 package me.hardcoded.smreader.math;
 
 /**
- * A three dimensional vector class.
+ * A three-dimensional vector class.
  * 
  * @author HardCoded
  * @since v0.1

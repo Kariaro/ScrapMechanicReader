@@ -1,3 +1,5 @@
-/bin/
-/test/
-/target/
+bin/
+test/
+target/
+build/
+.gradle/

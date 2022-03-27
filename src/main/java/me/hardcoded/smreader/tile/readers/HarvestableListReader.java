@@ -31,12 +31,12 @@ public class HarvestableListReader implements TileReaderImpl {
 				byte[] bytes = new byte[harvestableListSize];
 				
 				int debugSize = TileUtils.decompress_data(compressed, bytes, h.harvestableListSize[i]);
-				if(debugSize != h.harvestableListCompressedSize[i]) {
+				if (debugSize != h.harvestableListCompressedSize[i]) {
 					TileUtils.error("debugSize != h.harvestableListCompressedSize[%d]", i); // 314
 				}
 				
 				debugSize = read(bytes, i, h.harvestableListCount[i], part.getParent().getVersion(), part);
-				if(debugSize != h.harvestableListSize[i]) {
+				if (debugSize != h.harvestableListSize[i]) {
 					TileUtils.error("debugSize != h.harvestableListSize[%d]: %d != %d", i, debugSize, h.harvestableListSize[i]);
 				}
 			}

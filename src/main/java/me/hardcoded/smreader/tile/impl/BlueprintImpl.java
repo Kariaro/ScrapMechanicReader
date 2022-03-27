@@ -37,7 +37,7 @@ public class BlueprintImpl extends TileEntityImpl implements Blueprint {
 	
 	@Override
 	public void setValue(String value) {
-		if(value == null) return;
+		if (value == null) return;
 		this.value = value;
 	}
 }

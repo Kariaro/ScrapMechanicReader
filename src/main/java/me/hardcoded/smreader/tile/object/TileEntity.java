@@ -13,7 +13,7 @@ import me.hardcoded.smreader.utils.NotNull;
  * @since v0.1
  */
 public interface TileEntity {
-	static final UUID DEFAULT_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	UUID DEFAULT_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	
 	/**
 	 * Returns the position of this tile entity.

@@ -17,7 +17,7 @@ import me.hardcoded.smreader.tile.TileWriter;
 public class Example {
 	/**
 	 * To aid finding tiles in your computer you can specify the game's
-	 * directory and use the {@link #getTilePath(String)} method.
+	 * directory and use the {@link #getGameTile(String)} method.
 	 */
 	public static final GameContext CONTEXT = new GameContext(/* Absolute game path */);
 	

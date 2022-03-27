@@ -13,7 +13,7 @@ import me.hardcoded.smreader.tile.writers.ClutterWriter;
 import me.hardcoded.smreader.tile.writers.MipWriter;
 import me.hardcoded.smreader.tile.writers.NodeWriter;
 import me.hardcoded.smreader.utils.TileUtils;
-import com.hardcoded.tile.writers.*;
+import me.hardcoded.smreader.tile.writers.*;
 
 /**
  * This class is made for writing {@code .tile} files.

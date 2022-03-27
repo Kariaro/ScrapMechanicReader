@@ -28,7 +28,7 @@ public class ScriptReader implements TileReaderImpl {
 		}
 		
 //		debugSize = read(bytes, part);
-//		if(debugSize != h.scriptSize) {
+//		if (debugSize != h.scriptSize) {
 //			TileUtils.error("debugSize != h.scriptSize: %d != %d", debugSize, h.scriptSize);
 //		}
 		

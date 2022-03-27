@@ -52,7 +52,7 @@ public class GameContext {
 	 * @return the path of the game
 	 */
 	public File getPath() {
-		if(!isValid()) return null;
+		if (!isValid()) return null;
 		return path;
 	}
 	
@@ -61,7 +61,7 @@ public class GameContext {
 	 * @return the path {@code $SURVIVAL_DATA}
 	 */
 	public File getSurvivalData() {
-		if(!isValid()) return null;
+		if (!isValid()) return null;
 		return new File(path, "Survival");
 	}
 	
@@ -70,7 +70,7 @@ public class GameContext {
 	 * @return the path {@code $GAME_DATA}
 	 */
 	public File getGameData() {
-		if(!isValid()) return null;
+		if (!isValid()) return null;
 		return new File(path, "Data");
 	}
 	
@@ -79,7 +79,7 @@ public class GameContext {
 	 * @return the path {@code $CHALLENGE_DATA}
 	 */
 	public File getChallengeData() {
-		if(!isValid()) return null;
+		if (!isValid()) return null;
 		return new File(path, "Challenge");
 	}
 	
@@ -89,10 +89,10 @@ public class GameContext {
 	 * @return the absolute file of the resource
 	 */
 	public File resolve(String path) {
-		if(!isValid() || path == null) return null;
-		if(path.startsWith("$GAME_DATA")) return new File(getSurvivalData(), path.substring(10));
-		if(path.startsWith("$SURVIVAL_DATA")) return new File(getSurvivalData(), path.substring(14));
-		if(path.startsWith("$CHALLENGE_DATA")) return new File(getSurvivalData(), path.substring(15));
+		if (!isValid() || path == null) return null;
+		if (path.startsWith("$GAME_DATA")) return new File(getSurvivalData(), path.substring(10));
+		if (path.startsWith("$SURVIVAL_DATA")) return new File(getSurvivalData(), path.substring(14));
+		if (path.startsWith("$CHALLENGE_DATA")) return new File(getSurvivalData(), path.substring(15));
 		
 		return null;
 	}

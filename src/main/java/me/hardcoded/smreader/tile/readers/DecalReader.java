@@ -20,7 +20,7 @@ public class DecalReader implements TileReaderImpl {
 		if ((h.decalCount == 0) || (h.decalIndex == 0)) return;
 		reader.set(h.decalIndex);
 		
-		TileUtils.log("  Decal            : %d / %d", h.decalSize, h.decalCompressedSize);
+		TileUtils.log("  Decal            : %d / %d / %d", h.decalSize, h.decalCompressedSize, h.decalCount);
 		
 		byte[] compressed = reader.Bytes(h.decalCompressedSize);
 		byte[] bytes = new byte[h.decalSize];

@@ -3,6 +3,7 @@ package me.hardcoded.smreader.tile.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.hardcoded.smreader.tile.data.ClutterData;
 import me.hardcoded.smreader.tile.object.*;
 import me.hardcoded.smreader.tile.Tile;
 
@@ -36,6 +37,9 @@ public class TilePart {
 	
 	// Clutter
 	public final byte[] clutter;
+	// TODO: This is only used to correctly write UUID when writing tile files.
+	//       It's currently not possible to update what clutters are used.
+	public final List<ClutterData> clutterTest;
 	
 	// AssetList
 	public final List<Asset>[] assets;
@@ -67,6 +71,7 @@ public class TilePart {
 		vertexHeight = new float[33 * 33];
 		ground = new long[65 * 65];
 		clutter = new byte[128 * 128];
+		clutterTest = new ArrayList<>();
 		
 		assets = new List[] {
 			new ArrayList<Asset>(),

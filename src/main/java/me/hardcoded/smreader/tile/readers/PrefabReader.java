@@ -18,7 +18,7 @@ public class PrefabReader implements TileReaderImpl {
 		if ((h.prefabCount == 0) || (h.prefabIndex == 0)) return;
 		reader.set(h.prefabIndex);
 		
-		TileUtils.log("  Prefab           : %d / %d", h.prefabSize, h.prefabCompressedSize);
+		TileUtils.log("  Prefab           : %d / %d / %d", h.prefabSize, h.prefabCompressedSize, h.prefabCount);
 		
 		byte[] compressed = reader.Bytes(h.prefabCompressedSize);
 		byte[] bytes = new byte[h.prefabSize];
@@ -32,8 +32,6 @@ public class PrefabReader implements TileReaderImpl {
 		if (debugSize != h.prefabSize) {
 			TileUtils.error("debugSize != h.prefabSize: %d != %d", debugSize, h.prefabSize);
 		}
-		
-		return;
 	}
 	
 	public int read(byte[] bytes, int prefabCount, TilePart part) {

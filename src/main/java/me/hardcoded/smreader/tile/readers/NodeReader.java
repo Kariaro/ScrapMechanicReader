@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.hardcoded.smreader.data.Memory;
+import me.hardcoded.smreader.tile.data.LuaData;
 import me.hardcoded.smreader.utils.TileUtils;
 import me.hardcoded.smreader.tile.CellHeader;
 import me.hardcoded.smreader.tile.impl.NodeImpl;
@@ -21,7 +22,7 @@ public class NodeReader implements TileReaderImpl {
 		if ((h.nodeCount == 0) || (h.nodeIndex == 0)) return;
 		reader.set(h.nodeIndex);
 		
-		TileUtils.log("  Node             : %d / %d", h.nodeSize, h.nodeCompressedSize);
+		TileUtils.log("  Node             : %d / %d / %d", h.nodeSize, h.nodeCompressedSize, h.nodeCount);
 		
 		byte[] compressed = reader.Bytes(h.nodeCompressedSize);
 		byte[] bytes = new byte[h.nodeSize];
@@ -35,8 +36,6 @@ public class NodeReader implements TileReaderImpl {
 		if (debugSize != h.nodeSize) {
 			TileUtils.error("debugSize != h.nodeSize: %d != %d", debugSize, h.nodeSize);
 		}
-		
-		return;
 	}
 	
 	public int read(byte[] bytes, int nodeCount, TilePart part) {
@@ -78,11 +77,11 @@ public class NodeReader implements TileReaderImpl {
 				int uVar3 = memory.Int(index);
 				index += 4;
 				if (uVar3 != 0) {
-					@SuppressWarnings("unused")
 					Memory blob = new Memory(memory.Bytes(uVar3, index));
 					index += uVar3;
 					
-					//TileUtils.debugPrint("LuaData", blob);
+					node.setLuaData(new LuaData(blob.data()));
+					//TileUtils.debugPrint("LuaData", blob.data());
 					//Object deserialized = LuaDeserializer.DeserializePure(blob);
 				}
 				

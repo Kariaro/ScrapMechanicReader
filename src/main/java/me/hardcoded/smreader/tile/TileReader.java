@@ -25,15 +25,15 @@ import me.hardcoded.smreader.utils.TileUtils;
 public class TileReader {
 	private static final Log LOGGER = Log.getLogger();
 	
-	private static final MipReader mip_reader = new MipReader();
-	private static final ClutterReader clutter_reader = new ClutterReader();
-	private static final AssetListReader assetList_reader = new AssetListReader();
-	private static final NodeReader node_reader = new NodeReader();
-	private static final ScriptReader script_reader = new ScriptReader();
-	private static final PrefabReader prefab_reader = new PrefabReader();
-	private static final BlueprintListReader blueprintList_reader = new BlueprintListReader();
-	private static final DecalReader decal_reader = new DecalReader();
-	private static final HarvestableListReader harvestableList_reader = new HarvestableListReader();
+	private static final MipReader mipReader = new MipReader();
+	private static final ClutterReader clutterReader = new ClutterReader();
+	private static final AssetListReader assetListReader = new AssetListReader();
+	private static final NodeReader nodeReader = new NodeReader();
+	private static final ScriptReader scriptReader = new ScriptReader();
+	private static final PrefabReader prefabReader = new PrefabReader();
+	private static final BlueprintListReader blueprintListReader = new BlueprintListReader();
+	private static final DecalReader decalReader = new DecalReader();
+	private static final HarvestableListReader harvestableListReader = new HarvestableListReader();
 	
 	private TileReader() {
 		
@@ -118,17 +118,17 @@ public class TileReader {
 					TilePart part = tile.getPart(x, y);
 					
 					if (header.type == 0) {
-						mip_reader.read(h, reader, part);
-						clutter_reader.read(h, reader, part);
+						mipReader.read(h, reader, part);
+						clutterReader.read(h, reader, part);
 					}
 					
-					assetList_reader.read(h, reader, part);
-					node_reader.read(h, reader, part);
-					script_reader.read(h, reader, part);
-					prefab_reader.read(h, reader, part);
-					blueprintList_reader.read(h, reader, part);
-					decal_reader.read(h, reader, part);
-					harvestableList_reader.read(h, reader, part);
+					assetListReader.read(h, reader, part);
+					nodeReader.read(h, reader, part);
+					scriptReader.read(h, reader, part);
+					prefabReader.read(h, reader, part);
+					blueprintListReader.read(h, reader, part);
+					decalReader.read(h, reader, part);
+					harvestableListReader.read(h, reader, part);
 				}
 			}
 		}

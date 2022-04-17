@@ -21,7 +21,7 @@ public class AssetListReader implements TileReaderImpl {
 			int assetListCompressedSize = h.assetListCompressedSize[i];
 			int assetListSize = h.assetListSize[i];
 			
-			TileUtils.log("    Asset[%d]       : %d / %d", i, assetListSize, assetListCompressedSize);
+			TileUtils.log("    Asset[%d]       : %d / %d / %d", i, assetListSize, assetListCompressedSize, h.assetListCount[i]);
 			
 			if (h.assetListCount[i] != 0) {
 				reader.set(h.assetListIndex[i]);
@@ -88,7 +88,6 @@ public class AssetListReader implements TileReaderImpl {
 					index += 4;
 				}
 			}
-			
 			
 			asset.setPosition(f_pos /* + f_position */);
 			asset.setRotation(f_quat);

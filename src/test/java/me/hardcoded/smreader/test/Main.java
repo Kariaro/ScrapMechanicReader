@@ -4,9 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +17,7 @@ import me.hardcoded.smreader.logger.Log;
 import me.hardcoded.smreader.prefab.readers.PrefabFileReader;
 import me.hardcoded.smreader.tile.TileReader;
 import me.hardcoded.smreader.tile.Tile;
+import me.hardcoded.smreader.tile.TileWriter;
 import me.hardcoded.smreader.tile.impl.NodeImpl;
 import me.hardcoded.smreader.tile.impl.PrefabImpl;
 import me.hardcoded.smreader.tile.impl.TilePart;
@@ -32,7 +31,7 @@ public class Main {
 	public static void main(String[] args) {
 		// String path = getTile("tile_12");
 		
-		System.out.println(Arrays.toString(tryCompress("LUA")));
+		// System.out.println(Arrays.toString(tryCompress("LUA")));
 		// path = getTile("tile_9");
 		// path = getTile("tile_5");
 		// path = getTile("tile_1");
@@ -45,6 +44,134 @@ public class Main {
 		//path = getGameTile("MEADOW256_01");
 		//path = getGameTile("GROUND512_01");
 		
+		try {
+			String path;
+			path = getGameTile("HILLS512_01");
+			path = getGameTile("FOREST256_01");
+			path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
+			
+//			path = "C:/Users/Admin/AppData/Roaming/Axolot Games/Scrap Mechanic/User/User_76561198251506208/Tiles/36bd8a78-dbab-46c6-b468-1cadac698ff1/ReadingResources.tile";
+			PrintStream writer = System.out;
+			//System.setOut(new PrintStream(OutputStream.nullOutputStream()));
+			Tile tile = TileReader.readTile(path, CONTEXT);
+			
+//			for (int i = 0; i < 4; i++) {
+//				List<Asset> assets = tile.getPart(0, 0).assets[i];
+//				System.out.println("Test: ");
+//				for (Asset asset : assets) {
+//					System.out.printf("  %s:\n", asset.getUuid());
+//					System.out.printf("    pos = %s:\n", asset.getPosition());
+//					System.out.printf("    rot = %s:\n", asset.getRotation());
+//					System.out.printf("    dim = %s:\n", asset.getSize());
+//					Map<String, Integer> colorMap = asset.getMaterials();
+//					for (Map.Entry<String, Integer> entry : colorMap.entrySet()) {
+//						System.out.printf("    %s = %8x\n", entry.getKey(), entry.getValue());
+//					}
+//				}
+//			}
+			
+			for (int x = 0; x < tile.getWidth(); x++) {
+				for (int y = 0; y < tile.getHeight(); y++) {
+					TilePart part = tile.getPart(x, y);
+
+//					for (int i = 0; i < 4; i++) {
+//						List<Asset> assets = part.assets[i];
+//						System.out.println("Test: ");
+//						for (Asset asset : assets) {
+//							System.out.printf("  %s:\n", asset.getUuid());
+//							System.out.printf("    pos = %s:\n", asset.getPosition());
+//							System.out.printf("    rot = %s:\n", asset.getRotation());
+//							System.out.printf("    dim = %s:\n", asset.getSize());
+//							Map<String, Integer> colorMap = asset.getMaterials();
+//							for (Map.Entry<String, Integer> entry : colorMap.entrySet()) {
+//								System.out.printf("    %s = %8x\n", entry.getKey(), entry.getValue());
+//							}
+//						}
+//					}
+					part.prefabs.forEach((p) -> {
+						System.out.printf("  %s:\n", p.getPath());
+						System.out.printf("    pos = %s:\n", p.getPosition());
+						System.out.printf("    rot = %s:\n", p.getRotation());
+						System.out.printf("    dim = %s:\n", p.getSize());
+						System.out.printf("    flg = %s:\n", p.getFlag());
+					});
+
+//					part.nodes.forEach((n) -> {
+//						System.out.printf("%s\n", n.getActiveTags());
+//					});
+//					part.blueprints.forEach((b) -> {
+//						System.out.printf(">>> '%s'\n", b.getValue());
+//					});
+				}
+			}
+			
+			byte[] bytes = TileWriter.writeTile(tile);
+			tile = null;
+			System.setOut(writer);
+			tile = TileReader.loadTile(bytes, CONTEXT);
+			
+//			for (int i = 0; i < 4; i++) {
+//				List<Asset> assets = tile.getPart(0, 0).assets[i];
+//				System.out.println("Test: ");
+//				for (Asset asset : assets) {
+//					System.out.printf("  %s:\n", asset.getUuid());
+//					System.out.printf("    pos = %s:\n", asset.getPosition());
+//					System.out.printf("    rot = %s:\n", asset.getRotation());
+//					System.out.printf("    dim = %s:\n", asset.getSize());
+//					Map<String, Integer> colorMap = asset.getMaterials();
+//					for (Map.Entry<String, Integer> entry : colorMap.entrySet()) {
+//						System.out.printf("    %s = %8x\n", entry.getKey(), entry.getValue());
+//					}
+//				}
+//			}
+			
+			for (int x = 0; x < tile.getWidth(); x++) {
+				for (int y = 0; y < tile.getHeight(); y++) {
+					TilePart part = tile.getPart(x, y);
+					
+//					for (int i = 0; i < 4; i++) {
+//						List<Asset> assets = part.assets[i];
+//						System.out.println("Test: ");
+//						for (Asset asset : assets) {
+//							System.out.printf("  %s:\n", asset.getUuid());
+//							System.out.printf("    pos = %s:\n", asset.getPosition());
+//							System.out.printf("    rot = %s:\n", asset.getRotation());
+//							System.out.printf("    dim = %s:\n", asset.getSize());
+//							Map<String, Integer> colorMap = asset.getMaterials();
+//							for (Map.Entry<String, Integer> entry : colorMap.entrySet()) {
+//								System.out.printf("    %s = %8x\n", entry.getKey(), entry.getValue());
+//							}
+//						}
+//					}
+					part.prefabs.forEach((p) -> {
+						System.out.printf("  %s:\n", p.getPath());
+						System.out.printf("    pos = %s:\n", p.getPosition());
+						System.out.printf("    rot = %s:\n", p.getRotation());
+						System.out.printf("    dim = %s:\n", p.getSize());
+						System.out.printf("    flg = %s:\n", p.getFlag());
+					});
+
+//					part.nodes.forEach((n) -> {
+//						System.out.printf("%s\n", n.getActiveTags());
+//					});
+//					part.blueprints.forEach((b) -> {
+//						System.out.printf(">>> '%s'\n", b.getValue());
+//					});
+				}
+			}
+			
+			String out = "C:/Users/Admin/git/ScrapMechanicReader/src/test/" + "resources/TestingExport.tile";
+			try (DataOutputStream outputStream = new DataOutputStream(new FileOutputStream(new File(out)))) {
+				outputStream.write(bytes);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+		
 		Tile tile = null;
 		try {
 			String path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
@@ -56,12 +183,12 @@ public class Main {
 			//path = "C:/Users/Admin/Downloads/Warehouse_Exterior_4Floors_256_01.tile";
 			//path = "C:/Users/Admin/Downloads/bbbbbbbbbbbbbbbbbbb.tile.export";
 			//path = "C:/Users/Admin/Downloads/Warehouse_Interior_EncryptorFloor_01.tile";
-			//path = getGameTile("HILLS512_01");
+			path = getGameTile("HILLS512_01");
 			//path = getGameTile("Road_Dirt_Three-way_01");
 			//path = getGameTile("Road_Dirt_Three-way_01");
 			//path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\DungeonTiles\\Warehouse_Interior_StorageFloor_02.tile";
 			//path = "D:\\Steam\\steamapps\\common\\Scrap Mechanic\\Survival\\Terrain\\Tiles\\start_area\\SurvivalStartArea_BigRuin_01.tile";
-			path = "Color_Map_Test.tile";
+			//path = "Color_Map_Test.tile";
 			//path = "output/Ruin_Forest_64_01.tile";
 			LOGGER.info(path);
 			

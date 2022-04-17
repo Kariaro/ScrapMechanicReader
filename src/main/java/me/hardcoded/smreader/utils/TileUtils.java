@@ -57,7 +57,7 @@ public class TileUtils {
 	}
 	
 	public static boolean isDev() {
-		return "true".equalsIgnoreCase(System.getProperty("com.hardcoded.dev"));
+		return "true".equalsIgnoreCase(System.getProperty("me.hardcoded.dev"));
 	}
 	
 	

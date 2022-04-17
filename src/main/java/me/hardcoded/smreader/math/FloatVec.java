@@ -58,7 +58,7 @@ public abstract class FloatVec<T extends FloatVec<T>> {
 	
 	/**
 	 * Returns the length of this vector.
-	 * {@code sqrt(x^2 + y^2 + z^2 ... ) }
+	 * {@code sqrt(x^2 + y^2 + z^2 ... )}
 	 * @return the length of this vector
 	 */
 	public float getLength() {
@@ -78,6 +78,6 @@ public abstract class FloatVec<T extends FloatVec<T>> {
 			sb.append(String.format(", %.4f", f));
 		}
 		sb.delete(0, 2);
-		return String.format("{ %s }", sb.toString());
+		return String.format("( %s )", sb.toString());
 	}
 }

@@ -8,12 +8,8 @@ import me.hardcoded.smreader.data.Memory;
 import me.hardcoded.smreader.error.TileException;
 import me.hardcoded.smreader.logger.Log;
 import me.hardcoded.smreader.tile.impl.TilePart;
-import me.hardcoded.smreader.tile.writers.AssetListWriter;
-import me.hardcoded.smreader.tile.writers.ClutterWriter;
-import me.hardcoded.smreader.tile.writers.MipWriter;
-import me.hardcoded.smreader.tile.writers.NodeWriter;
-import me.hardcoded.smreader.utils.TileUtils;
 import me.hardcoded.smreader.tile.writers.*;
+import me.hardcoded.smreader.utils.TileUtils;
 
 /**
  * This class is made for writing {@code .tile} files.
@@ -27,15 +23,15 @@ import me.hardcoded.smreader.tile.writers.*;
 public class TileWriter {
 	private static final Log LOGGER = Log.getLogger();
 	
-	private static final MipWriter mip_writer = new MipWriter();
-	private static final ClutterWriter clutter_writer = new ClutterWriter();
-	private static final AssetListWriter assetList_writer = new AssetListWriter();
-	private static final NodeWriter node_writer = new NodeWriter();
+	private static final MipWriter mipWriter = new MipWriter();
+	private static final ClutterWriter clutterWriter = new ClutterWriter();
+	private static final AssetListWriter assetListWriter = new AssetListWriter();
+	private static final NodeWriter nodeWriter = new NodeWriter();
 //	private static final ScriptWriter script_writer = new ScriptWriter();
-//	private static final PrefabWriter prefab_writer = new PrefabWriter();
-//	private static final BlueprintListWriter blueprintList_writer = new BlueprintListWriter();
-//	private static final DecalWriter decal_writer = new DecalWriter();
-//	private static final HarvestableListWriter harvestableList_writer = new HarvestableListWriter();
+	private static final PrefabWriter prefabWriter = new PrefabWriter();
+	private static final BlueprintListWriter blueprintListWriter = new BlueprintListWriter();
+	private static final DecalWriter decalWriter = new DecalWriter();
+	private static final HarvestableListWriter harvestableListWriter = new HarvestableListWriter();
 	
 	private TileWriter() {
 		
@@ -81,15 +77,15 @@ public class TileWriter {
 		memory.WriteInt(memory.index(), cellHeadersOffset_index - memory.index());
 		
 		CellHeader[] headers = new CellHeader[tile.getWidth() * tile.getHeight()];
-		for(int i = 0; i < headers.length; i++) {
+		for (int i = 0; i < headers.length; i++) {
 			CellHeader header_part = new CellHeader(memory);
 			memory.WriteByte(0); // Ensure that we have a header at this position
 			memory.move(cellHeadersSize);
 			headers[i] = header_part;
 		}
 		
-		for(int y = 0; y < tile.getHeight(); y++) {
-			for(int x = 0; x < tile.getWidth(); x++) {
+		for (int y = 0; y < tile.getHeight(); y++) {
+			for (int x = 0; x < tile.getWidth(); x++) {
 				CellHeader header_part = headers[x + y * tile.getWidth()];
 				
 				TilePart part = tile.getPart(x, y);
@@ -97,7 +93,7 @@ public class TileWriter {
 			}
 		}
 		
-		for(int i = 0; i < headers.length; i++) {
+		for (int i = 0; i < headers.length; i++) {
 			headers[i].write();
 		}
 		
@@ -110,17 +106,17 @@ public class TileWriter {
 	}
 	
 	private static void writePart(CellHeader header, Memory memory, TilePart part) {
-		if(part.getParent().getTileType() == 0) {
-			mip_writer.write(header, memory, part);
-			clutter_writer.write(header, memory, part);
+		if (part.getParent().getTileType() == 0) {
+			mipWriter.write(header, memory, part);
+			clutterWriter.write(header, memory, part);
 		}
 		
-		assetList_writer.write(header, memory, part);
-		node_writer.write(header, memory, part);
-//		scirpt_writer.write(header, memory, part);
-//		prefab_writer.write(header, memory, part);
-//		blueprintList_writer.write(header, memory, part);
-//		decal_writer.write(header, memory, part);
-//		harvestableList_writer.write(header, memory, part);
+		assetListWriter.write(header, memory, part);
+		nodeWriter.write(header, memory, part);
+//		script_writer.write(header, memory, part);
+		prefabWriter.write(header, memory, part);
+		blueprintListWriter.write(header, memory, part);
+		decalWriter.write(header, memory, part);
+		harvestableListWriter.write(header, memory, part);
 	}
 }

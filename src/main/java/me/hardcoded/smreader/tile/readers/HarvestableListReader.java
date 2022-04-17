@@ -22,7 +22,7 @@ public class HarvestableListReader implements TileReaderImpl {
 			int harvestableListCompressedSize = h.harvestableListCompressedSize[i];
 			int harvestableListSize = h.harvestableListSize[i];
 			
-			TileUtils.log("    Harvestable[%d] : %d / %d", i, harvestableListSize, harvestableListCompressedSize);
+			TileUtils.log("    Harvestable[%d] : %d / %d / %d", i, harvestableListSize, harvestableListCompressedSize, h.harvestableListCount[i]);
 			
 			if (h.harvestableListCount[i] != 0) {
 				reader.set(h.harvestableListIndex[i]);

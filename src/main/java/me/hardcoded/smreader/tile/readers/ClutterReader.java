@@ -3,6 +3,7 @@ package me.hardcoded.smreader.tile.readers;
 import java.util.UUID;
 
 import me.hardcoded.smreader.data.Memory;
+import me.hardcoded.smreader.tile.data.ClutterData;
 import me.hardcoded.smreader.utils.TileUtils;
 import me.hardcoded.smreader.tile.CellHeader;
 import me.hardcoded.smreader.tile.impl.TilePart;
@@ -43,6 +44,15 @@ public class ClutterReader implements TileReaderImpl {
 			memory.move(2);
 			for (int i = 0; i < length; i++) {
 				int uVar7 = 0;
+				
+				{
+					// TODO: Debug FIX ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					ClutterData test = new ClutterData(
+						memory.Bytes(0x11, offset)
+					);
+					part.clutterTest.add(test);
+				}
+				
 				for (int j = 0; j < 0x10; j++) {
 					int read = memory.Byte(offset + j);
 					// uVar7 = (uVar7 ^ read) + 0x9e3779b9 + (uVar7 * 0x40) + (uVar7 >> 2);

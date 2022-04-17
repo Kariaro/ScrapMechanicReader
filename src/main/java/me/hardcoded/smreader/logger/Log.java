@@ -111,6 +111,7 @@ public final class Log {
 		time[9] += (millis / 100);
 		time[11] += (millis % 10);
 		time[10] += (millis / 10) % 10;
+		
 		return new String(time);
 	}
 	

@@ -52,7 +52,7 @@ public class AssetListWriter implements TileWriterImpl {
 			for (String key : map.keySet()) {
 				memory.NextWriteByte(key.length());
 				memory.NextWriteString(key);
-				memory.NextWriteInt(map.get(key));
+				memory.NextWriteInt(map.get(key), true);
 			}
 		}
 		

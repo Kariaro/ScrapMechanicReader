@@ -6,6 +6,7 @@ import java.util.Set;
 
 import me.hardcoded.smreader.data.Memory;
 import me.hardcoded.smreader.tile.CellHeader;
+import me.hardcoded.smreader.tile.data.LuaData;
 import me.hardcoded.smreader.tile.impl.TilePart;
 import me.hardcoded.smreader.tile.object.Node;
 import me.hardcoded.smreader.utils.TileUtils;
@@ -61,11 +62,13 @@ public class NodeWriter implements TileWriterImpl {
 				memory.NextWriteByte(index);
 			}
 			
-			int lua_data_size = 0;
-			memory.NextWriteInt(lua_data_size);
-			
-			if (lua_data_size != 0) {
-				// TODO: Write serialized lua data
+			LuaData luaData = node.getLuaData();
+			if (luaData == null) {
+				memory.NextWriteInt(0);
+			} else {
+				byte[] luaBytes = luaData.getData();
+				memory.NextWriteInt(luaBytes.length);
+				memory.NextWriteBytes(luaBytes);
 			}
 		}
 		

@@ -18,7 +18,7 @@ public class BlueprintListReader implements TileReaderImpl {
 		if ((h.blueprintListCount == 0) || (h.blueprintListIndex == 0)) return;
 		reader.set(h.blueprintListIndex);
 		
-		TileUtils.log("  BlueprintList    : %d / %d", h.blueprintListSize, h.blueprintListCompressedSize);
+		TileUtils.log("  BlueprintList    : %d / %d / %d", h.blueprintListSize, h.blueprintListCompressedSize, h.blueprintListCount);
 		
 		byte[] compressed = reader.Bytes(h.blueprintListCompressedSize);
 		byte[] bytes = new byte[h.blueprintListSize];
@@ -64,6 +64,7 @@ public class BlueprintListReader implements TileReaderImpl {
 			BlueprintImpl blueprint = new BlueprintImpl(isLoaded);
 			blueprint.setPosition(f_pos);
 			blueprint.setRotation(f_quat);
+			blueprint.setValue(value);
 			
 //			boolean bVar10;
 //			if (tileVersion == 6) {

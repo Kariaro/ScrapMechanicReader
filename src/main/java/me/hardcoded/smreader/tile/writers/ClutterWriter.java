@@ -2,6 +2,7 @@ package me.hardcoded.smreader.tile.writers;
 
 import me.hardcoded.smreader.data.Memory;
 import me.hardcoded.smreader.tile.CellHeader;
+import me.hardcoded.smreader.tile.data.ClutterData;
 import me.hardcoded.smreader.tile.impl.TilePart;
 import me.hardcoded.smreader.utils.TileUtils;
 
@@ -24,13 +25,26 @@ public class ClutterWriter implements TileWriterImpl {
 	}
 	
 	public byte[] write(TilePart part) {
-		Memory memory = new Memory(128 * 128 + 1);
-		memory.NextWriteByte(0); // no uuid's
+		Memory memory = new Memory(128 * 128 + 1 + 1000);
 		
-		byte[] temp = new byte[128 * 128];
-		for (int i = 0; i < temp.length; i++) {
-			temp[i] = (byte)0xff;
+		{
+			if (part.clutterTest.isEmpty()) {
+				memory.NextWriteByte(0); // no uuid's
+			} else {
+				memory.NextWriteByte(part.clutterTest.size());
+				memory.NextWriteByte(0); // TODO: Flags?????
+				
+				for (ClutterData test : part.clutterTest) {
+					memory.NextWriteBytes(test.bytes);
+				}
+			}
+			// TODO: Figure out how to write clutter ????
 		}
+		byte[] temp = new byte[128 * 128];
+		System.arraycopy(part.clutter, 0, temp, 0, part.clutter.length);
+//		for (int i = 0; i < temp.length; i++) {
+//			temp[i] = (byte)0xff;
+//		}
 		
 		memory.NextWriteBytes(temp); // Empty clutter array
 //		byte[] next = new byte[128 * 128];
@@ -43,6 +57,8 @@ public class ClutterWriter implements TileWriterImpl {
 //			}
 //		}
 		
-		return memory.data();
+		byte[] bytes = new byte[memory.getHighestWrittenIndex()];
+		System.arraycopy(memory.data(), 0, bytes, 0, bytes.length);
+		return bytes;
 	}
 }

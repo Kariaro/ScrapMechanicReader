@@ -74,7 +74,7 @@ public class PrefabImpl extends TileEntityImpl implements Prefab {
 	
 	@Override
 	public void setPath(String path) {
-		if(path == null) return;
+		if (path == null) return;
 		this.path = path;
 	}
 	

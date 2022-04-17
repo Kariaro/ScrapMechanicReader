@@ -3,6 +3,7 @@ package me.hardcoded.smreader.tile.object;
 import java.util.List;
 import java.util.Set;
 
+import me.hardcoded.smreader.tile.data.LuaData;
 import me.hardcoded.smreader.utils.NotNull;
 
 /**
@@ -41,4 +42,16 @@ public interface Node extends TileEntity {
 	 */
 	@NotNull
 	Set<String> getActiveTags();
+	
+	/**
+	 * Returns an object with serialized lua data.
+	 * @return an object with serialized lua data
+	 */
+	LuaData getLuaData();
+	
+	/**
+	 * Set the lua data of this node.
+	 * @param data the lua data
+	 */
+	void setLuaData(LuaData data);
 }
